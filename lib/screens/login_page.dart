@@ -1,3 +1,4 @@
+import 'package:community_guild/repository/auth_repository.dart';
 import 'package:community_guild/widget/login_and_register/login_register_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,13 +15,15 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authRepository = AuthRepository(httpClient: http.Client());
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: Center(
           child: SingleChildScrollView(
             child: BlocProvider(
-              create: (_) => AuthBloc(httpClient: http.Client()),
+              create: (_) => AuthBloc(authRepository: authRepository),
               child: BlocConsumer<AuthBloc, AuthState>(
                 listener: (context, state) {
                   if (state is AuthSuccess) {
@@ -67,7 +70,6 @@ class LoginPage extends StatelessWidget {
                       AuthWidgets.primaryButton(
                         text: 'Login',
                         onPressed: () {
-                          final authBloc = context.read<AuthBloc>();
                           authBloc.add(LoginRequested(
                             email: authBloc.emailController.text,
                             password: authBloc.passwordController.text,

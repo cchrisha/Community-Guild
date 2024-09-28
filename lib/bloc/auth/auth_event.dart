@@ -1,3 +1,4 @@
+import 'package:community_guild/models/userAuth_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AuthEvent extends Equatable {
@@ -8,18 +9,12 @@ abstract class AuthEvent extends Equatable {
 }
 
 class RegisterRequested extends AuthEvent {
-  final String name;
-  final String email;
-  final String password;
+  final Userauth userauth;
 
-  RegisterRequested({
-    required this.name,
-    required this.email,
-    required this.password,
-  });
+  const RegisterRequested({required this.userauth});
 
   @override
-  List<Object> get props => [name, email, password];
+  List<Object> get props => [userauth];
 }
 
 class LoginRequested extends AuthEvent {
@@ -36,3 +31,5 @@ class LoginRequested extends AuthEvent {
 }
 
 class TogglePasswordVisibility extends AuthEvent {}
+
+class ToggleConfirmPasswordVisibility extends AuthEvent {}

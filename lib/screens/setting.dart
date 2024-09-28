@@ -1,3 +1,4 @@
+import 'package:community_guild/bloc/auth/auth_bloc.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -88,7 +89,6 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  // Method to show the logout confirmation dialog
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -99,31 +99,18 @@ class SettingsPage extends StatelessWidget {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(); // Close the dialog without logging out
+                Navigator.of(context).pop();
               },
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
-                _logout(context); // Call the logout method
-              },
+              onPressed: () {},
               child: const Text('Logout'),
             ),
           ],
         );
       },
     );
-  }
-
-  // Method to handle logout
-  void _logout(BuildContext context) {
-    // Perform your logout operation here, such as clearing session, etc.
-    // authBloc.add(LogoutRequested()); // Example logout event with Bloc (if using Bloc)
-
-    // After logout, navigate to login screen or other appropriate page
-    Navigator.of(context)
-        .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
   }
 
   Widget _buildSectionHeader(String title) {

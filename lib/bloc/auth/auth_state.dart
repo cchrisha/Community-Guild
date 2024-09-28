@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-// AuthState: Represents the current state of the authentication process.
 abstract class AuthState extends Equatable {
   @override
   List<Object> get props => [];
@@ -28,4 +27,13 @@ class PasswordVisibilityToggled extends AuthState {
 
   @override
   List<Object> get props => [obscureText];
+}
+
+class ConfirmPasswordVisibilityToggled extends AuthState {
+  final bool obscureConfirmPassword;
+
+  ConfirmPasswordVisibilityToggled(this.obscureConfirmPassword);
+
+  @override
+  List<Object> get props => [obscureConfirmPassword];
 }
