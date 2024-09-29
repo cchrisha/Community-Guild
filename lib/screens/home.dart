@@ -148,8 +148,8 @@ class HomePage extends StatelessWidget {
             label: 'Profile',
           ),
         ],
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.lightBlue,
+        selectedItemColor: Colors.lightBlue,
+        unselectedItemColor: Colors.black,
         onTap: (index) {
           switch (index) {
             case 0:
