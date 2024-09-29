@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';  // Ensure this import is present
+import 'package:flutter/material.dart';
 
 class HomeJobCard extends StatelessWidget {
   final String jobTitle;
@@ -8,11 +8,11 @@ class HomeJobCard extends StatelessWidget {
   final String wageRange;
   final bool isCrypto;
   final String professions;
-  final VoidCallback onTap;  // VoidCallback is a typedef for a function with no arguments that returns nothing
+  final VoidCallback onTap; 
   final bool showAddButton;
 
   const HomeJobCard({
-    super.key,  // This is valid only if the class extends StatelessWidget or StatefulWidget
+    super.key, 
     required this.jobTitle,
     required this.jobDescription,
     required this.location,
@@ -32,7 +32,6 @@ class HomeJobCard extends StatelessWidget {
         elevation: 3,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
           padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

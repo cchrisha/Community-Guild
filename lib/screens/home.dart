@@ -1,6 +1,5 @@
 import 'package:community_guild/widget/home/job_card.dart';
 import 'package:community_guild/widget/home/search_and_filter.dart';
-import 'package:community_guild/widget/home/home_section_title.dart';
 import 'package:community_guild/widget/home/section_title.dart';
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/job_detail.dart';
@@ -58,7 +57,7 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 20),
                   const SectionTitle(title: 'Recommended'),
                   SizedBox(
-                    height: 240, // Increased height to accommodate new fields
+                    height: 250, 
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: 10,
@@ -66,14 +65,14 @@ class HomePage extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.8, // Adjust card width relative to the screen width
+                            width: MediaQuery.of(context).size.width * 0.8, //responsive na width
                             child: HomeJobCard(
                               jobTitle: 'Recommended Job Title ${index + 1}',
                               jobDescription: 'This is the job description for recommended job ${index + 1}.',
                               location: 'Location ${index + 1}',
-                              date: 'Date: 2024-09-${index + 1}', // Example date
-                              wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', // Example wage range
-                              isCrypto: index % 2 == 0, // Alternate for crypto status
+                              date: 'Date: 2024-09-${index + 1}', 
+                              wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', 
+                              isCrypto: index % 2 == 0, 
                               professions: 'Profession ${index + 1}',
                               onTap: () {
                                 Navigator.push(
@@ -93,10 +92,10 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const HomeSectionTitle(title: 'Most Recent Job'),
+                  const SectionTitle(title: 'Most Recent Job'),
                   const SizedBox(height: 10),
                   SizedBox(
-                    height: 240, // Increased height to accommodate new fields
+                    height: 250, 
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: 10,
@@ -104,14 +103,14 @@ class HomePage extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.8, // Adjust card width relative to the screen width
+                            width: MediaQuery.of(context).size.width * 0.8, // responsive na width
                             child: HomeJobCard(
                               jobTitle: 'Recommended Job Title ${index + 1}',
                               jobDescription: 'This is the job description for recommended job ${index + 1}.',
                               location: 'Location ${index + 1}',
-                              date: 'Date: 2024-09-${index + 1}', // Example date
-                              wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', // Example wage range
-                              isCrypto: index % 2 == 0, // Alternate for crypto status
+                              date: 'Date: 2024-09-${index + 1}', 
+                              wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
+                              isCrypto: index % 2 == 0, 
                               professions: 'Profession ${index + 1}',
                               onTap: () {
                                 Navigator.push(
