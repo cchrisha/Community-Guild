@@ -1,6 +1,3 @@
-import 'package:community_guild/widget/about_job/job_card.dart';
-import 'package:community_guild/widget/about_job/job_progress_bar.dart';
-import 'package:community_guild/widget/about_job/section_title.dart';
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/current_job_detail.dart';
 import 'package:community_guild/screens/home.dart';
@@ -10,6 +7,9 @@ import 'package:community_guild/screens/payment_page.dart';
 import 'package:community_guild/screens/pending_job_detail.dart';
 import 'package:community_guild/screens/post_page.dart';
 import 'package:community_guild/screens/profile_page.dart';
+import '../widget/about_job/job_card.dart';
+import '../widget/about_job/job_progress_bar.dart';
+import '../widget/about_job/section_title.dart';
 
 class JobPage extends StatelessWidget {
   const JobPage({super.key});

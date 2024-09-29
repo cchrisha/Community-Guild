@@ -14,8 +14,7 @@ class JobActionButtons extends StatelessWidget {
             _showCancelJobDialog(context);
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor:
-                const Color.fromARGB(255, 239, 238, 238), // Cancel button color
+            backgroundColor: const Color.fromARGB(255, 239, 238, 238),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
