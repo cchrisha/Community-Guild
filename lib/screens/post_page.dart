@@ -48,7 +48,7 @@ class PostPageState extends State<PostPage> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.lightBlueAccent,
+        backgroundColor: Colors.lightBlue,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(

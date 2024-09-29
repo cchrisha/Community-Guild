@@ -39,7 +39,7 @@ class _PendingJobDetailPageState extends State<PendingJobDetailPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.lightBlueAccent,
+        backgroundColor: Colors.lightBlue,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
@@ -55,196 +55,192 @@ class _PendingJobDetailPageState extends State<PendingJobDetailPage> {
               // Implement share functionality
             },
           ),
-          PopupMenuButton<int>(
-            icon: const Icon(Icons.more_vert, color: Colors.white),
-            onSelected: (item) => onSelected(context, item),
-            itemBuilder: (context) => [
-              const PopupMenuItem<int>(value: 0, child: Text('Edit')),
-              const PopupMenuItem<int>(value: 1, child: Text('Delete')),
-            ],
-          ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 180,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.lightBlueAccent, Colors.blueAccent],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 180,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.lightBlueAccent, Colors.blueAccent],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(30)),
                 ),
-                borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(30)),
-              ),
-              child: Stack(
-                children: [
-                  Positioned(
-                    top: 28,
-                    left: 16,
-                    right: 16,
-                    child: GestureDetector(
-                      onTap: _toggleExpansion,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                        height: _isExpanded ? 170 : 120,
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          elevation: 3,
-                          child: Stack(
-                            children: [
-                              const Positioned(
-                                top: 16,
-                                left: 16,
-                                child: CircleAvatar(
-                                  radius: 30,
-                                  backgroundColor: Colors.lightBlueAccent,
-                                  child: Icon(Icons.person,
-                                      color: Colors.white, size: 30),
-                                ),
-                              ),
-                              Positioned(
-                                left:
-                                    72, // Adjusted to avoid overlap with CircleAvatar
-                                top: 16,
-                                right: 16,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 20.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Mark',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black87,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const SizedBox(height: 5),
-                                      const Text(
-                                        'Location: Mangaldan Pangasinan',
-                                        style: TextStyle(color: Colors.black54),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const Text(
-                                        'Profession: Electrician',
-                                        style: TextStyle(color: Colors.black54),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      if (_isExpanded) ...[
-                                        const SizedBox(height: 10),
-                                        const Text(
-                                          'Contact: +63 912 345 6789',
-                                          style:
-                                              TextStyle(color: Colors.black54),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        const Text(
-                                          'Email: example@example.com',
-                                          style:
-                                              TextStyle(color: Colors.black54),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ],
-                                    ],
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 28,
+                      left: 16,
+                      right: 16,
+                      child: GestureDetector(
+                        onTap: _toggleExpansion,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          height: _isExpanded ? 170 : 120,
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 3,
+                            child: Stack(
+                              children: [
+                                const Positioned(
+                                  top: 16,
+                                  left: 16,
+                                  child: CircleAvatar(
+                                    radius: 30,
+                                    backgroundColor: Colors.lightBlueAccent,
+                                    child: Icon(Icons.person,
+                                        color: Colors.white, size: 30),
                                   ),
                                 ),
-                              ),
-                            ],
+                                Positioned(
+                                  left:
+                                      72, // Adjusted to avoid overlap with CircleAvatar
+                                  top: 16,
+                                  right: 16,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 20.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Mark',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black87,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 5),
+                                        const Text(
+                                          'Location: Mangaldan Pangasinan',
+                                          style:
+                                              TextStyle(color: Colors.black54),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const Text(
+                                          'Profession: Electrician',
+                                          style:
+                                              TextStyle(color: Colors.black54),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        if (_isExpanded) ...[
+                                          const SizedBox(height: 10),
+                                          const Text(
+                                            'Contact: +63 912 345 6789',
+                                            style: TextStyle(
+                                                color: Colors.black54),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const Text(
+                                            'Email: example@example.com',
+                                            style: TextStyle(
+                                                color: Colors.black54),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Reward: P1000.00',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 10),
-            const ExpansionTile(
-              title: Text(
-                'Job Description',
+              const SizedBox(height: 20),
+              const Text(
+                'Reward: P1000.00',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
               ),
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    'I need an Electrician that can fix my refrigerator. The reward is still negotiable.',
-                    style: TextStyle(fontSize: 16, color: Colors.black87),
+              const SizedBox(height: 10),
+              const ExpansionTile(
+                title: Text(
+                  'Job Description',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            const JobPhotoCard(),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Go back to the previous page
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 245, 238, 238),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 20,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'I need an Electrician that can fix my refrigerator. The reward is still negotiable.',
+                      style: TextStyle(fontSize: 16, color: Colors.black87),
                     ),
                   ),
-                  child: const Text(
-                    'Cancel this job',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    // Implement Start action here
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.lightBlueAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                ],
+              ),
+              const SizedBox(height: 20),
+              const JobPhotoCard(),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context); // Go back to the previous page
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 245, 238, 238),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 20,
+                      ),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 20,
+                    child: const Text(
+                      'Cancel this job',
+                      style: TextStyle(fontSize: 16),
                     ),
                   ),
-                  child: const Text(
-                    'Start',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Implement Start action here
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.lightBlueAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 20,
+                      ),
+                    ),
+                    child: const Text(
+                      'Start',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

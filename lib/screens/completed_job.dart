@@ -37,7 +37,7 @@ class _CompletedJobState extends State<CompletedJob> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.lightBlueAccent,
+        backgroundColor: Colors.lightBlue,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
@@ -50,14 +50,6 @@ class _CompletedJobState extends State<CompletedJob> {
           IconButton(
             icon: const Icon(Icons.share, color: Colors.white),
             onPressed: () {},
-          ),
-          PopupMenuButton<int>(
-            icon: const Icon(Icons.more_vert, color: Colors.white),
-            onSelected: (item) => onSelected(context, item),
-            itemBuilder: (context) => [
-              const PopupMenuItem<int>(value: 0, child: Text('Edit')),
-              const PopupMenuItem<int>(value: 1, child: Text('Delete')),
-            ],
           ),
         ],
       ),

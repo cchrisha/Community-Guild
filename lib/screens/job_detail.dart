@@ -39,7 +39,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
             fontWeight: FontWeight.bold, // <-- Title font weight
           ),
         ),
-        backgroundColor: Colors.lightBlueAccent,
+        backgroundColor: Colors.lightBlue,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
@@ -54,14 +54,6 @@ class _JobDetailPageState extends State<JobDetailPage> {
             onPressed: () {
               // Implement share functionality
             },
-          ),
-          PopupMenuButton<int>(
-            icon: const Icon(Icons.more_vert, color: Colors.white),
-            onSelected: (item) => onSelected(context, item),
-            itemBuilder: (context) => [
-              const PopupMenuItem<int>(value: 0, child: Text('Edit')),
-              const PopupMenuItem<int>(value: 1, child: Text('Delete')),
-            ],
           ),
         ],
       ),
