@@ -1,15 +1,25 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';  // Ensure this import is present
 
 class HomeJobCard extends StatelessWidget {
   final String jobTitle;
   final String jobDescription;
-  final VoidCallback onTap;
+  final String location;
+  final String date;
+  final String wageRange;
+  final bool isCrypto;
+  final String professions;
+  final VoidCallback onTap;  // VoidCallback is a typedef for a function with no arguments that returns nothing
   final bool showAddButton;
 
   const HomeJobCard({
-    super.key,
+    super.key,  // This is valid only if the class extends StatelessWidget or StatefulWidget
     required this.jobTitle,
     required this.jobDescription,
+    required this.location,
+    required this.date,
+    required this.wageRange,
+    required this.isCrypto,
+    required this.professions,
     required this.onTap,
     this.showAddButton = false,
   });
@@ -19,51 +29,32 @@ class HomeJobCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        color: const Color.fromARGB(255, 255, 255, 255),
-        child: Stack(
-          children: [
-            SizedBox(
-              height: 100,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      jobTitle,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      jobDescription,
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(jobTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              Text(jobDescription),
+              const SizedBox(height: 8),
+              Text('Location: $location'),
+              Text('Date: $date'),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Text('Wage: $wageRange'),
+                  Checkbox(value: isCrypto, onChanged: null),
+                  const Text('Crypto'),
+                ],
               ),
-            ),
-            if (showAddButton)
-              Positioned(
-                right: 15,
-                top: 35,
-                child: Container(
-                  height: 30,
-                  width: 30,
-                  decoration: const BoxDecoration(
-                    color: Colors.lightBlue,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.add,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ),
-          ],
+              const SizedBox(height: 8),
+              Text('Professions: $professions'),
+            ],
+          ),
         ),
       ),
     );
