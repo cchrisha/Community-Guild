@@ -12,7 +12,7 @@ class RegisterRequested extends AuthEvent {
   final String email;
   final String password;
 
-  RegisterRequested({
+  const RegisterRequested({
     required this.name,
     required this.email,
     required this.password,
@@ -26,7 +26,7 @@ class LoginRequested extends AuthEvent {
   final String email;
   final String password;
 
-  LoginRequested({
+  const LoginRequested({
     required this.email,
     required this.password,
   });
@@ -36,3 +36,5 @@ class LoginRequested extends AuthEvent {
 }
 
 class TogglePasswordVisibility extends AuthEvent {}
+
+class ToggleConfirmPasswordVisibility extends AuthEvent {}

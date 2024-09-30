@@ -38,7 +38,7 @@ class ProfilePage extends StatelessWidget {
             ),
             child: PopupMenuButton<String>(
               onSelected: (value) {
-                if (value == 'Edit Profile') {
+                if (value == 'Edit Info') {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -55,9 +55,9 @@ class ProfilePage extends StatelessWidget {
               itemBuilder: (BuildContext context) {
                 return [
                   const PopupMenuItem<String>(
-                    value: 'Edit Profile',
+                    value: 'Edit Info',
                     child: Text(
-                      'Edit Profile',
+                      'Edit Info',
                       style: TextStyle(
                         color: Colors.black,
                       ),

@@ -1,8 +1,167 @@
-import 'package:community_guild/widget/profile/profile_info_card.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-class ProfileHeader extends StatelessWidget {
+import 'profile_info_card.dart';
+
+class ProfileHeader extends StatefulWidget {
   const ProfileHeader({super.key});
+
+  @override
+  State<ProfileHeader> createState() => _ProfileHeaderState();
+}
+
+class _ProfileHeaderState extends State<ProfileHeader> {
+  File? _profileImage; // Currently displayed profile image
+  File? _tempImage; // Temporarily holds the selected image
+
+  void _showChangeProfileDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Change Profile Picture',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(
+                  Icons.photo_camera,
+                  color: Colors.lightBlue,
+                ),
+                title: const Text('Take a Photo'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.photo_library,
+                  color: Colors.lightBlue,
+                ),
+                title: const Text('Choose from Gallery'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.lightBlue),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      setState(() {
+        _tempImage =
+            File(pickedFile.path); // Store the picked image temporarily
+      });
+
+      // Show dialog to confirm saving the profile picture
+      _showSaveProfileDialog();
+    }
+  }
+
+  // Function to show the dialog to save the profile picture
+  void _showSaveProfileDialog() {
+    if (_tempImage == null) return;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Save Profile Picture?',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.file(_tempImage!,
+                  width: 200, height: 200), // Show the selected image
+              const SizedBox(height: 10),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _profileImage = _tempImage; // Save the selected image
+                });
+                Navigator.pop(context);
+                // You can add save logic here if needed
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Profile picture saved!')),
+                );
+              },
+              child: const Text(
+                'Save',
+                style: TextStyle(color: Colors.lightBlue),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                setState(() {
+                  _tempImage = null;
+                });
+              },
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.lightBlue),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showFullProfilePicture() {
+    if (_profileImage != null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor:
+                Colors.transparent, // Set background to transparent
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.black
+                    .withOpacity(0.0), // Semi-transparent black background
+              ),
+              padding: const EdgeInsets.all(16),
+              child: Image.file(
+                _profileImage!,
+                fit: BoxFit.cover, // Ensure the image covers the dialog
+              ),
+            ),
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,27 +169,37 @@ class ProfileHeader extends StatelessWidget {
       children: [
         Stack(
           children: [
-            // Profile image
-            const CircleAvatar(
-              radius: 60,
-              backgroundImage: AssetImage('assets/images/profile.png'),
-              backgroundColor: Colors.lightBlue,
-              child: Icon(Icons.person, color: Colors.white, size: 60),
+            GestureDetector(
+              onTap: _showFullProfilePicture,
+              child: CircleAvatar(
+                radius: 60,
+                backgroundImage: _profileImage != null
+                    ? FileImage(_profileImage!)
+                    : const AssetImage('assets/images/profile.png')
+                        as ImageProvider,
+                backgroundColor: Colors.lightBlue,
+                child: _profileImage == null
+                    ? const Icon(Icons.person, color: Colors.white, size: 60)
+                    : null,
+              ),
             ),
-            // Profile icon
             Positioned(
               bottom: 0,
               right: 0,
               child: Container(
+                width: 40,
+                height: 40,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.lightBlue,
                 ),
                 child: IconButton(
-                  icon: const Icon(Icons.camera_alt, color: Colors.white),
-                  onPressed: () {
-                    // Add action here
-                  },
+                  icon: const Icon(
+                    Icons.camera_alt,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  onPressed: _showChangeProfileDialog,
                 ),
               ),
             ),
@@ -43,6 +212,15 @@ class ProfileHeader extends StatelessWidget {
             fontSize: 28,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 5),
+        const Text(
+          'Software Engineer',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w400,
+            color: Colors.lightBlue,
           ),
         ),
         const SizedBox(height: 10),

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:community_guild/bloc/auth/auth_bloc.dart';
 import 'package:community_guild/bloc/auth/auth_event.dart';
 import 'package:community_guild/bloc/auth/auth_state.dart';
-import 'package:community_guild/screens/home.dart';
 import 'package:community_guild/screens/login_page.dart';
 import 'package:community_guild/widget/login_and_register/login_register_widget.dart';
 import 'package:http/http.dart' as http;
@@ -24,7 +23,7 @@ class RegisterPage extends StatelessWidget {
               child: BlocConsumer<AuthBloc, AuthState>(
                 listener: (context, state) {
                   if (state is AuthSuccess) {
-                    Get.off(() => const HomePage());
+                    Get.off(() => const LoginPage());
                   } else if (state is AuthFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(state.error)),
@@ -73,13 +72,23 @@ class RegisterPage extends StatelessWidget {
                       AuthWidgets.textField(
                         hintText: 'Confirm Password',
                         controller: authBloc.confirmPasswordController,
-                        obscureText: true,
+                        obscureText: authBloc.obscureConfirmPassword,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            authBloc.obscureConfirmPassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: Colors.grey,
+                          ),
+                          onPressed: () {
+                            authBloc.add(ToggleConfirmPasswordVisibility());
+                          },
+                        ),
                       ),
                       const SizedBox(height: 20),
                       AuthWidgets.primaryButton(
                         text: 'Sign Up',
                         onPressed: () {
-                          final authBloc = context.read<AuthBloc>();
                           if (authBloc.passwordController.text ==
                               authBloc.confirmPasswordController.text) {
                             authBloc.add(RegisterRequested(

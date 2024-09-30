@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final http.Client httpClient;
   bool obscureText = true;
+  bool obscureConfirmPassword = true;
 
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -87,6 +88,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<TogglePasswordVisibility>((event, emit) {
       obscureText = !obscureText;
       emit(PasswordVisibilityToggled(obscureText));
+    });
+
+    on<ToggleConfirmPasswordVisibility>((event, emit) {
+      obscureConfirmPassword = !obscureConfirmPassword;
+      emit(PasswordVisibilityToggled(
+          obscureConfirmPassword)); // Toggle confirm password visibility
     });
 
     // on<LogoutRequested>((event, emit) async {
