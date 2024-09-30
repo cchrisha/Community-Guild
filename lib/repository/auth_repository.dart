@@ -7,7 +7,16 @@ class AuthRepository {
 
   AuthRepository({required this.httpClient});
 
-  Future<void> registerUser(String name, String email, String password) async {
+  Future<void> registerUser({
+    required String name,
+    required String email,
+    required String password,
+    String? walletAddress, // Optional
+    required String location,
+    required String contact,
+    required String profession,
+    required String addinfo,
+  }) async {
     final response = await httpClient.post(
       Uri.parse('https://api-tau-plum.vercel.app/api/userSignup'),
       headers: {'Content-Type': 'application/json'},
@@ -15,6 +24,11 @@ class AuthRepository {
         'name': name,
         'email': email,
         'password': password,
+        'walletAddress': walletAddress, // Optional field
+        'location': location,
+        'contact': contact,
+        'profession': profession,
+        'addinfo': addinfo,
       }),
     );
 

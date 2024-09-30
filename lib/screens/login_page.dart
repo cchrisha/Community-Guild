@@ -3,9 +3,9 @@ import 'package:community_guild/widget/login_and_register/login_register_widget.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:community_guild/bloc/auth/auth_bloc.dart';
-import 'package:community_guild/bloc/auth/auth_event.dart';
-import 'package:community_guild/bloc/auth/auth_state.dart';
+import 'package:community_guild/bloc/user/auth_bloc.dart';
+import 'package:community_guild/bloc/user/auth_event.dart';
+import 'package:community_guild/bloc/user/auth_state.dart';
 import 'package:community_guild/screens/home.dart';
 import 'package:community_guild/screens/register_page.dart';
 import 'package:http/http.dart' as http;

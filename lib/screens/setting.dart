@@ -1,4 +1,3 @@
-import 'package:community_guild/bloc/auth/auth_bloc.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {

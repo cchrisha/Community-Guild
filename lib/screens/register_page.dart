@@ -1,13 +1,13 @@
+import 'package:community_guild/bloc/user/auth_bloc.dart';
+import 'package:community_guild/bloc/user/auth_event.dart';
+import 'package:community_guild/bloc/user/auth_state.dart';
 import 'package:community_guild/models/userAuth_model.dart';
 import 'package:community_guild/repository/auth_repository.dart';
+import 'package:community_guild/screens/login_page.dart';
+import 'package:community_guild/widget/login_and_register/login_register_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:community_guild/bloc/auth/auth_bloc.dart';
-import 'package:community_guild/bloc/auth/auth_event.dart';
-import 'package:community_guild/bloc/auth/auth_state.dart';
-import 'package:community_guild/screens/login_page.dart';
-import 'package:community_guild/widget/login_and_register/login_register_widget.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterPage extends StatelessWidget {
@@ -89,24 +89,57 @@ class RegisterPage extends StatelessWidget {
                           },
                         ),
                       ),
+                      const SizedBox(height: 15),
+                      AuthWidgets.textField(
+                        hintText: 'Location',
+                        controller: authBloc.locationController, // Add this controller
+                        obscureText: false,
+                      ),
+                      const SizedBox(height: 15),
+                      AuthWidgets.textField(
+                        hintText: 'Contact',
+                        controller: authBloc.contactController, // Add this controller
+                        obscureText: false,
+                      ),
+                      const SizedBox(height: 15),
+                      AuthWidgets.textField(
+                        hintText: 'Profession',
+                        controller: authBloc.professionController, // Add this controller
+                        obscureText: false,
+                      ),
+                      const SizedBox(height: 15),
+                      AuthWidgets.textField(
+                        hintText: 'Additional Info',
+                        controller: authBloc.addinfoController, // Add this controller
+                        obscureText: false,
+                      ),
                       const SizedBox(height: 20),
                       AuthWidgets.primaryButton(
                         text: 'Sign Up',
                         onPressed: () {
+                          // Validate all fields
                           if (authBloc.passwordController.text ==
-                              authBloc.confirmPasswordController.text) {
+                                  authBloc.confirmPasswordController.text &&
+                              authBloc.locationController.text.isNotEmpty &&
+                              authBloc.contactController.text.isNotEmpty &&
+                              authBloc.professionController.text.isNotEmpty &&
+                              authBloc.addinfoController.text.isNotEmpty) {
                             authBloc.add(RegisterRequested(
                               userauth: Userauth(
                                 id: '',
                                 name: authBloc.nameController.text,
                                 email: authBloc.emailController.text,
                                 password: authBloc.passwordController.text,
+                                location: authBloc.locationController.text,
+                                contact: authBloc.contactController.text,
+                                profession: authBloc.professionController.text,
+                                addinfo: authBloc.addinfoController.text,
                               ),
                             ));
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                  content: Text('Passwords do not match')),
+                                  content: Text('Please fill all required fields')),
                             );
                           }
                         },
