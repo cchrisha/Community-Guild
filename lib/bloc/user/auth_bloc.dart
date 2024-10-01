@@ -23,62 +23,61 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     _checkAuthStatus();
 
     on<RegisterRequested>((event, emit) async {
-  emit(AuthLoading());
-  try {
-    // Validate required fields
-    if (event.userauth.name.isEmpty) {
-      emit(AuthFailure('Name is required.'));
-      return;
-    }
-    if (event.userauth.location.isEmpty) {
-      emit(AuthFailure('Location is required.'));
-      return;
-    }
-    if (event.userauth.contact.isEmpty) {
-      emit(AuthFailure('Contact is required.'));
-      return;
-    }
-    if (event.userauth.profession.isEmpty) {
-      emit(AuthFailure('Profession is required.'));
-      return;
-    }
-    if (event.userauth.addinfo.isEmpty) {
-      emit(AuthFailure('Additional Info is required.'));
-      return;
-    }
+      emit(AuthLoading());
+      try {
+        // Validate required fields
+        if (event.userauth.name.isEmpty) {
+          emit(AuthFailure('Name is required.'));
+          return;
+        }
+        if (event.userauth.location.isEmpty) {
+          emit(AuthFailure('Location is required.'));
+          return;
+        }
+        if (event.userauth.contact.isEmpty) {
+          emit(AuthFailure('Contact is required.'));
+          return;
+        }
+        if (event.userauth.profession.isEmpty) {
+          emit(AuthFailure('Profession is required.'));
+          return;
+        }
+        if (event.userauth.addinfo.isEmpty) {
+          emit(AuthFailure('Additional Info is required.'));
+          return;
+        }
 
-    // Existing validations
-    if (!_isValidEmail(event.userauth.email)) {
-      emit(AuthFailure('Please enter a valid email address.'));
-      return;
-    }
-    if (event.userauth.password.length < 4) {
-      emit(AuthFailure('Password must be at least 4 characters long.'));
-      return;
-    }
-    if (passwordController.text != confirmPasswordController.text) {
-      emit(AuthFailure('Passwords do not match.'));
-      return;
-    }
+        // Existing validations
+        if (!_isValidEmail(event.userauth.email)) {
+          emit(AuthFailure('Please enter a valid email address.'));
+          return;
+        }
+        if (event.userauth.password.length < 4) {
+          emit(AuthFailure('Password must be at least 4 characters long.'));
+          return;
+        }
+        if (passwordController.text != confirmPasswordController.text) {
+          emit(AuthFailure('Passwords do not match.'));
+          return;
+        }
 
-    // Proceed with registration
-    await authRepository.registerUser(
-      name: event.userauth.name,
-      email: event.userauth.email,
-      password: event.userauth.password,
-      location: event.userauth.location,
-      contact: event.userauth.contact,
-      profession: event.userauth.profession,
-      addinfo: event.userauth.addinfo,
-      // walletAddress can be omitted as it's not required
-    );
+        // Proceed with registration
+        await authRepository.registerUser(
+          name: event.userauth.name,
+          email: event.userauth.email,
+          password: event.userauth.password,
+          location: event.userauth.location,
+          contact: event.userauth.contact,
+          profession: event.userauth.profession,
+          addinfo: event.userauth.addinfo,
+          // walletAddress can be omitted as it's not required
+        );
 
-    emit(AuthSuccess());
-  } catch (error) {
-    emit(AuthFailure(error.toString()));
-  }
-});
-
+        emit(AuthSuccess());
+      } catch (error) {
+        emit(AuthFailure(error.toString()));
+      }
+    });
 
     on<LoginRequested>((event, emit) async {
       emit(AuthLoading());

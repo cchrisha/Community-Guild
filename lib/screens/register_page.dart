@@ -27,16 +27,27 @@ class RegisterPage extends StatelessWidget {
               child: BlocConsumer<AuthBloc, AuthState>(
                 listener: (context, state) {
                   if (state is AuthSuccess) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Account created successfully!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
                     Get.off(() => const LoginPage());
                   } else if (state is AuthFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.error)),
+                      SnackBar(
+                        content: Text(state.error),
+                        backgroundColor: Colors.red,
+                      ),
                     );
                   }
                 },
                 builder: (context, state) {
                   final authBloc = context.read<AuthBloc>();
-
+                  if (state is AuthLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -92,32 +103,31 @@ class RegisterPage extends StatelessWidget {
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
                         hintText: 'Location',
-                        controller: authBloc.locationController, // Add this controller
+                        controller: authBloc.locationController,
                         obscureText: false,
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
                         hintText: 'Contact',
-                        controller: authBloc.contactController, // Add this controller
+                        controller: authBloc.contactController,
                         obscureText: false,
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
                         hintText: 'Profession',
-                        controller: authBloc.professionController, // Add this controller
+                        controller: authBloc.professionController,
                         obscureText: false,
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
                         hintText: 'Additional Info',
-                        controller: authBloc.addinfoController, // Add this controller
+                        controller: authBloc.addinfoController,
                         obscureText: false,
                       ),
                       const SizedBox(height: 20),
                       AuthWidgets.primaryButton(
                         text: 'Sign Up',
                         onPressed: () {
-                          // Validate all fields
                           if (authBloc.passwordController.text ==
                                   authBloc.confirmPasswordController.text &&
                               authBloc.locationController.text.isNotEmpty &&
@@ -139,7 +149,10 @@ class RegisterPage extends StatelessWidget {
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                  content: Text('Please fill all required fields')),
+                                content:
+                                    Text('Please fill all required fields'),
+                                backgroundColor: Colors.red,
+                              ),
                             );
                           }
                         },

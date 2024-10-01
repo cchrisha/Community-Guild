@@ -27,7 +27,15 @@ class LoginPage extends StatelessWidget {
               child: BlocConsumer<AuthBloc, AuthState>(
                 listener: (context, state) {
                   if (state is AuthSuccess) {
-                    Get.off(() => const HomePage());
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Login successful!"),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    Future.delayed(const Duration(seconds: 1), () {
+                      Get.off(() => const HomePage());
+                    });
                   } else if (state is AuthFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(state.error)),
@@ -36,6 +44,10 @@ class LoginPage extends StatelessWidget {
                 },
                 builder: (context, state) {
                   final authBloc = context.read<AuthBloc>();
+
+                  if (state is AuthLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
