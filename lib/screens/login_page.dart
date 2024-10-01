@@ -1,11 +1,12 @@
+import 'package:community_guild/repository/auth_repository.dart';
 import 'package:community_guild/screens/forget_password.dart';
 import 'package:community_guild/widget/login_and_register/login_register_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:community_guild/bloc/auth/auth_bloc.dart';
-import 'package:community_guild/bloc/auth/auth_event.dart';
-import 'package:community_guild/bloc/auth/auth_state.dart';
+import 'package:community_guild/bloc/user/auth_bloc.dart';
+import 'package:community_guild/bloc/user/auth_event.dart';
+import 'package:community_guild/bloc/user/auth_state.dart';
 import 'package:community_guild/screens/home.dart';
 import 'package:community_guild/screens/register_page.dart';
 import 'package:http/http.dart' as http;
@@ -15,17 +16,27 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authRepository = AuthRepository(httpClient: http.Client());
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: Center(
           child: SingleChildScrollView(
             child: BlocProvider(
-              create: (_) => AuthBloc(httpClient: http.Client()),
+              create: (_) => AuthBloc(authRepository: authRepository),
               child: BlocConsumer<AuthBloc, AuthState>(
                 listener: (context, state) {
                   if (state is AuthSuccess) {
-                    Get.off(() => const HomePage());
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Login successful!"),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    Future.delayed(const Duration(seconds: 1), () {
+                      Get.off(() => const HomePage());
+                    });
                   } else if (state is AuthFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(state.error)),
@@ -34,6 +45,10 @@ class LoginPage extends StatelessWidget {
                 },
                 builder: (context, state) {
                   final authBloc = context.read<AuthBloc>();
+
+                  if (state is AuthLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -68,7 +83,6 @@ class LoginPage extends StatelessWidget {
                       AuthWidgets.primaryButton(
                         text: 'Login',
                         onPressed: () {
-                          final authBloc = context.read<AuthBloc>();
                           authBloc.add(LoginRequested(
                             email: authBloc.emailController.text,
                             password: authBloc.passwordController.text,

@@ -1,11 +1,13 @@
+import 'package:community_guild/bloc/user/auth_bloc.dart';
+import 'package:community_guild/bloc/user/auth_event.dart';
+import 'package:community_guild/bloc/user/auth_state.dart';
+import 'package:community_guild/models/userAuth_model.dart';
+import 'package:community_guild/repository/auth_repository.dart';
+import 'package:community_guild/screens/login_page.dart';
+import 'package:community_guild/widget/login_and_register/login_register_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:community_guild/bloc/auth/auth_bloc.dart';
-import 'package:community_guild/bloc/auth/auth_event.dart';
-import 'package:community_guild/bloc/auth/auth_state.dart';
-import 'package:community_guild/screens/login_page.dart';
-import 'package:community_guild/widget/login_and_register/login_register_widget.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterPage extends StatelessWidget {
@@ -13,26 +15,39 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authRepository = AuthRepository(httpClient: http.Client());
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: Center(
           child: SingleChildScrollView(
             child: BlocProvider(
-              create: (_) => AuthBloc(httpClient: http.Client()),
+              create: (_) => AuthBloc(authRepository: authRepository),
               child: BlocConsumer<AuthBloc, AuthState>(
                 listener: (context, state) {
                   if (state is AuthSuccess) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Account created successfully!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
                     Get.off(() => const LoginPage());
                   } else if (state is AuthFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.error)),
+                      SnackBar(
+                        content: Text(state.error),
+                        backgroundColor: Colors.red,
+                      ),
                     );
                   }
                 },
                 builder: (context, state) {
                   final authBloc = context.read<AuthBloc>();
-
+                  if (state is AuthLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -85,21 +100,59 @@ class RegisterPage extends StatelessWidget {
                           },
                         ),
                       ),
+                      const SizedBox(height: 15),
+                      AuthWidgets.textField(
+                        hintText: 'Location',
+                        controller: authBloc.locationController,
+                        obscureText: false,
+                      ),
+                      const SizedBox(height: 15),
+                      AuthWidgets.textField(
+                        hintText: 'Contact',
+                        controller: authBloc.contactController,
+                        obscureText: false,
+                      ),
+                      const SizedBox(height: 15),
+                      AuthWidgets.textField(
+                        hintText: 'Profession',
+                        controller: authBloc.professionController,
+                        obscureText: false,
+                      ),
+                      const SizedBox(height: 15),
+                      AuthWidgets.textField(
+                        hintText: 'Additional Info',
+                        controller: authBloc.addinfoController,
+                        obscureText: false,
+                      ),
                       const SizedBox(height: 20),
                       AuthWidgets.primaryButton(
                         text: 'Sign Up',
                         onPressed: () {
                           if (authBloc.passwordController.text ==
-                              authBloc.confirmPasswordController.text) {
+                                  authBloc.confirmPasswordController.text &&
+                              authBloc.locationController.text.isNotEmpty &&
+                              authBloc.contactController.text.isNotEmpty &&
+                              authBloc.professionController.text.isNotEmpty &&
+                              authBloc.addinfoController.text.isNotEmpty) {
                             authBloc.add(RegisterRequested(
-                              name: authBloc.nameController.text,
-                              email: authBloc.emailController.text,
-                              password: authBloc.passwordController.text,
+                              userauth: Userauth(
+                                id: '',
+                                name: authBloc.nameController.text,
+                                email: authBloc.emailController.text,
+                                password: authBloc.passwordController.text,
+                                location: authBloc.locationController.text,
+                                contact: authBloc.contactController.text,
+                                profession: authBloc.professionController.text,
+                                addinfo: authBloc.addinfoController.text,
+                              ),
                             ));
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                  content: Text('Passwords do not match')),
+                                content:
+                                    Text('Please fill all required fields'),
+                                backgroundColor: Colors.red,
+                              ),
                             );
                           }
                         },
@@ -110,7 +163,7 @@ class RegisterPage extends StatelessWidget {
                         onPressed: () {
                           Get.to(() => const LoginPage());
                         },
-                        text: 'Already Registered? Login  ',
+                        text: 'Already Registered? Login',
                       ),
                     ],
                   );
