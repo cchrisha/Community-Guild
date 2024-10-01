@@ -1,3 +1,4 @@
+import 'package:community_guild/screens/forget_password.dart';
 import 'package:community_guild/widget/login_and_register/login_register_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -83,7 +84,9 @@ class LoginPage extends StatelessWidget {
                         text: 'Create new account? Signup',
                       ),
                       const SizedBox(height: 20),
-                      AuthWidgets.forgotPasswordButton(onPressed: () {}),
+                      AuthWidgets.forgotPasswordButton(onPressed: () {
+                        Get.to(() => const ForgetPasswordPage());
+                      }),
                     ],
                   );
                 },

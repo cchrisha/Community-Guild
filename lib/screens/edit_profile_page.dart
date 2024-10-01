@@ -13,7 +13,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
   final TextEditingController _professionController = TextEditingController();
-  final TextEditingController _bioController = TextEditingController();
 
   @override
   void initState() {
