@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
+import '../widget/forgot_password/custom_app_bar.dart';
+import '../widget/forgot_password/email_input.dart';
+import '../widget/forgot_password/otp_input.dart';
+import '../widget/forgot_password/password_input.dart';
+import '../widget/forgot_password/send_otp_button.dart';
+import '../widget/forgot_password/verify_otp_button.dart';
 import 'login_page.dart';
 
 class ForgetPasswordPage extends StatefulWidget {
@@ -18,7 +23,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   bool _isOtpSent = false;
   bool _isOtpVerified = false;
   bool _isLoading = false;
-  bool _isVerifying = false; // Added for OTP verification loading state
+  bool _isVerifying = false;
   bool _isPasswordVisible = false;
   String _passwordStrength = '';
 
@@ -27,7 +32,6 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
       setState(() {
         _isLoading = true;
       });
-      // Simulate OTP send logic
       Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           _isLoading = false;
@@ -40,7 +44,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
 
   void _verifyOtp() {
     setState(() {
-      _isVerifying = true; // Show loading spinner when verifying OTP
+      _isVerifying = true;
     });
     Future.delayed(const Duration(seconds: 2), () {
       if (_otpController.text == '123456') {
@@ -52,7 +56,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         _showDialog('Error', 'Invalid OTP. Please try again.');
       }
       setState(() {
-        _isVerifying = false; // Hide loading spinner
+        _isVerifying = false;
       });
     });
   }
@@ -63,13 +67,10 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         _isLoading = true;
       });
 
-      // Simulate password reset logic
       Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           _isLoading = false;
         });
-
-        // Show success dialog with navigation to login page on 'OK' click
         _showSuccessDialog(
             'Success', 'Your password has been reset successfully.');
       });
@@ -88,7 +89,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context);
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginPage()),
@@ -142,21 +143,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Forgot Password',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        backgroundColor: Colors.lightBlue,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
+      appBar: const CustomAppBar(title: 'Forgot Password'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -164,160 +151,67 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (!_isOtpSent)
-                Column(
-                  children: [
-                    const Text(
-                      'Enter your email to receive an OTP',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        hintText: 'Email',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        prefixIcon: const Icon(
-                          Icons.email,
-                          color: Colors.lightBlue,
-                        ),
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                            .hasMatch(value)) {
-                          return 'Please enter a valid email address';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    _isLoading
-                        ? const CircularProgressIndicator()
-                        : ElevatedButton(
-                            onPressed: _sendOtp,
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 50),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              backgroundColor: Colors.lightBlue,
-                            ),
-                            child: const Text(
-                              'Send OTP',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                  ],
+              if (!_isOtpSent) ...[
+                const Text(
+                  'Enter your email to receive an OTP',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18),
                 ),
-              if (_isOtpSent && !_isOtpVerified)
-                Column(
-                  children: [
-                    const Text(
-                      'Enter the OTP sent to your email',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _otpController,
-                      decoration: InputDecoration(
-                        hintText: 'Enter OTP',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        prefixIcon: const Icon(
-                          Icons.lock,
-                          color: Colors.lightBlue,
-                        ),
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
-                    _isVerifying
-                        ? const CircularProgressIndicator() // Loading indicator for OTP verification
-                        : ElevatedButton(
-                            onPressed: _verifyOtp,
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 50),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              backgroundColor: Colors.lightBlue,
-                            ),
-                            child: const Text(
-                              'Verify OTP',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                  ],
+                const SizedBox(height: 20),
+                EmailInput(controller: _emailController),
+                const SizedBox(height: 20),
+                SendOtpButton(
+                  isLoading: _isLoading,
+                  onPressed: _sendOtp,
                 ),
-              if (_isOtpVerified)
-                Column(
-                  children: [
-                    const Text(
-                      'Enter a new password',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: !_isPasswordVisible,
-                      onChanged: _checkPasswordStrength,
-                      decoration: InputDecoration(
-                        hintText: 'New Password',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        prefixIcon: const Icon(
-                          Icons.lock,
-                          color: Colors.lightBlue,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(_isPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off),
-                          onPressed: () {
-                            setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Password Strength: $_passwordStrength',
-                      style: TextStyle(
-                        color: _passwordStrength == 'Strong'
-                            ? Colors.green
-                            : _passwordStrength == 'Medium'
-                                ? Colors.orange
-                                : Colors.red,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    _isLoading
-                        ? const CircularProgressIndicator()
-                        : ElevatedButton(
-                            onPressed: _resetPassword,
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 50),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              backgroundColor: Colors.lightBlue,
-                            ),
-                            child: const Text(
-                              'Reset Password',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                  ],
+              ] else if (_isOtpSent && !_isOtpVerified) ...[
+                const Text(
+                  'Enter the OTP sent to your email',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18),
                 ),
+                const SizedBox(height: 20),
+                OtpInput(controller: _otpController),
+                const SizedBox(height: 20),
+                VerifyOtpButton(
+                  isVerifying: _isVerifying,
+                  onPressed: _verifyOtp,
+                ),
+              ] else if (_isOtpVerified) ...[
+                const Text(
+                  'Enter a new password',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18),
+                ),
+                const SizedBox(height: 20),
+                PasswordInput(
+                  controller: _passwordController,
+                  isVisible: _isPasswordVisible,
+                  onChanged: _checkPasswordStrength,
+                  onToggleVisibility: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Password Strength: $_passwordStrength',
+                  style: TextStyle(
+                    color: _passwordStrength == 'Strong'
+                        ? Colors.green
+                        : _passwordStrength == 'Medium'
+                            ? Colors.orange
+                            : Colors.red,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SendOtpButton(
+                  isLoading: _isLoading,
+                  onPressed: _resetPassword,
+                  label: 'Reset Password',
+                ),
+              ],
             ],
           ),
         ),
