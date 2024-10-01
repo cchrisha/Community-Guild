@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class HomeJobCard extends StatelessWidget {
   final String jobTitle;
   final String jobDescription;
-  final String workPlace; // Changed from location to workPlace
+  final String workPlace;
   final String date;
   final String wageRange;
   final bool isCrypto;
@@ -15,7 +15,7 @@ class HomeJobCard extends StatelessWidget {
     super.key, 
     required this.jobTitle,
     required this.jobDescription,
-    required this.workPlace, // Initialize workPlace
+    required this.workPlace,
     required this.date,
     required this.wageRange,
     required this.isCrypto,
@@ -47,7 +47,7 @@ class HomeJobCard extends StatelessWidget {
               Text(
                 jobDescription,
                 maxLines: 2,
-                overflow: TextOverflow.ellipsis, // Adds "..." if too long
+                overflow: TextOverflow.ellipsis, // Add "..." kapag maraming ka-OA-an
                 style: const TextStyle(color: Colors.black54),
               ),
               const SizedBox(height: 8),
@@ -66,7 +66,7 @@ class HomeJobCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text('Wanted Profession: $professions'),
               const SizedBox(height: 8),
-              Text('Workplace: $workPlace'), // Updated to show workplace
+              Text('Workplace: $workPlace'),
             ],
           ),
         ),

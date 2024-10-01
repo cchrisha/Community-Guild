@@ -65,11 +65,11 @@ class HomePage extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.8, //responsive width
+                            width: MediaQuery.of(context).size.width * 0.8, //responsive na width
                             child: HomeJobCard(
                               jobTitle: 'Recommended Job Title ${index + 1}',
                               jobDescription: 'This is the job description for recommended job ${index + 1}.',
-                              workPlace: 'Workplace ${index + 1}', // Changed to workPlace
+                              workPlace: 'Workplace ${index + 1}',
                               date: 'Date: 2024-09-${index + 1}', 
                               wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', 
                               isCrypto: index % 2 == 0, 
@@ -81,6 +81,11 @@ class HomePage extends StatelessWidget {
                                     builder: (context) => const JobDetailPage(
                                       jobTitle: '',
                                       jobDescription: '',
+                                      date: '',
+                                      workPlace: '',
+                                      wageRange: '',
+                                      isCrypto: true,
+                                      professions: '', 
                                     ),
                                   ),
                                 );
@@ -103,11 +108,11 @@ class HomePage extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.8, // responsive width
+                            width: MediaQuery.of(context).size.width * 0.8,
                             child: HomeJobCard(
                               jobTitle: 'Most Recent Job Title ${index + 1}',
                               jobDescription: 'This is the job description for most recent job ${index + 1}.',
-                              workPlace: 'Workplace ${index + 1}', // Changed to workPlace
+                              workPlace: 'Workplace ${index + 1}',
                               date: 'Date: 2024-09-${index + 1}', 
                               wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
                               isCrypto: index % 2 == 0, 
@@ -119,6 +124,11 @@ class HomePage extends StatelessWidget {
                                     builder: (context) => const JobDetailPage(
                                       jobTitle: '',
                                       jobDescription: '',
+                                      date: '',
+                                      workPlace: '',
+                                      wageRange: '',
+                                      isCrypto: true,
+                                      professions: '', 
                                     ),
                                   ),
                                 );
