@@ -149,7 +149,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
               const SizedBox(height: 10),
               const Text(
                 'Job Description:',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   color: Colors.black87,
                 ),
