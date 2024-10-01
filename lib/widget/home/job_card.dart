@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class HomeJobCard extends StatelessWidget {
   final String jobTitle;
   final String jobDescription;
-  final String location;
+  final String workPlace; // Changed from location to workPlace
   final String date;
   final String wageRange;
   final bool isCrypto;
@@ -15,7 +15,7 @@ class HomeJobCard extends StatelessWidget {
     super.key, 
     required this.jobTitle,
     required this.jobDescription,
-    required this.location,
+    required this.workPlace, // Initialize workPlace
     required this.date,
     required this.wageRange,
     required this.isCrypto,
@@ -36,22 +36,37 @@ class HomeJobCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(jobTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              Text(jobDescription),
-              const SizedBox(height: 8),
-              Text('Location: $location'),
-              Text('Date: $date'),
-              const SizedBox(height: 8),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Wage: $wageRange'),
-                  Checkbox(value: isCrypto, onChanged: null),
-                  const Text('Crypto'),
+                  Text(jobTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(date, style: const TextStyle(color: Colors.grey)),
                 ],
               ),
               const SizedBox(height: 8),
-              Text('Professions: $professions'),
+              Text(
+                jobDescription,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis, // Adds "..." if too long
+                style: const TextStyle(color: Colors.black54),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Wage: $wageRange'),
+                  Row(
+                    children: [
+                      Checkbox(value: isCrypto, onChanged: null),
+                      const Text('Crypto'),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text('Wanted Profession: $professions'),
+              const SizedBox(height: 8),
+              Text('Workplace: $workPlace'), // Updated to show workplace
             ],
           ),
         ),
