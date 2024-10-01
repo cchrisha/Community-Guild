@@ -160,6 +160,21 @@ class _JobDetailPageState extends State<JobDetailPage> {
                 style: const TextStyle(fontSize: 16, color: Colors.black87),
               ),
               const SizedBox(height: 10),
+              Text(
+                'Wanted Profession: ${widget.professions}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 15),
+              Text(
+                'Workplace: ${widget.workPlace}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -180,22 +195,6 @@ class _JobDetailPageState extends State<JobDetailPage> {
                     ],
                   ),
                 ],
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Wanted Profession: ${widget.professions}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Workplace: ${widget.workPlace}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
               ),
               const SizedBox(height: 20),
               SizedBox(

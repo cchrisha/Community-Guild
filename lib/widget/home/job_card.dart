@@ -51,6 +51,9 @@ class HomeJobCard extends StatelessWidget {
                 style: const TextStyle(color: Colors.black54),
               ),
               const SizedBox(height: 8),
+              Text('Wanted Profession: $professions'),
+              const SizedBox(height: 10),
+              Text('Workplace: $workPlace'),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -63,10 +66,6 @@ class HomeJobCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              Text('Wanted Profession: $professions'),
-              const SizedBox(height: 8),
-              Text('Workplace: $workPlace'),
             ],
           ),
         ),
