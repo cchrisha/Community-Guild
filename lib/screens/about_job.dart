@@ -1,12 +1,14 @@
+import 'package:community_guild/screens/job_detail.dart';
+import 'package:community_guild/screens/pending_job_detail.dart';
 import 'package:community_guild/widget/about_job/job_card.dart';
 import 'package:community_guild/widget/about_job/section_title.dart';
+import 'package:community_guild/widget/profile/completed_job_card.dart';
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/current_job_detail.dart';
 import 'package:community_guild/screens/home.dart';
 import 'package:community_guild/screens/notif_page.dart';
-import 'package:community_guild/screens/own_post_job_detail.dart';
+import 'package:community_guild/screens/own_post_job_detail.dart'; // Update import if necessary
 import 'package:community_guild/screens/payment_page.dart';
-import 'package:community_guild/screens/pending_job_detail.dart';
 import 'package:community_guild/screens/post_page.dart';
 import 'package:community_guild/screens/profile_page.dart';
 
@@ -52,54 +54,233 @@ class JobPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SectionTitleAboutJob(title: 'Current Job'),
+              // Current Jobs Section
+              const SectionTitleAboutJob(title: 'Current Jobs'),
               const SizedBox(height: 10),
-              const SizedBox(height: 10),
-              JobCardAboutJob(
-                description: 'Your current job in progress here.',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          const CurrentJobDetailPage(), // Navigate to CurrentJobDetailPage
-                    ),
-                  );
-                },
+              SizedBox(
+                height: 200, 
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8, //responsive na width
+                        child: AboutJobCard(
+                          jobTitle: 'Recommended Job Title ${index + 1}',
+                          jobDescription: 'This is the job description for recommended job ${index + 1}.',
+                          workPlace: 'Workplace ${index + 1}',
+                          date: 'Date: 2024-09-${index + 1}', 
+                          wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', 
+                          isCrypto: index % 2 == 0, 
+                          professions: 'Profession ${index + 1}',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const JobDetailPage(
+                                  jobTitle: '',
+                                  jobDescription: '',
+                                  date: '',
+                                  workPlace: '',
+                                  wageRange: '',
+                                  isCrypto: true,
+                                  professions: '', 
+                                  contact: '',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
               const SizedBox(height: 20),
-              const SectionTitleAboutJob(title: 'Pending Job/s'),
+
+              // Completed Jobs Section
+              const SectionTitleAboutJob(title: 'Completed Jobs'),
               const SizedBox(height: 10),
-              JobCardAboutJob(
-                description: 'Pending job details here.',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const PendingJobDetailPage(
-                        jobTitle: 'Your Job Title',
-                        jobDescription: 'Your Job Description',
-                      ), // Navigate to PendingJobDetailPage
-                    ),
-                  );
-                },
+              SizedBox(
+                height: 200, 
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8, //responsive na width
+                        child: AboutJobCard(
+                          jobTitle: 'Recommended Job Title ${index + 1}',
+                          jobDescription: 'This is the job description for recommended job ${index + 1}.',
+                          workPlace: 'Workplace ${index + 1}',
+                          date: 'Date: 2024-09-${index + 1}', 
+                          wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', 
+                          isCrypto: index % 2 == 0, 
+                          professions: 'Profession ${index + 1}',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const JobDetailPage(
+                                  jobTitle: '',
+                                  jobDescription: '',
+                                  date: '',
+                                  workPlace: '',
+                                  wageRange: '',
+                                  isCrypto: true,
+                                  professions: '', 
+                                  contact: '',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
               const SizedBox(height: 20),
-              const SectionTitleAboutJob(title: 'Job/s Posted'),
+
+              // Pending Jobs Section
+              const SectionTitleAboutJob(title: 'Pending Jobs'),
               const SizedBox(height: 10),
-              JobCardAboutJob(
-                description: 'Your Post Job Detail here.',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const PostJobDetail(
-                        jobTitle: 'Your Job Title',
-                        jobDescription: 'Your Job Description',
-                      ), // Navigate to own Post
-                    ),
-                  );
-                },
+              SizedBox(
+                height: 200, 
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8, //responsive na width
+                        child: AboutJobCard(
+                          jobTitle: 'Recommended Job Title ${index + 1}',
+                          jobDescription: 'This is the job description for recommended job ${index + 1}.',
+                          workPlace: 'Workplace ${index + 1}',
+                          date: 'Date: 2024-09-${index + 1}', 
+                          wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', 
+                          isCrypto: index % 2 == 0, 
+                          professions: 'Profession ${index + 1}',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const JobDetailPage(
+                                  jobTitle: '',
+                                  jobDescription: '',
+                                  date: '',
+                                  workPlace: '',
+                                  wageRange: '',
+                                  isCrypto: true,
+                                  professions: '', 
+                                  contact: '',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Rejected Jobs Section
+              const SectionTitleAboutJob(title: 'Rejected Jobs'),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 200, 
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8, //responsive na width
+                        child: AboutJobCard(
+                          jobTitle: 'Recommended Job Title ${index + 1}',
+                          jobDescription: 'This is the job description for recommended job ${index + 1}.',
+                          workPlace: 'Workplace ${index + 1}',
+                          date: 'Date: 2024-09-${index + 1}', 
+                          wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', 
+                          isCrypto: index % 2 == 0, 
+                          professions: 'Profession ${index + 1}',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const JobDetailPage(
+                                  jobTitle: '',
+                                  jobDescription: '',
+                                  date: '',
+                                  workPlace: '',
+                                  wageRange: '',
+                                  isCrypto: true,
+                                  professions: '', 
+                                  contact: '',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Jobs You Posted Section
+              const SectionTitleAboutJob(title: 'Jobs You Posted'),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 200, 
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8, //responsive na width
+                        child: AboutJobCard(
+                          jobTitle: 'Recommended Job Title ${index + 1}',
+                          jobDescription: 'This is the job description for recommended job ${index + 1}.',
+                          workPlace: 'Workplace ${index + 1}',
+                          date: 'Date: 2024-09-${index + 1}', 
+                          wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', 
+                          isCrypto: index % 2 == 0, 
+                          professions: 'Profession ${index + 1}',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const JobDetailPage(
+                                  jobTitle: '',
+                                  jobDescription: '',
+                                  date: '',
+                                  workPlace: '',
+                                  wageRange: '',
+                                  isCrypto: true,
+                                  professions: '', 
+                                  contact: '',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),

@@ -1,3 +1,4 @@
+// lib/views/home/section_title_with_dropdown.dart
 import 'package:flutter/material.dart';
 
 class SectionTitleAboutJob extends StatelessWidget {
@@ -7,9 +8,14 @@ class SectionTitleAboutJob extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 }

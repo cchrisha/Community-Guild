@@ -10,6 +10,7 @@ class JobDetailPage extends StatefulWidget {
     required this.isCrypto,
     required this.professions,
     required this.workPlace,
+    required this.contact,
   });
 
   final String jobTitle;
@@ -19,6 +20,8 @@ class JobDetailPage extends StatefulWidget {
   final bool isCrypto;
   final String professions;
   final String workPlace;
+    final String contact;
+
 
   @override
   State<JobDetailPage> createState() => _JobDetailPageState();
@@ -85,35 +88,24 @@ class _JobDetailPageState extends State<JobDetailPage> {
                       elevation: 3,
                       child: Container(
                         padding: const EdgeInsets.all(16), // Add padding
-                        child: Row(
+                        child: const Row(
                           children: [
-                            const CircleAvatar(
+                            CircleAvatar(
                               radius: 30,
                               backgroundColor: Colors.lightBlueAccent,
                               child: Icon(Icons.person, color: Colors.white, size: 30),
                             ),
-                            const SizedBox(width: 16), // Spacing between avatar and text
+                            SizedBox(width: 16), // Spacing between avatar and text
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
+                                Text(
                                   'Name',
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black87,
                                   ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 5),
-                                const Text(
-                                  'Location: ',
-                                  style: TextStyle(color: Colors.black54),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const Text(
-                                  'Profession: ',
-                                  style: TextStyle(color: Colors.black54),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ],
@@ -148,9 +140,9 @@ class _JobDetailPageState extends State<JobDetailPage> {
                 ],
               ),
               const SizedBox(height: 10),
-              Text(
+              const Text(
                 'Job Description:',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
@@ -161,7 +153,16 @@ class _JobDetailPageState extends State<JobDetailPage> {
                 widget.jobDescription,
                 style: const TextStyle(fontSize: 16, color: Colors.black87),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
+              const Text(
+                'More Info',
+                style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -183,7 +184,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               Text(
                 'Wanted Profession: ${widget.professions}',
                 style: const TextStyle(
@@ -194,6 +195,14 @@ class _JobDetailPageState extends State<JobDetailPage> {
               const SizedBox(height: 10),
               Text(
                 'Workplace: ${widget.workPlace}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Contact: ${widget.contact}',
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black87,
