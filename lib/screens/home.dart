@@ -57,7 +57,7 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 20),
                   const SectionTitle(title: 'Recommended'),
                   SizedBox(
-                    height: 200, 
+                    height: 250, 
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: 10,
@@ -65,14 +65,17 @@ class HomePage extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.8, //responsive na width
+                            width: MediaQuery.of(context).size.width *
+                                0.9, //responsive na width
                             child: HomeJobCard(
                               jobTitle: 'Recommended Job Title ${index + 1}',
-                              jobDescription: 'This is the job description for recommended job ${index + 1}.',
+                              jobDescription:
+                                  'This is the job description for recommended job ${index + 1}.',
                               workPlace: 'Workplace ${index + 1}',
-                              date: 'Date: 2024-09-${index + 1}', 
-                              wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', 
-                              isCrypto: index % 2 == 0, 
+                              date: 'Date: 2024-09-${index + 1}',
+                              wageRange:
+                                  '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
+                              isCrypto: index % 2 == 0,
                               professions: 'Profession ${index + 1}',
                               onTap: () {
                                 Navigator.push(
@@ -86,7 +89,6 @@ class HomePage extends StatelessWidget {
                                       wageRange: '',
                                       isCrypto: true,
                                       professions: '', 
-                                      contact: '',
                                     ),
                                   ),
                                 );
@@ -101,7 +103,7 @@ class HomePage extends StatelessWidget {
                   const SectionTitle(title: 'Most Recent Job'),
                   const SizedBox(height: 10),
                   SizedBox(
-                    height: 250, 
+                    height: 250,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: 10,
@@ -109,14 +111,16 @@ class HomePage extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.8,
+                            width: MediaQuery.of(context).size.width * 0.9,
                             child: HomeJobCard(
                               jobTitle: 'Most Recent Job Title ${index + 1}',
-                              jobDescription: 'This is the job description for most recent job ${index + 1}.',
+                              jobDescription:
+                                  'This is the job description for most recent job ${index + 1}.',
                               workPlace: 'Workplace ${index + 1}',
-                              date: 'Date: 2024-09-${index + 1}', 
-                              wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
-                              isCrypto: index % 2 == 0, 
+                              date: 'Date: 2024-09-${index + 1}',
+                              wageRange:
+                                  '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
+                              isCrypto: index % 2 == 0,
                               professions: 'Profession ${index + 1}',
                               onTap: () {
                                 Navigator.push(
@@ -129,8 +133,7 @@ class HomePage extends StatelessWidget {
                                       workPlace: '',
                                       wageRange: '',
                                       isCrypto: true,
-                                      professions: '',
-                                      contact: '',
+                                      professions: '', 
                                     ),
                                   ),
                                 );
