@@ -1,7 +1,6 @@
 import 'package:community_guild/widget/home/job_card.dart';
 import 'package:community_guild/widget/home/search_and_filter.dart';
 import 'package:community_guild/widget/home/section_title.dart';
-import 'package:community_guild/widget/home/section_title_with_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/job_detail.dart';
 import 'package:community_guild/screens/about_job.dart';
@@ -56,68 +55,92 @@ class HomePage extends StatelessWidget {
                 children: [
                   const SearchAndFilter(),
                   const SizedBox(height: 20),
-                  // const HomeBalanceCard(),
-                  const SizedBox(height: 20),
-                  const HomeSectionTitle(title: 'Most Recent Job'),
-                  const SizedBox(height: 10),
+                  const SectionTitle(title: 'Recommended'),
                   SizedBox(
-                    height: 150,
+                    height: 250, 
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: 10,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.only(right: 10),
-                          child: HomeJobCard(
-                            jobTitle: 'Recent Job Title ${index + 1}',
-                            jobDescription:
-                                'Details of the most recent job ${index + 1}.',
-                            showAddButton: false,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.8, //responsive na width
+                            child: HomeJobCard(
+                              jobTitle: 'Recommended Job Title ${index + 1}',
+                              jobDescription: 'This is the job description for recommended job ${index + 1}.',
+                              workPlace: 'Workplace ${index + 1}',
+                              date: 'Date: 2024-09-${index + 1}', 
+                              wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', 
+                              isCrypto: index % 2 == 0, 
+                              professions: 'Profession ${index + 1}',
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
                                     builder: (context) => const JobDetailPage(
-                                          jobTitle: '',
-                                          jobDescription: '',
-                                        )),
-                              );
-                            },
+                                      jobTitle: '',
+                                      jobDescription: '',
+                                      date: '',
+                                      workPlace: '',
+                                      wageRange: '',
+                                      isCrypto: true,
+                                      professions: '', 
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         );
                       },
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const SectionTitleWithDropdown(title: 'Recommended'),
+                  const SectionTitle(title: 'Most Recent Job'),
                   const SizedBox(height: 10),
+                  SizedBox(
+                    height: 250, 
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 10,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            child: HomeJobCard(
+                              jobTitle: 'Most Recent Job Title ${index + 1}',
+                              jobDescription: 'This is the job description for most recent job ${index + 1}.',
+                              workPlace: 'Workplace ${index + 1}',
+                              date: 'Date: 2024-09-${index + 1}', 
+                              wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
+                              isCrypto: index % 2 == 0, 
+                              professions: 'Profession ${index + 1}',
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const JobDetailPage(
+                                      jobTitle: '',
+                                      jobDescription: '',
+                                      date: '',
+                                      workPlace: '',
+                                      wageRange: '',
+                                      isCrypto: true,
+                                      professions: '', 
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: HomeJobCard(
-                    jobTitle: 'Job Category Title',
-                    jobDescription: 'Job details by category.',
-                    showAddButton: true,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const JobDetailPage(
-                                  jobTitle: '',
-                                  jobDescription: '',
-                                )),
-                      );
-                    },
-                  ),
-                );
-              },
-              childCount: 10,
             ),
           ),
         ],

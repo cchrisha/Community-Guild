@@ -3,13 +3,23 @@ import 'package:flutter/material.dart';
 class HomeJobCard extends StatelessWidget {
   final String jobTitle;
   final String jobDescription;
-  final VoidCallback onTap;
+  final String workPlace;
+  final String date;
+  final String wageRange;
+  final bool isCrypto;
+  final String professions;
+  final VoidCallback onTap; 
   final bool showAddButton;
 
   const HomeJobCard({
-    super.key,
+    super.key, 
     required this.jobTitle,
     required this.jobDescription,
+    required this.workPlace,
+    required this.date,
+    required this.wageRange,
+    required this.isCrypto,
+    required this.professions,
     required this.onTap,
     this.showAddButton = false,
   });
@@ -19,51 +29,45 @@ class HomeJobCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        color: const Color.fromARGB(255, 255, 255, 255),
-        child: Stack(
-          children: [
-            SizedBox(
-              height: 100,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      jobTitle,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      jobDescription,
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(jobTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(date, style: const TextStyle(color: Colors.grey)),
+                ],
               ),
-            ),
-            if (showAddButton)
-              Positioned(
-                right: 15,
-                top: 35,
-                child: Container(
-                  height: 30,
-                  width: 30,
-                  decoration: const BoxDecoration(
-                    color: Colors.lightBlue,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.add,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                ),
+              const SizedBox(height: 8),
+              Text(
+                jobDescription,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis, // Add "..." kapag maraming ka-OA-an
+                style: const TextStyle(color: Colors.black54),
               ),
-          ],
+              const SizedBox(height: 8),
+              Text('Wanted Profession: $professions'),
+              const SizedBox(height: 10),
+              Text('Workplace: $workPlace'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Wage: $wageRange'),
+                  Row(
+                    children: [
+                      Checkbox(value: isCrypto, onChanged: null),
+                      const Text('Crypto'),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

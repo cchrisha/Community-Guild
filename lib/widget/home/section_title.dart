@@ -1,16 +1,21 @@
-// lib/views/home/section_title.dart
+// lib/views/home/section_title_with_dropdown.dart
 import 'package:flutter/material.dart';
 
-class HomeSectionTitle extends StatelessWidget {
+class SectionTitle extends StatelessWidget {
   final String title;
 
-  const HomeSectionTitle({super.key, required this.title});
+  const SectionTitle({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 }
