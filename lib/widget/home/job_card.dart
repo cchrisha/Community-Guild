@@ -8,11 +8,11 @@ class HomeJobCard extends StatelessWidget {
   final String wageRange;
   final bool isCrypto;
   final String professions;
-  final VoidCallback onTap; 
+  final VoidCallback onTap;
   final bool showAddButton;
 
   const HomeJobCard({
-    super.key, 
+    super.key,
     required this.jobTitle,
     required this.jobDescription,
     required this.workPlace,
@@ -39,7 +39,8 @@ class HomeJobCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(jobTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(jobTitle,
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
                   Text(date, style: const TextStyle(color: Colors.grey)),
                 ],
               ),
@@ -47,7 +48,8 @@ class HomeJobCard extends StatelessWidget {
               Text(
                 jobDescription,
                 maxLines: 2,
-                overflow: TextOverflow.ellipsis, // Add "..." kapag maraming ka-OA-an
+                overflow:
+                    TextOverflow.ellipsis, // Add "..." kapag maraming ka-OA-an
                 style: const TextStyle(color: Colors.black54),
               ),
               const SizedBox(height: 8),

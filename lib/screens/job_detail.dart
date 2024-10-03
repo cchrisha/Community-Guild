@@ -71,7 +71,8 @@ class _JobDetailPageState extends State<JobDetailPage> {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
-                      borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
+                      borderRadius:
+                          BorderRadius.vertical(bottom: Radius.circular(30)),
                     ),
                   ),
                   Positioned(
@@ -85,18 +86,20 @@ class _JobDetailPageState extends State<JobDetailPage> {
                       elevation: 3,
                       child: Container(
                         padding: const EdgeInsets.all(16), // Add padding
-                        child: Row(
+                        child: const Row(
                           children: [
-                            const CircleAvatar(
+                            CircleAvatar(
                               radius: 30,
                               backgroundColor: Colors.lightBlueAccent,
-                              child: Icon(Icons.person, color: Colors.white, size: 30),
+                              child: Icon(Icons.person,
+                                  color: Colors.white, size: 30),
                             ),
-                            const SizedBox(width: 16), // Spacing between avatar and text
+                            SizedBox(
+                                width: 16), // Spacing between avatar and text
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
+                                Text(
                                   'Name',
                                   style: TextStyle(
                                     fontSize: 20,
@@ -105,13 +108,13 @@ class _JobDetailPageState extends State<JobDetailPage> {
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                const SizedBox(height: 5),
-                                const Text(
+                                SizedBox(height: 5),
+                                Text(
                                   'Location: ',
                                   style: TextStyle(color: Colors.black54),
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                const Text(
+                                Text(
                                   'Profession: ',
                                   style: TextStyle(color: Colors.black54),
                                   overflow: TextOverflow.ellipsis,
@@ -125,7 +128,6 @@ class _JobDetailPageState extends State<JobDetailPage> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,9 +150,9 @@ class _JobDetailPageState extends State<JobDetailPage> {
                 ],
               ),
               const SizedBox(height: 10),
-              Text(
+              const Text(
                 'Job Description:',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,

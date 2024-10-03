@@ -16,7 +16,7 @@ class VerifyOtpButton extends StatelessWidget {
       onPressed: isVerifying ? null : onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.lightBlue,
-        foregroundColor: Colors.lightBlue,
+        foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
