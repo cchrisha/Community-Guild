@@ -30,6 +30,7 @@ class HomeJobCard extends StatelessWidget {
       onTap: onTap,
       child: Card(
         elevation: 3,
+        color: Colors.white, // Set the background color to white
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         child: Container(
           padding: const EdgeInsets.all(12),
@@ -48,8 +49,7 @@ class HomeJobCard extends StatelessWidget {
               Text(
                 jobDescription,
                 maxLines: 2,
-                overflow:
-                    TextOverflow.ellipsis, // Add "..." kapag maraming ka-OA-an
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(color: Colors.black54),
               ),
               const SizedBox(height: 8),

@@ -57,7 +57,7 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 20),
                   const SectionTitle(title: 'Recommended'),
                   SizedBox(
-                    height: 250, 
+                    height: 210,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: 10,
@@ -88,7 +88,8 @@ class HomePage extends StatelessWidget {
                                       workPlace: '',
                                       wageRange: '',
                                       isCrypto: true,
-                                      professions: '', 
+                                      professions: '',
+                                      contact: '',
                                     ),
                                   ),
                                 );
@@ -103,7 +104,7 @@ class HomePage extends StatelessWidget {
                   const SectionTitle(title: 'Most Recent Job'),
                   const SizedBox(height: 10),
                   SizedBox(
-                    height: 250,
+                    height: 210,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: 10,
@@ -133,7 +134,8 @@ class HomePage extends StatelessWidget {
                                       workPlace: '',
                                       wageRange: '',
                                       isCrypto: true,
-                                      professions: '', 
+                                      professions: '',
+                                      contact: '',
                                     ),
                                   ),
                                 );
