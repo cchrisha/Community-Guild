@@ -8,7 +8,6 @@ import '../widget/profile/post_job_card.dart';
 import '../widget/profile/profile_header.dart';
 import '../widget/profile/section_with_see_all.dart';
 import '../widget/profile/verify_account_card.dart';
-import '../widget/profile/profile_info_card.dart'; // Import ProfileInfoCard
 import 'edit_profile_page.dart';
 import 'setting.dart';
 
@@ -101,9 +100,6 @@ class ProfilePage extends StatelessWidget {
                             .add(VerifyAccount());
                       },
                     ),
-                    const SizedBox(height: 30),
-                    // Replace _buildInfoCard with ProfileInfoCard
-                    const ProfileInfoCard(),
                     const SizedBox(height: 30),
                     _buildSection(
                       context,
