@@ -48,7 +48,10 @@ class AuthRepository {
     );
 
     if (response.statusCode == 200) {
-      return json.decode(response.body)['token'];
+      final token = json.decode(response.body)['token'];
+      await saveToken(token);
+      print('Token saved: $token');
+      return token;
     } else {
       throw Exception('Login failed.');
     }

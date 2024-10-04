@@ -1,23 +1,33 @@
-import 'package:bloc/bloc.dart';
+import 'package:community_guild/repository/logout_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'logout_event.dart';
 import 'logout_state.dart';
 
 class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
-  LogoutBloc() : super(LogoutInitial());
+  final LogoutRepository logoutRepository;
 
-  Stream<LogoutState> mapEventToState(LogoutEvent event) async* {
-    if (event is LogoutRequested) {
-      yield LogoutLoading();
-      try {
-        // Simulate logout process (call your logout API or authentication method here)
-        await Future.delayed(const Duration(seconds: 2));
+  LogoutBloc(this.logoutRepository) : super(LogoutInitial()) {
+    on<LogoutRequested>(_onLogoutRequested);
+  }
 
-        // If successful, yield LogoutSuccess
-        yield LogoutSuccess();
-      } catch (error) {
-        // If there is an error, yield LogoutFailure with the error message
-        yield LogoutFailure('Logout failed. Please try again.');
+  Future<void> _onLogoutRequested(
+      LogoutRequested event, Emitter<LogoutState> emit) async {
+    emit(LogoutLoading());
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('auth_token');
+
+      print('Token retrieved for logout: $token');
+
+      if (token != null) {
+        await logoutRepository.logout(token);
+        emit(LogoutSuccess());
+      } else {
+        emit(LogoutFailure('No token found.'));
       }
+    } catch (error) {
+      emit(LogoutFailure('Logout failed: ${error.toString()}'));
     }
   }
 }
