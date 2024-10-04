@@ -44,6 +44,13 @@ dependencies:
   get_storage: ^2.1.1
   image_picker: ^0.8.5+3
   shared_preferences: ^2.3.2
+  web3modal_flutter: ^3.3.4
+  reown_appkit: ^1.0.1
+  web3dart: ^2.7.3
+  ed25519_hd_key: ^2.3.0
+  hex: ^0.2.0
+  reown_walletkit: ^1.0.1
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:

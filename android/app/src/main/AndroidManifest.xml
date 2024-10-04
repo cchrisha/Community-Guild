@@ -24,6 +24,14 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Deep linking intent filter -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Replace 'exampleapp' with your app's deep link scheme -->
+                <data android:scheme="cryptoflutter" />
+            </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
@@ -31,6 +39,13 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+        <queries>
+        <package android:name="io.metamask"/>
+        <package android:name="com.wallet.crypto.trustapp"/>
+        <package android:name="io.gnosis.safe"/>
+        <package android:name="me.rainbow"/>
+       
+    </queries>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
          https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
