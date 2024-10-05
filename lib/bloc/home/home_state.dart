@@ -1,10 +1,28 @@
-part of 'home_bloc.dart';
+import 'package:equatable/equatable.dart';
 
-sealed class HomeState extends Equatable {
-  const HomeState();
-  
+abstract class HomeState extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-final class HomeInitial extends HomeState {}
+class HomeInitial extends HomeState {}
+
+class HomeLoading extends HomeState {}
+
+class HomeLoaded extends HomeState {
+  final List<dynamic> jobs; // This will hold the job data when fetched
+
+  HomeLoaded(this.jobs);
+
+  @override
+  List<Object?> get props => [jobs];
+}
+
+class HomeError extends HomeState {
+  final String message;
+
+  HomeError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
