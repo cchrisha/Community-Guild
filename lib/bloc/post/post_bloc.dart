@@ -7,7 +7,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<SubmitJob>((event, emit) async {
       emit(PostLoading());
       try {
-        // Simulate a network call for job posting API call
+        // Simulate a network call for job posting
         await Future.delayed(const Duration(seconds: 2));
 
         // Here you would normally send the job data to your backend
@@ -15,7 +15,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
         emit(PostSuccess());
       } catch (e) {
-        emit(PostFailure('Failed to post job.'));
+        emit(PostFailure('Failed to post job.', message: ''));
       }
     });
   }
