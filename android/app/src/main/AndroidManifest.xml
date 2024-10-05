@@ -44,7 +44,6 @@
         <package android:name="com.wallet.crypto.trustapp"/>
         <package android:name="io.gnosis.safe"/>
         <package android:name="me.rainbow"/>
-       
     </queries>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
