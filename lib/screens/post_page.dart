@@ -1,201 +1,193 @@
+import 'package:community_guild/screens/about_job.dart';
+import 'package:community_guild/screens/payment_page.dart';
+import 'package:community_guild/screens/profile_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/post/post_bloc.dart';
-import '../bloc/post/post_event.dart';
-import '../bloc/post/post_state.dart';
-import '../widget/post_page/job_details_header.dart';
-import '../widget/post_page/job_details_card.dart';
-import '../widget/post_page/job_title_field.dart';
-import '../widget/post_page/job_location_field.dart';
-import '../widget/post_page/job_profession_dropdown.dart';
-import '../widget/post_page/job_reward_field.dart';
-import '../widget/post_page/job_contact_field.dart';
-import '../widget/post_page/job_description_field.dart';
-import '../widget/post_page/crypto_payment_checkbox.dart';
-import '../widget/post_page/post_button.dart';
+import 'home.dart'; // assuming home.dart is in the same directory
+import 'post_input.dart';
 
-class PostPage extends StatefulWidget {
+class PostPage extends StatelessWidget {
   const PostPage({super.key});
 
   @override
-  PostPageState createState() => PostPageState();
-}
-
-class PostPageState extends State<PostPage> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
-  final TextEditingController _rewardController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _contactController = TextEditingController();
-
-  bool _isCrypto = false;
-  String? _selectedProfession;
-
-  final List<String> _professions = [
-    'Software Developer',
-    'Data Scientist',
-    'Graphic Designer',
-    'Project Manager',
-    'Marketing Specialist',
-    'Web Developer',
-    'UX/UI Designer',
-    'System Administrator',
-    'Network Engineer',
-    'Database Administrator',
-    'Business Analyst',
-    'DevOps Engineer',
-    'Cybersecurity Analyst',
-    'Content Writer',
-    'SEO Specialist',
-    'Product Manager',
-    'Mobile Developer',
-    'Game Developer',
-    'QA Tester',
-    'Technical Support',
-    'Cloud Engineer',
-    'Artificial Intelligence Engineer',
-    'Machine Learning Engineer',
-    'Blockchain Developer',
-    'Data Analyst',
-    'IT Consultant',
-    'Digital Marketing Manager',
-    'Social Media Manager',
-    'Content Strategist',
-    'E-commerce Specialist',
-  ];
-
-  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PostBloc(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Post a New Job',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Colors.blueAccent,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Post',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: BlocListener<PostBloc, PostState>(
-            listener: (context, state) {
-              if (state is PostLoading) {
-                // Show loading indicator or similar UI
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) =>
-                      const Center(child: CircularProgressIndicator()),
-                );
-              } else if (state is PostSuccess) {
-                // Close the loading indicator
-                Navigator.pop(context);
-                // Show success message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Job posted successfully!')),
-                );
-                // Optionally navigate to another page
-                // Navigator.pop(context);
-              } else if (state is PostFailure) {
-                // Close the loading indicator
-                Navigator.pop(context);
-                // Show error message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error: ${state.message}')),
-                );
-              }
+        backgroundColor: const Color.fromARGB(255, 3, 169, 244),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications, color: Colors.white),
+            onPressed: () {
+              // Navigate to the notifications page
             },
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const JobDetailsHeader(title: 'Job Details'),
-                    const SizedBox(height: 20),
-                    JobDetailsCard(
-                      child: Column(
-                        children: [
-                          JobTitleField(controller: _titleController),
-                          const SizedBox(height: 16),
-                          JobLocationField(controller: _locationController),
-                          const SizedBox(height: 16),
-                          JobProfessionDropdown(
-                            selectedProfession: _selectedProfession,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedProfession = value;
-                              });
-                            },
-                            professions: _professions,
-                          ),
-                          const SizedBox(height: 16),
-                          JobRewardField(controller: _rewardController),
-                          const SizedBox(height: 10),
-                          CryptoPaymentCheckbox(
-                            isCrypto: _isCrypto,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                _isCrypto = value ?? false;
-                              });
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          JobContactField(controller: _contactController),
-                          const SizedBox(height: 16),
-                          JobDescriptionField(
-                              controller: _descriptionController),
-                        ],
-                      ),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: double.infinity,
+                height: 120,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const PostInput()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 3, 169, 244), // Color for the main button (matching the app bar color)
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0), // Rounded corners
                     ),
-                    const SizedBox(height: 20),
-                    Center(
-                      child: PostButton(
-                        onPressed: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            BlocProvider.of<PostBloc>(context).add(
-                              SubmitJob(
-                                title: _titleController.text,
-                                location: _locationController.text,
-                                profession: _selectedProfession!,
-                                wageRange: _rewardController.text,
-                                contact: _contactController.text,
-                                description: _descriptionController.text,
-                                isCrypto: _isCrypto,
-                              ),
-                            );
-                          }
-                        },
-                      ),
+                    elevation: 5, // Adds shadow like in the image
+                  ),
+                  child: Container(
+                    height: 60,
+                    width: 80,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(216, 246, 246, 246), // Lighter color for the inner box
+                      borderRadius: BorderRadius.circular(10), // Rounded inner box
                     ),
-                  ],
+                    child: const Icon(
+                      Icons.add,
+                      color: Colors.black, // Plus icon color
+                      size: 30,
+                    ),
+                  ),
                 ),
               ),
-            ),
+
+              const SizedBox(height: 20),
+              // Recommended Section (example of the similar SizedBox from Recommended Section)
+              const Text(
+                'Recommended Jobs',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 250, // Adjusted to match Recommended Section size
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 5, // sample count
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Card(
+                          elevation: 3,
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Job Title ${index + 1}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Job Description for Job ${index + 1}',
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  'Workplace ${index + 1}',
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Wage: \$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: 2,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info_outline),
+            label: 'About Job',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.post_add),
+            label: 'Post',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.payment_outlined),
+            label: 'Payment',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_2_outlined),
+            label: 'Profile',
+          ),
+        ],
+        selectedItemColor: Colors.lightBlue,
+        unselectedItemColor: Colors.black,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              );
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const JobPage()),
+              );
+              break;
+            case 2:
+              break;
+            case 3:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PaymentPage()),
+              );
+              break;
+            case 4:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
+              break;
+          }
+        },
+      ),
     );
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _locationController.dispose();
-    _rewardController.dispose();
-    _descriptionController.dispose();
-    _contactController.dispose();
-    super.dispose();
   }
 }

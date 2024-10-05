@@ -12,7 +12,7 @@ class JobDetailsHeader extends StatelessWidget {
       style: const TextStyle(
         fontSize: 26,
         fontWeight: FontWeight.bold,
-        color: Colors.blueAccent,
+        color: Color.fromARGB(255, 3, 169, 244),
       ),
     );
   }

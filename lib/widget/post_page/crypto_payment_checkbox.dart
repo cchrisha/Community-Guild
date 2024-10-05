@@ -15,7 +15,7 @@ class CryptoPaymentCheckbox extends StatelessWidget {
     return CheckboxListTile(
       title: const Text(
         'Accept Cryptocurrency Payments',
-        style: TextStyle(color: Colors.blueAccent),
+        style: TextStyle(color: Color.fromARGB(255, 3, 169, 244),),
       ),
       value: isCrypto,
       onChanged: onChanged,
