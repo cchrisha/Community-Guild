@@ -100,7 +100,11 @@ class ProfilePage extends StatelessWidget {
                             .add(VerifyAccount());
                       },
                     ),
+<<<<<<< Updated upstream
                     const SizedBox(height: 30),
+=======
+                    // Replace _buildInfoCard with ProfileInfoCard
+>>>>>>> Stashed changes
                     _buildSection(
                       context,
                       'Completed Jobs',
