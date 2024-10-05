@@ -8,6 +8,7 @@ import 'package:community_guild/bloc/home/home_event.dart';
 import 'package:community_guild/bloc/home/home_state.dart';
 import 'about_job.dart';
 import 'job_detail.dart';
+import 'notif_page.dart';
 import 'payment_page.dart';
 import 'post_page.dart';
 import 'profile_page.dart';
@@ -41,6 +42,11 @@ class HomePage extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.notifications, color: Colors.white),
               onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const NotificationPage()),
+                );
                 // Your notification logic here
               },
             ),
@@ -96,6 +102,7 @@ class HomePage extends StatelessWidget {
                                           '', // Fetched from API (placeholder for now)
                                       wageRange: job['wageRange'] ??
                                           '', // Fetched from API (placeholder for now)
+                                      category: job['category'] ?? '',
                                       isCrypto: job['isCrypto'] ??
                                           false, // Fetched from API (placeholder for now)
                                       professions: job['professions'] ??
@@ -114,6 +121,7 @@ class HomePage extends StatelessWidget {
                                               isCrypto: true,
                                               professions: '',
                                               contact: '',
+                                              category: '',
                                             ),
                                           ),
                                         );
@@ -128,7 +136,7 @@ class HomePage extends StatelessWidget {
                           const SectionTitle(title: 'Most Recent Job'),
                           const SizedBox(height: 10),
                           SizedBox(
-                            height: 210,
+                            height: 230,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: state.jobs
@@ -151,6 +159,7 @@ class HomePage extends StatelessWidget {
                                           '', // Fetched from API (placeholder for now)
                                       wageRange: job['wageRange'] ??
                                           '', // Fetched from API (placeholder for now)
+                                      category: job['category'] ?? '',
                                       isCrypto: job['isCrypto'] ??
                                           false, // Fetched from API (placeholder for now)
                                       professions: job['professions'] ??
@@ -169,6 +178,7 @@ class HomePage extends StatelessWidget {
                                               isCrypto: true,
                                               professions: '',
                                               contact: '',
+                                              category: '',
                                             ),
                                           ),
                                         );

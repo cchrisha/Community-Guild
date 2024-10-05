@@ -9,7 +9,6 @@ import '../bloc/logout/bloc/logout_bloc.dart';
 import '../widget/settings/section_header.dart';
 import '../widget/settings/settings_app_bar.dart';
 import '../widget/settings/settings_tile.dart';
-import '../widget/settings/switch_tile.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -50,30 +49,6 @@ class SettingsPage extends StatelessWidget {
                       title: 'Change Password',
                       onTap: () {
                         // Navigate to change password page
-                      },
-                    ),
-                    SettingsTile(
-                      icon: Icons.link,
-                      title: 'Manage Linked Accounts',
-                      onTap: () {
-                        // Navigate to manage accounts page
-                      },
-                    ),
-                    const SectionHeader(title: 'Notifications'),
-                    SwitchTile(
-                      icon: Icons.notifications,
-                      title: 'Push Notifications',
-                      value: true,
-                      onChanged: (value) {
-                        // Handle switch toggle
-                      },
-                    ),
-                    const SectionHeader(title: 'Privacy'),
-                    SettingsTile(
-                      icon: Icons.lock_outline,
-                      title: 'Privacy Settings',
-                      onTap: () {
-                        // Navigate to privacy settings page
                       },
                     ),
                     const SectionHeader(title: 'App Info'),

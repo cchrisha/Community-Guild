@@ -11,6 +11,7 @@ class JobDetailPage extends StatefulWidget {
     required this.professions,
     required this.workPlace,
     required this.contact,
+    required this.category,
   });
 
   final String jobTitle;
@@ -20,8 +21,8 @@ class JobDetailPage extends StatefulWidget {
   final bool isCrypto;
   final String professions;
   final String workPlace;
-    final String contact;
-
+  final String contact;
+  final String category;
 
   @override
   State<JobDetailPage> createState() => _JobDetailPageState();
@@ -74,7 +75,8 @@ class _JobDetailPageState extends State<JobDetailPage> {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
-                      borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
+                      borderRadius:
+                          BorderRadius.vertical(bottom: Radius.circular(30)),
                     ),
                   ),
                   Positioned(
@@ -93,9 +95,11 @@ class _JobDetailPageState extends State<JobDetailPage> {
                             CircleAvatar(
                               radius: 30,
                               backgroundColor: Colors.lightBlueAccent,
-                              child: Icon(Icons.person, color: Colors.white, size: 30),
+                              child: Icon(Icons.person,
+                                  color: Colors.white, size: 30),
                             ),
-                            SizedBox(width: 16), // Spacing between avatar and text
+                            SizedBox(
+                                width: 16), // Spacing between avatar and text
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -117,7 +121,6 @@ class _JobDetailPageState extends State<JobDetailPage> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,9 +160,9 @@ class _JobDetailPageState extends State<JobDetailPage> {
               const Text(
                 'More Info',
                 style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
                 ),
               ),
               const SizedBox(height: 5),
@@ -203,6 +206,14 @@ class _JobDetailPageState extends State<JobDetailPage> {
               const SizedBox(height: 10),
               Text(
                 'Contact: ${widget.contact}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Category: ${widget.category}',
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black87,

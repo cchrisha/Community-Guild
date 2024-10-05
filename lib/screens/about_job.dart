@@ -58,7 +58,7 @@ class JobPage extends StatelessWidget {
               const SectionTitleAboutJob(title: 'Current Jobs'),
               const SizedBox(height: 10),
               SizedBox(
-                height: 200, 
+                height: 230,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 10,
@@ -66,14 +66,18 @@ class JobPage extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.8, //responsive na width
+                        width: MediaQuery.of(context).size.width *
+                            0.8, //responsive na width
                         child: AboutJobCard(
                           jobTitle: 'Recommended Job Title ${index + 1}',
-                          jobDescription: 'This is the job description for recommended job ${index + 1}.',
+                          jobDescription:
+                              'This is the job description for recommended job ${index + 1}.',
                           workPlace: 'Workplace ${index + 1}',
-                          date: 'Date: 2024-09-${index + 1}', 
-                          wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', 
-                          isCrypto: index % 2 == 0, 
+                          category: 'Category ${index + 1}',
+                          date: 'Date: 2024-09-${index + 1}',
+                          wageRange:
+                              '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
+                          isCrypto: index % 2 == 0,
                           professions: 'Profession ${index + 1}',
                           onTap: () {
                             Navigator.push(
@@ -86,8 +90,9 @@ class JobPage extends StatelessWidget {
                                   workPlace: '',
                                   wageRange: '',
                                   isCrypto: true,
-                                  professions: '', 
+                                  professions: '',
                                   contact: '',
+                                  category: '',
                                 ),
                               ),
                             );
@@ -104,7 +109,7 @@ class JobPage extends StatelessWidget {
               const SectionTitleAboutJob(title: 'Completed Jobs'),
               const SizedBox(height: 10),
               SizedBox(
-                height: 200, 
+                height: 230,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 10,
@@ -112,14 +117,18 @@ class JobPage extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.8, //responsive na width
+                        width: MediaQuery.of(context).size.width *
+                            0.8, //responsive na width
                         child: AboutJobCard(
                           jobTitle: 'Recommended Job Title ${index + 1}',
-                          jobDescription: 'This is the job description for recommended job ${index + 1}.',
+                          jobDescription:
+                              'This is the job description for recommended job ${index + 1}.',
                           workPlace: 'Workplace ${index + 1}',
-                          date: 'Date: 2024-09-${index + 1}', 
-                          wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', 
-                          isCrypto: index % 2 == 0, 
+                          category: 'Category ${index + 1}',
+                          date: 'Date: 2024-09-${index + 1}',
+                          wageRange:
+                              '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
+                          isCrypto: index % 2 == 0,
                           professions: 'Profession ${index + 1}',
                           onTap: () {
                             Navigator.push(
@@ -132,8 +141,9 @@ class JobPage extends StatelessWidget {
                                   workPlace: '',
                                   wageRange: '',
                                   isCrypto: true,
-                                  professions: '', 
+                                  professions: '',
                                   contact: '',
+                                  category: '',
                                 ),
                               ),
                             );
@@ -150,7 +160,7 @@ class JobPage extends StatelessWidget {
               const SectionTitleAboutJob(title: 'Pending Jobs'),
               const SizedBox(height: 10),
               SizedBox(
-                height: 200, 
+                height: 230,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 10,
@@ -158,14 +168,18 @@ class JobPage extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.8, //responsive na width
+                        width: MediaQuery.of(context).size.width *
+                            0.8, //responsive na width
                         child: AboutJobCard(
                           jobTitle: 'Recommended Job Title ${index + 1}',
-                          jobDescription: 'This is the job description for recommended job ${index + 1}.',
+                          jobDescription:
+                              'This is the job description for recommended job ${index + 1}.',
                           workPlace: 'Workplace ${index + 1}',
-                          date: 'Date: 2024-09-${index + 1}', 
-                          wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', 
-                          isCrypto: index % 2 == 0, 
+                          category: 'Category ${index + 1}',
+                          date: 'Date: 2024-09-${index + 1}',
+                          wageRange:
+                              '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
+                          isCrypto: index % 2 == 0,
                           professions: 'Profession ${index + 1}',
                           onTap: () {
                             Navigator.push(
@@ -178,8 +192,9 @@ class JobPage extends StatelessWidget {
                                   workPlace: '',
                                   wageRange: '',
                                   isCrypto: true,
-                                  professions: '', 
+                                  professions: '',
                                   contact: '',
+                                  category: '',
                                 ),
                               ),
                             );
@@ -196,7 +211,7 @@ class JobPage extends StatelessWidget {
               const SectionTitleAboutJob(title: 'Rejected Jobs'),
               const SizedBox(height: 10),
               SizedBox(
-                height: 200, 
+                height: 230,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 10,
@@ -204,14 +219,18 @@ class JobPage extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.8, //responsive na width
+                        width: MediaQuery.of(context).size.width *
+                            0.8, //responsive na width
                         child: AboutJobCard(
                           jobTitle: 'Recommended Job Title ${index + 1}',
-                          jobDescription: 'This is the job description for recommended job ${index + 1}.',
+                          jobDescription:
+                              'This is the job description for recommended job ${index + 1}.',
                           workPlace: 'Workplace ${index + 1}',
-                          date: 'Date: 2024-09-${index + 1}', 
-                          wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', 
-                          isCrypto: index % 2 == 0, 
+                          category: 'Category ${index + 1}',
+                          date: 'Date: 2024-09-${index + 1}',
+                          wageRange:
+                              '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
+                          isCrypto: index % 2 == 0,
                           professions: 'Profession ${index + 1}',
                           onTap: () {
                             Navigator.push(
@@ -224,8 +243,9 @@ class JobPage extends StatelessWidget {
                                   workPlace: '',
                                   wageRange: '',
                                   isCrypto: true,
-                                  professions: '', 
+                                  professions: '',
                                   contact: '',
+                                  category: '',
                                 ),
                               ),
                             );
@@ -242,7 +262,7 @@ class JobPage extends StatelessWidget {
               const SectionTitleAboutJob(title: 'Jobs You Posted'),
               const SizedBox(height: 10),
               SizedBox(
-                height: 200, 
+                height: 230,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 10,
@@ -250,14 +270,18 @@ class JobPage extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.8, //responsive na width
+                        width: MediaQuery.of(context).size.width *
+                            0.8, //responsive na width
                         child: AboutJobCard(
                           jobTitle: 'Recommended Job Title ${index + 1}',
-                          jobDescription: 'This is the job description for recommended job ${index + 1}.',
+                          jobDescription:
+                              'This is the job description for recommended job ${index + 1}.',
                           workPlace: 'Workplace ${index + 1}',
-                          date: 'Date: 2024-09-${index + 1}', 
-                          wageRange: '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}', 
-                          isCrypto: index % 2 == 0, 
+                          category: 'Category ${index + 1}',
+                          date: 'Date: 2024-09-${index + 1}',
+                          wageRange:
+                              '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
+                          isCrypto: index % 2 == 0,
                           professions: 'Profession ${index + 1}',
                           onTap: () {
                             Navigator.push(
@@ -270,8 +294,9 @@ class JobPage extends StatelessWidget {
                                   workPlace: '',
                                   wageRange: '',
                                   isCrypto: true,
-                                  professions: '', 
+                                  professions: '',
                                   contact: '',
+                                  category: '',
                                 ),
                               ),
                             );

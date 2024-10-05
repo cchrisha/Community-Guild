@@ -6,6 +6,7 @@ class HomeJobCard extends StatelessWidget {
   final String workPlace;
   final String date;
   final String wageRange;
+  final String category;
   final bool isCrypto;
   final String professions;
   final VoidCallback onTap;
@@ -18,6 +19,7 @@ class HomeJobCard extends StatelessWidget {
     required this.workPlace,
     required this.date,
     required this.wageRange,
+    required this.category,
     required this.isCrypto,
     required this.professions,
     required this.onTap,
@@ -54,12 +56,17 @@ class HomeJobCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text('Wanted Profession: $professions'),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
+              Text('Category: $category'),
+              const SizedBox(height: 5),
               Text('Workplace: $workPlace'),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Wage: $wageRange'),
+                  Expanded(
+                    // Ensure Wage takes equal space like Workplace
+                    child: Text('Wage: $wageRange'),
+                  ),
                   Row(
                     children: [
                       Checkbox(value: isCrypto, onChanged: null),
