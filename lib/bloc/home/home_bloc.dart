@@ -8,18 +8,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(HomeLoading());
 
       try {
-        // Simulating an API call for now
-        await Future.delayed(
-            const Duration(seconds: 2)); // Simulate network delay
-        // Replace with actual API call
-        List<dynamic> jobs = [
-          {'title': 'Job 1', 'description': 'Description 1'},
-          {'title': 'Job 2', 'description': 'Description 2'},
-        ];
+        // Simulate an API call (replace with actual API call later)
+        await Future.delayed(const Duration(seconds: 2));
+
+        // Simulating no jobs returned by API
+        List<dynamic> jobs = []; // Empty list to simulate no jobs in database
 
         emit(HomeLoaded(jobs));
       } catch (e) {
-        emit(HomeError('Failed to load jobs'));
+        emit(HomeError('Failed to load jobs.'));
       }
     });
   }

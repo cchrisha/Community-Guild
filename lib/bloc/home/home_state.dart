@@ -10,7 +10,7 @@ class HomeInitial extends HomeState {}
 class HomeLoading extends HomeState {}
 
 class HomeLoaded extends HomeState {
-  final List<dynamic> jobs; // This will hold the job data when fetched
+  final List<dynamic> jobs; // Replace with actual job data later
 
   HomeLoaded(this.jobs);
 

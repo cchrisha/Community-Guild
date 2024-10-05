@@ -5,7 +5,4 @@ abstract class HomeEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class FetchJobs extends HomeEvent {
-  @override
-  List<Object?> get props => [];
-}
+class FetchJobs extends HomeEvent {}
