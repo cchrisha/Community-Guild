@@ -88,15 +88,18 @@ class ProfilePage extends StatelessWidget {
           padding: const EdgeInsets.all(15.0),
           child: BlocBuilder<ProfileBloc, ProfileState>(
             builder: (context, state) {
-              if (state is ProfileLoaded) {
+              if (state is ProfileLoading) {
+                return const Center(
+                  child:
+                      CircularProgressIndicator(), // Display a loading indicator
+                );
+              } else if (state is ProfileLoaded) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ProfileHeader(
-                      name: state
-                          .name, // Pass the name from the ProfileLoaded state
-                      profession: state
-                          .profession, // Pass the profession from the ProfileLoaded state
+                      name: state.name,
+                      profession: state.profession,
                     ),
                     const SizedBox(height: 15),
                     VerifyAccountCard(
