@@ -8,6 +8,7 @@ import 'package:community_guild/screens/notif_page.dart';
 import 'package:community_guild/screens/post_page.dart';
 import 'package:community_guild/screens/profile_page.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widget/payment/balance_card.dart';
 import '../widget/payment/section_title.dart';
@@ -69,23 +70,40 @@ class _PaymentPageState extends State<PaymentPage> {
    setState(() {
       fetchTransactions(walletAddress); // Fetch transactions when initialized
     });
+
+     // Load wallet address from SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedWalletAddress = prefs.getString('walletAddress');
+    if (savedWalletAddress != null) {
+      setState(() {
+        walletAddress = savedWalletAddress;
+      });
+    }
   }
 
-     void updateWalletAddress() {
+  void updateWalletAddress() async {
     if (appKitModal?.session != null) {
       setState(() {
         walletAddress = appKitModal!.session!.address ?? 'No Address';
         _balance = appKitModal!.balanceNotifier.value;
         fetchTransactions(walletAddress); // Fetch transactions whenever the wallet address is updated
       });
+
+      // Save the wallet address to SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('walletAddress', walletAddress);
     } else {
       setState(() {
         walletAddress = 'No Address';
         _balance = 'No Balance';
         transactions.clear(); // Clear transactions when no address
       });
+
+      // Remove the wallet address from SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove('walletAddress');
     }
-  }
+}
 
   Future<void> fetchTransactions(String address) async {
     setState(() {
@@ -254,7 +272,7 @@ Widget build(BuildContext context) {
                    Visibility(
                       visible: appKitModal!.isConnected,
                       child: isLoading
-                          ? const CircularProgressIndicator()
+                          ? const Center(child: CircularProgressIndicator())
                           : Container(
                               height: 350, // Specify a fixed height as per your requirement
                               child: ListView.builder(
@@ -279,8 +297,8 @@ Widget build(BuildContext context) {
                 ),
               ],
             ),
-             if (isLoading)
-            const Center(child: CircularProgressIndicator()),
+             //if (isLoading)
+           // const Center(child: CircularProgressIndicator()),
           ],
         ),
     bottomNavigationBar: BottomNavigationBar(
