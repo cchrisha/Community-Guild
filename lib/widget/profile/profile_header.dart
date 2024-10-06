@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-import 'profile_info_card.dart';
-
 class ProfileHeader extends StatefulWidget {
-  const ProfileHeader({super.key});
+  final String name;
+  final String profession;
+
+  const ProfileHeader({
+    super.key,
+    required this.name,
+    required this.profession,
+  });
 
   @override
   State<ProfileHeader> createState() => _ProfileHeaderState();
@@ -206,18 +211,18 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           ],
         ),
         const SizedBox(height: 20),
-        const Text(
-          'Name',
-          style: TextStyle(
+        Text(
+          widget.name, // Display the passed name
+          style: const TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
           ),
         ),
         const SizedBox(height: 5),
-        const Text(
-          'Profession',
-          style: TextStyle(
+        Text(
+          widget.profession, // Display the passed profession
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w400,
             color: Colors.lightBlue,

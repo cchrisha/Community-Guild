@@ -17,6 +17,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       final data = await profileRepository.fetchProfile();
       emit(ProfileLoaded(
+        name: data['name'] ?? 'N/A',
         location: data['location'] ?? 'N/A',
         contact: data['contact'] ?? 'N/A',
         email: data['email'] ?? 'N/A',

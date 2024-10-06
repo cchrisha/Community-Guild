@@ -12,12 +12,14 @@ class ProfileInitial extends ProfileState {}
 class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
+  final String name;
   final String location;
   final String contact;
   final String email;
   final String profession;
 
   ProfileLoaded({
+    required this.name,
     required this.location,
     required this.contact,
     required this.email,
@@ -25,7 +27,7 @@ class ProfileLoaded extends ProfileState {
   });
 
   @override
-  List<Object> get props => [location, contact, email, profession];
+  List<Object> get props => [name, location, contact, email, profession];
 }
 
 class ProfileError extends ProfileState {

@@ -34,10 +34,12 @@ class RegisterPage extends StatelessWidget {
                       ),
                     );
                     Get.off(() => const LoginPage());
-                  } else if (state is AuthFailure) {
+                  }
+                  if (state is AuthFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(state.error),
+                        content:
+                            Text(state.error), // Display error from backend
                         backgroundColor: Colors.red,
                       ),
                     );
