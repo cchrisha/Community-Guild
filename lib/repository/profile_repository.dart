@@ -1,15 +1,23 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileRepository {
-  final String baseUrl;
+  final String baseUrl = 'https://api-tau-plum.vercel.app/api/user';
 
-  ProfileRepository({required this.baseUrl});
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_token');
+  }
 
-  // Fetch profile data
   Future<Map<String, dynamic>> fetchProfile() async {
-    final response = await http.get(Uri.parse('$baseUrl/profile'));
-
+    final token = await getToken();
+    final response = await http.get(
+      Uri.parse(baseUrl),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {

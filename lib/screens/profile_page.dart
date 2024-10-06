@@ -1,3 +1,4 @@
+import 'package:community_guild/repository/profile_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/profile/profile_bloc.dart';
@@ -8,7 +9,7 @@ import '../widget/profile/post_job_card.dart';
 import '../widget/profile/profile_header.dart';
 import '../widget/profile/section_with_see_all.dart';
 import '../widget/profile/verify_account_card.dart';
-import '../widget/profile/profile_info_card.dart'; // Import ProfileInfoCard
+import '../widget/profile/profile_info_card.dart';
 import 'edit_profile_page.dart';
 import 'setting.dart';
 
@@ -18,8 +19,9 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          ProfileBloc()..add(LoadProfile()), // Load profile data
+      create: (context) => ProfileBloc(
+        profileRepository: ProfileRepository(),
+      )..add(LoadProfile()),
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -96,26 +98,22 @@ class ProfilePage extends StatelessWidget {
                     const SizedBox(height: 15),
                     VerifyAccountCard(
                       onPressed: () {
-                        // Add account verification logic here
                         BlocProvider.of<ProfileBloc>(context)
                             .add(VerifyAccount());
                       },
                     ),
                     const SizedBox(height: 30),
-                    // Replace _buildInfoCard with ProfileInfoCard
-                    const ProfileInfoCard(),
-                    const SizedBox(height: 30),
-                    _buildSection(
-                      context,
-                      'Completed Jobs',
-                      const CompletedJobCard(),
+                    ProfileInfoCard(
+                      location: state.location,
+                      contact: state.contact,
+                      email: state.email,
+                      profession: state.profession,
                     ),
                     const SizedBox(height: 30),
                     _buildSection(
-                      context,
-                      'Posted Jobs',
-                      const PostJobCard(),
-                    ),
+                        context, 'Completed Jobs', const CompletedJobCard()),
+                    const SizedBox(height: 30),
+                    _buildSection(context, 'Posted Jobs', const PostJobCard()),
                   ],
                 );
               } else if (state is ProfileError) {
