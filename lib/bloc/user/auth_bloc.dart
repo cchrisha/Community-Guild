@@ -17,7 +17,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final locationController = TextEditingController();
   final contactController = TextEditingController();
   final professionController = TextEditingController();
-  final addinfoController = TextEditingController();
 
   AuthBloc({required this.authRepository}) : super(AuthInitial()) {
     _checkAuthStatus();
@@ -40,10 +39,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
         if (event.userauth.profession.isEmpty) {
           emit(AuthFailure('Profession is required.'));
-          return;
-        }
-        if (event.userauth.addinfo.isEmpty) {
-          emit(AuthFailure('Additional Info is required.'));
           return;
         }
 
@@ -69,7 +64,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           location: event.userauth.location,
           contact: event.userauth.contact,
           profession: event.userauth.profession,
-          addinfo: event.userauth.addinfo,
           // walletAddress can be omitted as it's not required
         );
 
@@ -130,7 +124,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     locationController.dispose();
     contactController.dispose();
     professionController.dispose();
-    addinfoController.dispose();
     return super.close();
   }
 

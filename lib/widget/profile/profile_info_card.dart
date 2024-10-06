@@ -23,13 +23,13 @@ class ProfileInfoCard extends StatelessWidget {
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ProfileInfoRow(label: 'Location:', value: 'New York'),
-          ProfileInfoRow(label: 'Contact:', value: '123-456-7890'),
+          ProfileInfoRow(label: 'Location:', value: ''),
+          ProfileInfoRow(label: 'Contact:', value: ''),
           ProfileInfoRow(
             label: 'Email:',
-            value: 'marvin@gmail.com',
+            value: '',
           ),
-          ProfileInfoRow(label: 'Profession:', value: 'Software Developer'),
+          ProfileInfoRow(label: 'Profession:', value: ''),
         ],
       ),
     );
