@@ -11,7 +11,7 @@ class PostButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: const Color.fromARGB(255, 3, 169, 244),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),

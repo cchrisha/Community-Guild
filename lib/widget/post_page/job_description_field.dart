@@ -12,14 +12,14 @@ class JobDescriptionField extends StatelessWidget {
       maxLines: 5,
       decoration: InputDecoration(
         labelText: 'Job Description',
-        labelStyle: const TextStyle(color: Colors.blueAccent),
-        prefixIcon: const Icon(Icons.description, color: Colors.blueAccent),
+        labelStyle: const TextStyle(color: Color.fromARGB(255, 3, 169, 244)),
+        prefixIcon: const Icon(Icons.description, color: Color.fromARGB(255, 3, 169, 244)),
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.blueAccent, width: 2),
+          borderSide: const BorderSide(color: Color.fromARGB(255, 3, 169, 244), width: 2),
           borderRadius: BorderRadius.circular(16),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.blue, width: 2),
+          borderSide: const BorderSide(color: Color.fromARGB(255, 3, 169, 244), width: 2),
           borderRadius: BorderRadius.circular(16),
         ),
         errorBorder: OutlineInputBorder(
