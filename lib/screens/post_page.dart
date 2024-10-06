@@ -21,6 +21,15 @@ class PostPage extends StatelessWidget {
           ),
         ),
         backgroundColor: const Color.fromARGB(255, 3, 169, 244),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications, color: Colors.white),
@@ -43,13 +52,16 @@ class PostPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const PostInput()),
+                      MaterialPageRoute(
+                          builder: (context) => const PostInput()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 3, 169, 244), // Color for the main button (matching the app bar color)
+                    backgroundColor: const Color.fromARGB(255, 3, 169,
+                        244), // Color for the main button (matching the app bar color)
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0), // Rounded corners
+                      borderRadius:
+                          BorderRadius.circular(20.0), // Rounded corners
                     ),
                     elevation: 5, // Adds shadow like in the image
                   ),
@@ -58,8 +70,10 @@ class PostPage extends StatelessWidget {
                     width: 80,
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(216, 246, 246, 246), // Lighter color for the inner box
-                      borderRadius: BorderRadius.circular(10), // Rounded inner box
+                      color: const Color.fromARGB(216, 246, 246,
+                          246), // Lighter color for the inner box
+                      borderRadius:
+                          BorderRadius.circular(10), // Rounded inner box
                     ),
                     child: const Icon(
                       Icons.add,
