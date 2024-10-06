@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/edit_profile/edit_profile_event.dart';
+import '../bloc/edit_profile/edit_profile_state.dart';
+import '../bloc/edit_profile/edit_profile_bloc.dart';
+import '../widget/edit_profile/edit_profile_app_bar.dart';
+import '../widget/edit_profile/profession_dropdown.dart';
+import '../widget/edit_profile/text_field_widget.dart';
+import '../widget/edit_profile/save_button.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -12,18 +20,42 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
-  final TextEditingController _professionController = TextEditingController();
+  String? _selectedProfession;
 
-  @override
-  void initState() {
-    super.initState();
-    // Initialize with existing profile data (replace with actual data)
-    _nameController.text = 'John Doe';
-    _emailController.text = 'johndoe@example.com';
-    _locationController.text = 'New York, NY';
-    _contactController.text = '(123) 456-7890';
-    _professionController.text = 'Software Engineer';
-  }
+  final List<String> _professions = [
+    'Software Developer',
+    'Data Scientist',
+    'Graphic Designer',
+    'Project Manager',
+    'Marketing Specialist',
+    'Web Developer',
+    'UX/UI Designer',
+    'System Administrator',
+    'Network Engineer',
+    'Database Administrator',
+    'Business Analyst',
+    'DevOps Engineer',
+    'Cybersecurity Analyst',
+    'Content Writer',
+    'SEO Specialist',
+    'Product Manager',
+    'Mobile Developer',
+    'Game Developer',
+    'QA Tester',
+    'Technical Support',
+    'Cloud Engineer',
+    'Artificial Intelligence Engineer',
+    'Machine Learning Engineer',
+    'Blockchain Developer',
+    'Data Analyst',
+    'IT Consultant',
+    'Digital Marketing Manager',
+    'Social Media Manager',
+    'Content Strategist',
+    'E-commerce Specialist',
+  ];
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -31,102 +63,127 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _emailController.dispose();
     _locationController.dispose();
     _contactController.dispose();
-    _professionController.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Edit Profile',
-          style: TextStyle(
-            fontSize: 20,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Colors.lightBlue,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
+    return BlocProvider(
+      create: (context) => EditProfileBloc(),
+      child: Scaffold(
+        appBar: const EditProfileAppBar(),
+        body: BlocListener<EditProfileBloc, EditProfileState>(
+          listener: (context, state) {
+            if (state is EditProfileSaved) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.message)),
+              );
+              Navigator.pop(context);
+            } else if (state is EditProfileError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.message)),
+              );
+            }
           },
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTextField(_nameController, 'Name', Icons.person_2_outlined),
-            const SizedBox(height: 16),
-            _buildTextField(_emailController, 'Email', Icons.email_outlined),
-            const SizedBox(height: 16),
-            _buildTextField(
-                _locationController, 'Location', Icons.location_on_outlined),
-            const SizedBox(height: 16),
-            _buildTextField(_contactController, 'Contact Number', Icons.phone),
-            const SizedBox(height: 16),
-            _buildTextField(_professionController, 'Profession',
-                Icons.work_outline_outlined),
-            const SizedBox(height: 16),
-            Center(
-              child: ElevatedButton(
-                onPressed: _saveProfile,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightBlue,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                  textStyle: const TextStyle(fontSize: 16),
-                ),
-                child: const Text(
-                  'Save',
-                  style: TextStyle(color: Colors.white),
-                ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFieldWidget(
+                    controller: _nameController,
+                    label: 'Name',
+                    icon: Icons.person_2_outlined,
+                    validator: _validateName,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFieldWidget(
+                    controller: _emailController,
+                    label: 'Email',
+                    icon: Icons.email_outlined,
+                    validator: _validateEmail,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFieldWidget(
+                    controller: _locationController,
+                    label: 'Location',
+                    icon: Icons.location_on_outlined,
+                    validator: _validateLocation,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFieldWidget(
+                    controller: _contactController,
+                    label: 'Contact',
+                    icon: Icons.phone_outlined,
+                    validator: _validateContact,
+                  ),
+                  const SizedBox(height: 16),
+                  ProfessionDropdown(
+                    selectedProfession: _selectedProfession,
+                    professions: _professions,
+                    onChanged: (String? value) {
+                      setState(() {
+                        _selectedProfession = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  SaveButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        BlocProvider.of<EditProfileBloc>(context).add(
+                          SaveProfileEvent(
+                            name: _nameController.text,
+                            email: _emailController.text,
+                            location: _locationController.text,
+                            contact: _contactController.text,
+                            profession: _selectedProfession,
+                          ),
+                        );
+                      }
+                    },
+                    isLoading: false,
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  TextField _buildTextField(
-      TextEditingController controller, String label, IconData icon,
-      {int maxLines = 1}) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.lightBlue, width: 2),
-        ),
-        labelStyle: const TextStyle(color: Colors.lightBlue),
-        prefixIcon: Icon(icon, color: Colors.lightBlue),
-      ),
-      maxLines: maxLines,
-    );
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your name';
+    }
+    return null;
   }
 
-  void _saveProfile() {
-    // Implement save logic here (e.g., send data to the server or update local state)
-    final String name = _nameController.text;
-    final String email = _emailController.text;
-    final String location = _locationController.text;
-    final String contact = _contactController.text;
-    final String profession = _professionController.text;
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
+    }
+    final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    if (!regex.hasMatch(value)) {
+      return 'Please enter a valid email';
+    }
+    return null;
+  }
 
-    // For now, just show a snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-          content: Text(
-              'Profile updated: $name, $email, $location, $contact, $profession,')),
-    );
+  String? _validateLocation(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your location';
+    }
+    return null;
+  }
+
+  String? _validateContact(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your contact number';
+    }
+    return null;
   }
 }

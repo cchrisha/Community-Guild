@@ -8,7 +8,6 @@ class ForgetPasswordBloc
     extends Bloc<ForgetPasswordEvent, ForgetPasswordState> {
   ForgetPasswordBloc() : super(ForgetPasswordInitial());
 
-  @override
   Stream<ForgetPasswordState> mapEventToState(
       ForgetPasswordEvent event) async* {
     if (event is SendOtpEvent) {

@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
 
-class JobContactField extends StatelessWidget {
+class TextFieldWidget extends StatelessWidget {
   final TextEditingController controller;
+  final String label;
+  final IconData icon;
+  final String? Function(String?)? validator;
 
-  const JobContactField({super.key, required this.controller});
+  const TextFieldWidget({
+    super.key,
+    required this.controller,
+    required this.label,
+    required this.icon,
+    required this.validator,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
-        labelText: 'Contact',
+        labelText: label,
         labelStyle: const TextStyle(color: Color.fromARGB(255, 3, 169, 244)),
-        prefixIcon: const Icon(
-          Icons.phone,
-          color: Color.fromARGB(255, 3, 169, 244),
-        ),
+        prefixIcon: Icon(icon, color: const Color.fromARGB(255, 3, 169, 244)),
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(
               color: Color.fromARGB(255, 3, 169, 244), width: 2),
@@ -33,12 +39,7 @@ class JobContactField extends StatelessWidget {
         contentPadding:
             const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
       ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter Contact';
-        }
-        return null;
-      },
+      validator: validator,
     );
   }
 }

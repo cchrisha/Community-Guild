@@ -12,24 +12,20 @@ class PostPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Post',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+        title: const Padding(
+          padding: EdgeInsets.only(
+              left: 16.0), // Adjust this value to move the text right
+          child: Text(
+            'Post',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ),
+        automaticallyImplyLeading: false,
         backgroundColor: const Color.fromARGB(255, 3, 169, 244),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications, color: Colors.white),

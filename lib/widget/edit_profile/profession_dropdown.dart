@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 
-class JobProfessionDropdown extends StatelessWidget {
+class ProfessionDropdown extends StatelessWidget {
   final String? selectedProfession;
   final List<String> professions;
-  final ValueChanged<String?> onChanged;
+  final Function(String?) onChanged;
 
-  const JobProfessionDropdown({
+  const ProfessionDropdown({
     super.key,
     required this.selectedProfession,
-    required this.onChanged,
     required this.professions,
+    required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      value: selectedProfession,
       decoration: InputDecoration(
         labelText: 'Profession',
         labelStyle: const TextStyle(color: Color.fromARGB(255, 3, 169, 244)),
@@ -31,15 +30,18 @@ class JobProfessionDropdown extends StatelessWidget {
         ),
         errorBorder: OutlineInputBorder(
           borderSide: const BorderSide(
-              color: Colors.red, width: 2), // Change color to red for error
+              color: Colors.red, width: 2), // Change the color to red
           borderRadius: BorderRadius.circular(16),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderSide: const BorderSide(
-              color: Colors.red, width: 2), // Change color to red for error
+              color: Colors.red, width: 2), // Change the color to red
           borderRadius: BorderRadius.circular(16),
         ),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
       ),
+      value: selectedProfession,
       items: professions.map((String profession) {
         return DropdownMenuItem<String>(
           value: profession,
@@ -47,12 +49,7 @@ class JobProfessionDropdown extends StatelessWidget {
         );
       }).toList(),
       onChanged: onChanged,
-      validator: (value) {
-        if (value == null) {
-          return 'Please select a Profession';
-        }
-        return null;
-      },
+      validator: (value) => value == null ? 'Please select a profession' : null,
     );
   }
 }
