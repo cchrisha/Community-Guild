@@ -105,6 +105,46 @@ class _PaymentPageState extends State<PaymentPage> {
     }
 }
 
+    Future<void> loginWithMetaMask(String email, String password, String metamaskAddress) async {
+      final response = await http.post(
+        Uri.parse('https://api-tau-plum.vercel.app/api/userLogin'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'email': email,
+          'password': password,
+          'walletAddress': metamaskAddress // Send wallet address
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        // Handle successful login, e.g., save the token
+        print('Login successful: ${data['message']}');
+      } else {
+        print('Login failed: ${response.body}');
+      }
+    }
+
+    Future<void> logout() async {
+      final response = await http.post(
+        Uri.parse('https://api-tau-plum.vercel.app/api/logout'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print('Logout successful: ${json.decode(response.body)['message']}');
+        // Clear MetaMask session
+        // Implement the actual logout logic for MetaMask, e.g., disconnecting from wallet
+      } else {
+        print('Logout failed: ${response.body}');
+      }
+    }
+
+
   Future<void> fetchTransactions(String address) async {
     setState(() {
       isLoading = true;
