@@ -15,7 +15,6 @@ class AuthRepository {
     required String location,
     required String contact,
     required String profession,
-    required String addinfo,
   }) async {
     final response = await httpClient.post(
       Uri.parse('https://api-tau-plum.vercel.app/api/userSignup'),
@@ -28,7 +27,6 @@ class AuthRepository {
         'location': location,
         'contact': contact,
         'profession': profession,
-        'addinfo': addinfo,
       }),
     );
 

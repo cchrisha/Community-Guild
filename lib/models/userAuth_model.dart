@@ -9,18 +9,16 @@ class Userauth extends Equatable {
   final String location;
   final String contact;
   final String profession;
-  final String addinfo;
 
   Userauth({
     required this.id,
     required this.name,
     required this.email,
     required this.password,
-    this.walletAddress = '', 
-    required this.location, 
-    required this.contact, 
-    required this.profession, 
-    required this.addinfo, 
+    this.walletAddress = '',
+    required this.location,
+    required this.contact,
+    required this.profession,
   });
 
   factory Userauth.fromJson(Map<String, dynamic> json) {
@@ -29,11 +27,10 @@ class Userauth extends Equatable {
         name: json['name'],
         email: json['email'],
         password: json['password'],
-        walletAddress: json['walletAddress'] ?? '', 
-        location: json['location'], 
-        contact: json['contact'], 
-        profession: json['profession'], 
-        addinfo: json['addinfo']); 
+        walletAddress: json['walletAddress'] ?? '',
+        location: json['location'],
+        contact: json['contact'],
+        profession: json['profession']);
   }
 
   Map<String, dynamic> toJson() {
@@ -45,10 +42,10 @@ class Userauth extends Equatable {
       'location': location,
       'contact': contact,
       'profession': profession,
-      'addinfo': addinfo,
     };
   }
 
   @override
-  List<Object> get props => [id, name, email, password, walletAddress, location, contact, profession, addinfo];
+  List<Object> get props =>
+      [id, name, email, password, walletAddress, location, contact, profession];
 }

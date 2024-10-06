@@ -17,7 +17,7 @@ class ProfileLoaded extends ProfileState {
   final String email;
   final String profession;
 
-  const ProfileLoaded({
+  ProfileLoaded({
     required this.location,
     required this.contact,
     required this.email,

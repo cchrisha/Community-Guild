@@ -118,12 +118,6 @@ class RegisterPage extends StatelessWidget {
                         controller: authBloc.professionController,
                         obscureText: false,
                       ),
-                      const SizedBox(height: 15),
-                      AuthWidgets.textField(
-                        hintText: 'Additional Info',
-                        controller: authBloc.addinfoController,
-                        obscureText: false,
-                      ),
                       const SizedBox(height: 20),
                       AuthWidgets.primaryButton(
                         text: 'Sign Up',
@@ -132,8 +126,7 @@ class RegisterPage extends StatelessWidget {
                                   authBloc.confirmPasswordController.text &&
                               authBloc.locationController.text.isNotEmpty &&
                               authBloc.contactController.text.isNotEmpty &&
-                              authBloc.professionController.text.isNotEmpty &&
-                              authBloc.addinfoController.text.isNotEmpty) {
+                              authBloc.professionController.text.isNotEmpty) {
                             authBloc.add(RegisterRequested(
                               userauth: Userauth(
                                 id: '',
@@ -143,7 +136,6 @@ class RegisterPage extends StatelessWidget {
                                 location: authBloc.locationController.text,
                                 contact: authBloc.contactController.text,
                                 profession: authBloc.professionController.text,
-                                addinfo: authBloc.addinfoController.text,
                               ),
                             ));
                           } else {

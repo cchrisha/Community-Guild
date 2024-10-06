@@ -207,7 +207,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
         ),
         const SizedBox(height: 20),
         const Text(
-          'Marvin John D. Macam',
+          'Name',
           style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -216,7 +216,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
         ),
         const SizedBox(height: 5),
         const Text(
-          'Software Engineer',
+          'Profession',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w400,
@@ -224,7 +224,6 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           ),
         ),
         const SizedBox(height: 10),
-        const ProfileInfoCard(),
       ],
     );
   }

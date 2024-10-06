@@ -2,7 +2,18 @@ import 'package:flutter/material.dart';
 import 'profile_info_row.dart';
 
 class ProfileInfoCard extends StatelessWidget {
-  const ProfileInfoCard({super.key});
+  final String location;
+  final String contact;
+  final String email;
+  final String profession;
+
+  const ProfileInfoCard({
+    super.key,
+    required this.location,
+    required this.contact,
+    required this.email,
+    required this.profession,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,16 +31,13 @@ class ProfileInfoCard extends StatelessWidget {
           ),
         ],
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ProfileInfoRow(label: 'Location:', value: 'New York'),
-          ProfileInfoRow(label: 'Contact:', value: '123-456-7890'),
-          ProfileInfoRow(
-            label: 'Email:',
-            value: 'marvin@gmail.com',
-          ),
-          ProfileInfoRow(label: 'Profession:', value: 'Software Developer'),
+          ProfileInfoRow(label: 'Location:', value: location),
+          ProfileInfoRow(label: 'Contact:', value: contact),
+          ProfileInfoRow(label: 'Email:', value: email),
+          ProfileInfoRow(label: 'Profession:', value: profession),
         ],
       ),
     );
