@@ -1,15 +1,15 @@
-// forget_password_page.dart
+import 'package:community_guild/bloc/forgetpassword/forgetpassword_event.dart';
+import 'package:community_guild/widget/forgot_password/custom_app_bar.dart';
+import 'package:community_guild/widget/forgot_password/email_input.dart';
+import 'package:community_guild/widget/forgot_password/otp_input.dart';
+import 'package:community_guild/widget/forgot_password/password_input.dart';
+import 'package:community_guild/widget/forgot_password/send_otp_button.dart';
+import 'package:community_guild/widget/forgot_password/verify_otp_button.dart';
+import 'package:community_guild/bloc/forgetpassword/forgetpassword_bloc.dart';
+import 'package:community_guild/bloc/forgetpassword/forgetpassword_state.dart';
+import 'package:community_guild/repository/forgotpass_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/forgetpassword/forgetpassword_bloc.dart';
-import '../bloc/forgetpassword/forgetpassword_event.dart';
-import '../bloc/forgetpassword/forgetpassword_state.dart';
-import '../widget/forgot_password/custom_app_bar.dart';
-import '../widget/forgot_password/email_input.dart';
-import '../widget/forgot_password/otp_input.dart';
-import '../widget/forgot_password/password_input.dart';
-import '../widget/forgot_password/send_otp_button.dart';
-import '../widget/forgot_password/verify_otp_button.dart';
 import 'login_page.dart';
 
 class ForgetPasswordPage extends StatefulWidget {
@@ -23,26 +23,28 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isPasswordVisible = false; // State for toggling password visibility
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ForgetPasswordBloc(),
+      create: (context) => ForgetPasswordBloc(
+        repository: ForgetPasswordRepository(),
+      ),
       child: Scaffold(
         appBar: const CustomAppBar(title: 'Forgot Password'),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: BlocBuilder<ForgetPasswordBloc, ForgetPasswordState>(
             builder: (context, state) {
-              if (state is OtpSending) {
+              if (state is SendingOtpState ||
+                  state is OtpVerificationLoading ||
+                  state is PasswordResetLoading) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is OtpSent) {
+              } else if (state is OtpSentState) {
                 return _buildOtpInput(context);
               } else if (state is OtpVerified) {
                 return _buildPasswordInput(context);
-              } else if (state is PasswordResetLoading) {
-                return const Center(child: CircularProgressIndicator());
               } else if (state is PasswordResetSuccess) {
                 return _buildSuccessDialog(
                     context, 'Password reset successful.');
@@ -62,17 +64,20 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text(
-          'Enter your email to receive an OTP',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18),
-        ),
+        const Text('Enter your email to receive an OTP',
+            textAlign: TextAlign.center),
         const SizedBox(height: 20),
         EmailInput(controller: _emailController),
         const SizedBox(height: 20),
         SendOtpButton(
           isLoading: false,
           onPressed: () {
+            if (_emailController.text.isEmpty ||
+                !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                    .hasMatch(_emailController.text)) {
+              _buildErrorDialog(context, 'Please enter a valid email');
+              return;
+            }
             BlocProvider.of<ForgetPasswordBloc>(context)
                 .add(SendOtpEvent(email: _emailController.text));
           },
@@ -85,19 +90,23 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text(
-          'Enter the OTP sent to your email',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18),
-        ),
+        const Text('Enter the OTP sent to your email',
+            textAlign: TextAlign.center),
         const SizedBox(height: 20),
         OtpInput(controller: _otpController),
         const SizedBox(height: 20),
         VerifyOtpButton(
           isVerifying: false,
           onPressed: () {
-            BlocProvider.of<ForgetPasswordBloc>(context)
-                .add(VerifyOtpEvent(otp: _otpController.text));
+            if (_otpController.text.isEmpty) {
+              _buildErrorDialog(context, 'Please enter the OTP');
+              return;
+            }
+            BlocProvider.of<ForgetPasswordBloc>(context).add(VerifyOtpEvent(
+              email: _emailController.text,
+              otp: _otpController.text,
+              newPassword: '',
+            ));
           },
         ),
       ],
@@ -108,18 +117,12 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text(
-          'Enter a new password',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18),
-        ),
+        const Text('Enter a new password', textAlign: TextAlign.center),
         const SizedBox(height: 20),
         PasswordInput(
           controller: _passwordController,
           isVisible: _isPasswordVisible,
-          onChanged: (password) {
-            // Handle password change logic
-          },
+          onChanged: (value) {},
           onToggleVisibility: () {
             setState(() {
               _isPasswordVisible = !_isPasswordVisible;
@@ -127,13 +130,28 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
           },
         ),
         const SizedBox(height: 20),
-        SendOtpButton(
-          isLoading: false,
+        ElevatedButton(
           onPressed: () {
-            BlocProvider.of<ForgetPasswordBloc>(context)
-                .add(ResetPasswordEvent(password: _passwordController.text));
+            if (_passwordController.text.isEmpty ||
+                _passwordController.text.length < 4) {
+              _buildErrorDialog(
+                  context, 'Password should be at least 4 characters long');
+              return;
+            }
+            BlocProvider.of<ForgetPasswordBloc>(context).add(ResetPasswordEvent(
+              email: _emailController.text,
+              newPassword: _passwordController.text,
+            ));
           },
-          label: 'Reset Password',
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.lightBlue,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: const Text('Reset Password'),
         ),
       ],
     );
@@ -146,12 +164,11 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
+            Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => const LoginPage()),
             );
           },
-          child: const Text('OK', style: TextStyle(color: Colors.lightBlue)),
+          child: const Text('OK'),
         ),
       ],
     );
@@ -163,10 +180,8 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
       content: Text(error),
       actions: [
         TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('OK', style: TextStyle(color: Colors.lightBlue)),
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('OK'),
         ),
       ],
     );
