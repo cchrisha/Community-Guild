@@ -287,7 +287,7 @@ class JobPage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const JobDetailPage(
+                                builder: (context) => const OwnJobDetailPage(
                                   jobTitle: '',
                                   jobDescription: '',
                                   date: '',
