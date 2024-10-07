@@ -1,4 +1,3 @@
-// lib/bloc/change_password/bloc/change_password_event.dart
 import 'package:equatable/equatable.dart';
 
 abstract class ChangePasswordEvent extends Equatable {
@@ -11,10 +10,14 @@ abstract class ChangePasswordEvent extends Equatable {
 class ChangePasswordRequested extends ChangePasswordEvent {
   final String oldPassword;
   final String newPassword;
+  final String confirmPassword;
 
-  const ChangePasswordRequested(
-      {required this.oldPassword, required this.newPassword});
+  const ChangePasswordRequested({
+    required this.oldPassword,
+    required this.newPassword,
+    required this.confirmPassword,
+  });
 
   @override
-  List<Object?> get props => [oldPassword, newPassword];
+  List<Object?> get props => [oldPassword, newPassword, confirmPassword];
 }

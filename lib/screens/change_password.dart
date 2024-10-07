@@ -18,10 +18,13 @@ class ChangePasswordPage extends StatefulWidget {
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final TextEditingController _oldPasswordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   String _passwordStrength = '';
   Color _strengthColor = Colors.grey;
   bool _oldPasswordVisible = false;
   bool _newPasswordVisible = false;
+  bool _confirmPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +43,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             );
             _oldPasswordController.clear();
             _newPasswordController.clear();
+            _confirmPasswordController.clear();
             setState(() {
               _passwordStrength = '';
               _strengthColor = Colors.grey;
@@ -101,6 +105,18 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       },
                       onChanged: _checkPasswordStrength,
                     ),
+                    const SizedBox(height: 20.0),
+                    PasswordField(
+                      controller: _confirmPasswordController,
+                      label: 'Confirm Password',
+                      icon: Icons.lock,
+                      isVisible: _confirmPasswordVisible,
+                      toggleVisibility: () {
+                        setState(() {
+                          _confirmPasswordVisible = !_confirmPasswordVisible;
+                        });
+                      },
+                    ),
                     const SizedBox(height: 10.0),
                     PasswordStrengthIndicator(
                       strength: _passwordStrength,
@@ -117,6 +133,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                     ChangePasswordRequested(
                                       oldPassword: _oldPasswordController.text,
                                       newPassword: _newPasswordController.text,
+                                      confirmPassword:
+                                          _confirmPasswordController.text,
                                     ),
                                   );
                             },

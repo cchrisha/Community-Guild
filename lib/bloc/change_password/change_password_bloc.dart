@@ -14,7 +14,10 @@ class ChangePasswordBloc
       emit(ChangePasswordLoading());
       try {
         await changePasswordRepository.changePassword(
-            event.oldPassword, event.newPassword);
+          event.oldPassword,
+          event.newPassword,
+          event.confirmPassword,
+        );
         emit(ChangePasswordSuccess());
       } catch (error) {
         emit(ChangePasswordFailure(error: error.toString()));
