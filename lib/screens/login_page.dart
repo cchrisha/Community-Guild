@@ -118,7 +118,7 @@ class LoginPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           AuthWidgets.forgotPasswordButton(onPressed: () {
-                            Get.to(() => ForgetPasswordPage());
+                            Get.to(() => const ForgetPasswordPage());
                           }),
                         ],
                       );

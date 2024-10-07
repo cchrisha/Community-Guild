@@ -12,13 +12,18 @@ class JobContactField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: 'Contact',
         labelStyle: const TextStyle(color: Color.fromARGB(255, 3, 169, 244)),
-        prefixIcon: const Icon(Icons.phone, color: Color.fromARGB(255, 3, 169, 244),),
+        prefixIcon: const Icon(
+          Icons.phone,
+          color: Color.fromARGB(255, 3, 169, 244),
+        ),
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromARGB(255, 3, 169, 244), width: 2),
+          borderSide: const BorderSide(
+              color: Color.fromARGB(255, 3, 169, 244), width: 2),
           borderRadius: BorderRadius.circular(16),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromARGB(255, 3, 169, 244), width: 2),
+          borderSide: const BorderSide(
+              color: Color.fromARGB(255, 3, 169, 244), width: 2),
           borderRadius: BorderRadius.circular(16),
         ),
         errorBorder: OutlineInputBorder(

@@ -9,6 +9,7 @@ import '../bloc/logout/bloc/logout_bloc.dart';
 import '../widget/settings/section_header.dart';
 import '../widget/settings/settings_app_bar.dart';
 import '../widget/settings/settings_tile.dart';
+import 'change_password.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -48,7 +49,11 @@ class SettingsPage extends StatelessWidget {
                       icon: Icons.lock,
                       title: 'Change Password',
                       onTap: () {
-                        // Navigate to change password page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ChangePasswordPage()),
+                        );
                       },
                     ),
                     const SectionHeader(title: 'App Info'),
