@@ -45,13 +45,20 @@ class ProfilePage extends StatelessWidget {
             PopupMenuTheme(
               data: const PopupMenuThemeData(color: Colors.white),
               child: PopupMenuButton<String>(
-                onSelected: (value) {
+                onSelected: (value) async {
                   if (value == 'Edit Info') {
-                    Navigator.push(
+                    // Navigate to EditProfilePage and wait for the result
+                    final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const EditProfilePage()),
+                        builder: (context) => const EditProfilePage(),
+                      ),
                     );
+
+                    // If the profile was edited successfully, reload the profile
+                    if (result == true) {
+                      context.read<ProfileBloc>().add(LoadProfile());
+                    }
                   } else if (value == 'Settings') {
                     Navigator.push(
                       context,
