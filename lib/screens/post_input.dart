@@ -15,6 +15,7 @@ import '../widget/post_page/job_description_field.dart';
 import '../widget/post_page/crypto_payment_checkbox.dart';
 import '../widget/post_page/post_button.dart';
 import 'package:http/http.dart' as http;
+import 'package:community_guild/repository/auth_repository.dart'; // Import the AuthRepository
 
 class PostInput extends StatefulWidget {
   const PostInput({super.key});
@@ -30,9 +31,11 @@ class PostInputState extends State<PostInput> {
   final TextEditingController _rewardController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
+  final AuthRepository authRepository = AuthRepository(httpClient: http.Client()); // Add AuthRepository instance
 
   bool _isCrypto = false;
   String? _selectedProfession;
+  String? _userId; // Store the userId here
 
   final List<String> _professions = [
   'Programmer', 'Software Developer', 'Cook', 'Accountant', 'Gardener',
@@ -46,7 +49,21 @@ class PostInputState extends State<PostInput> {
   'UX/UI Designer', 'System Administrator', 'Cybersecurity Analyst', 'Mobile Developer', 'Game Developer',
   'Real Estate Agent', 'Lawyer', 'Paralegal', 'Veterinarian', 'Architect',
   'Journalist', 'Civil Engineer', 'Digital Marketer'
-];
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserId(); // Load the userId when the widget is initialized
+  }
+
+  Future<void> _loadUserId() async {
+    final userId = await authRepository.getUserId();
+    setState(() {
+      _userId = userId;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -139,18 +156,24 @@ class PostInputState extends State<PostInput> {
                     Center(
                       child: PostButton(
                         onPressed: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            BlocProvider.of<PostBloc>(context).add(
-                              SubmitJob(
-                                title: _titleController.text,
-                                location: _locationController.text,
-                                wageRange: _rewardController.text,
-                                isCrypto: _isCrypto,
-                                description: _descriptionController.text,
-                                professions: [_selectedProfession!], // This assumes one profession is selected
-                                categories: ['General'], // You can change this to an actual category field
-                                poster: 'User ID', // Replace this with the actual user ID from the app's context
-                              ),
+                          if (_userId != null) {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              BlocProvider.of<PostBloc>(context).add(
+                                SubmitJob(
+                                  title: _titleController.text,
+                                  location: _locationController.text,
+                                  wageRange: _rewardController.text,
+                                  isCrypto: _isCrypto,
+                                  description: _descriptionController.text,
+                                  professions: [_selectedProfession!], // Assuming one profession is selected
+                                  categories: ['General'], // Change to actual category field if needed
+                                  poster: _userId!, // Use the retrieved userId
+                                ),
+                              );
+                            }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('User ID not available. Please log in.')),
                             );
                           }
                         },

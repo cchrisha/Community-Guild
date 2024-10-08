@@ -73,26 +73,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    // on<LoginRequested>((event, emit) async {
-    //   emit(AuthLoading());
-    //   try {
-    //     if (!_isValidEmail(event.email)) {
-    //       emit(AuthFailure('Please enter a valid email address.'));
-    //       return;
-    //     }
-    //     if (event.password.length < 4) {
-    //       emit(AuthFailure('Password must be at least 4 characters long.'));
-    //       return;
-    //     }
-    //     final token =
-    //         await authRepository.loginUser(event.email, event.password);
-    //     await authRepository.saveToken(token);
-    //     emit(AuthSuccess());
-    //   } catch (error) {
-    //     emit(AuthFailure(error.toString()));
-    //   }
-    // });
-
     on<LoginRequested>((event, emit) async {
   emit(AuthLoading());
   try {
