@@ -5,10 +5,9 @@ import '../bloc/edit_profile/edit_profile_state.dart';
 import '../bloc/edit_profile/edit_profile_bloc.dart';
 import '../repository/profile_repository.dart';
 import '../widget/edit_profile/edit_profile_app_bar.dart';
-import '../widget/edit_profile/profession_dropdown.dart';
 import '../widget/edit_profile/text_field_widget.dart';
 import '../widget/edit_profile/save_button.dart';
-import 'profile_page.dart'; // Import the ProfilePage
+import 'profile_page.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
