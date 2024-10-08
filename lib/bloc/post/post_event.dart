@@ -8,23 +8,25 @@ abstract class PostEvent extends Equatable {
 class SubmitJob extends PostEvent {
   final String title;
   final String location;
-  final String profession;
   final String wageRange;
-  final String contact;
-  final String description;
   final bool isCrypto;
+  final String description;
+  final List<String> professions;
+  final List<String> categories;
+  final String poster;
 
   SubmitJob({
     required this.title,
     required this.location,
-    required this.profession,
     required this.wageRange,
-    required this.contact,
-    required this.description,
     required this.isCrypto,
+    required this.description,
+    required this.professions,
+    required this.categories,
+    required this.poster,
   });
 
   @override
   List<Object?> get props =>
-      [title, location, profession, wageRange, contact, description, isCrypto];
+      [title, location, wageRange, isCrypto, description, professions, categories, poster];
 }
