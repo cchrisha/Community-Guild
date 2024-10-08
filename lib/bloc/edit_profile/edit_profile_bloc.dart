@@ -1,24 +1,33 @@
+import 'package:community_guild/repository/profile_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'edit_profile_event.dart';
 import 'edit_profile_state.dart';
 
 class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
-  EditProfileBloc() : super(EditProfileInitial());
+  final ProfileRepository profileRepository; // Declare the repository
 
-  Stream<EditProfileState> mapEventToState(EditProfileEvent event) async* {
-    if (event is SaveProfileEvent) {
-      yield* _mapSaveProfileEventToState(event);
-    }
+  EditProfileBloc({required this.profileRepository})
+      : super(EditProfileInitial()) {
+    // Register the event handler here
+    on<SaveProfileEvent>(_mapSaveProfileEventToState);
   }
 
-  Stream<EditProfileState> _mapSaveProfileEventToState(
-      SaveProfileEvent event) async* {
+  // Event handler function for SaveProfileEvent
+  Future<void> _mapSaveProfileEventToState(
+      SaveProfileEvent event, Emitter<EditProfileState> emit) async {
+    emit(EditProfileLoading()); // Indicate loading state
+
     try {
-      // Here you can add the logic to save the profile data.
-      // For example, sending the data to an API or saving it locally.
-      yield EditProfileSaved(message: 'Profile saved successfully!');
+      // Call the repository to update user profile
+      await profileRepository.updateUserProfile(
+        name: event.name,
+        location: event.location,
+        contact: event.contact,
+        profession: event.profession,
+      );
+      emit(EditProfileSaved(message: 'Profile saved successfully!'));
     } catch (error) {
-      yield EditProfileError(message: 'Failed to save profile: $error');
+      emit(EditProfileError(message: 'Failed to save profile: $error'));
     }
   }
 }

@@ -278,7 +278,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
                       ),
                     ),
                     child: const Text(
-                      'Start',
+                      'Accept',
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),

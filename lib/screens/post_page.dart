@@ -83,7 +83,7 @@ class PostPage extends StatelessWidget {
               const SizedBox(height: 20),
               // Recommended Section (example of the similar SizedBox from Recommended Section)
               const Text(
-                'Recommended Jobs',
+                'Your Posted Jobs',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),

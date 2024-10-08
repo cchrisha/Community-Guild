@@ -1,6 +1,7 @@
 import 'package:community_guild/screens/own_post_job_detail.dart';
 import 'package:flutter/material.dart';
 
+
 class PostJobCard extends StatelessWidget {
   const PostJobCard({super.key});
 
@@ -11,9 +12,16 @@ class PostJobCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => const PostJobDetail(
+              builder: (context) => const OwnJobDetailPage(
                     jobTitle: '',
                     jobDescription: '',
+                    date: '',
+                    workPlace: '',
+                    wageRange: '',
+                    isCrypto: true,
+                    professions: '',
+                    contact: '',
+                    category: '',
                   )),
         );
       },

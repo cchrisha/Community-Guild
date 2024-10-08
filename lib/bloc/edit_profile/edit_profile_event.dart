@@ -9,19 +9,17 @@ abstract class EditProfileEvent extends Equatable {
 
 class SaveProfileEvent extends EditProfileEvent {
   final String name;
-  final String email;
   final String location;
   final String contact;
-  final String? profession;
+  final String profession;
 
   const SaveProfileEvent({
     required this.name,
-    required this.email,
     required this.location,
     required this.contact,
     required this.profession,
   });
 
   @override
-  List<Object?> get props => [name, email, location, contact, profession];
+  List<Object?> get props => [name, location, contact, profession];
 }
