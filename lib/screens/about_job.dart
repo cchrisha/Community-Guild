@@ -1,8 +1,10 @@
+import 'package:community_guild/screens/completed_job.dart';
 import 'package:community_guild/screens/job_detail.dart';
 import 'package:community_guild/screens/pending_job_detail.dart';
+import 'package:community_guild/screens/rejected_job_details.dart';
 import 'package:community_guild/widget/about_job/job_card.dart';
+import 'package:community_guild/widget/about_job/post_job_card2.dart';
 import 'package:community_guild/widget/about_job/section_title.dart';
-import 'package:community_guild/widget/profile/completed_job_card.dart';
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/current_job_detail.dart';
 import 'package:community_guild/screens/home.dart';
@@ -11,6 +13,7 @@ import 'package:community_guild/screens/own_post_job_detail.dart'; // Update imp
 import 'package:community_guild/screens/payment_page.dart';
 import 'package:community_guild/screens/post_page.dart';
 import 'package:community_guild/screens/profile_page.dart';
+import 'package:community_guild/widget/about_job/completed_job_card2.dart';
 
 class JobPage extends StatelessWidget {
   const JobPage({super.key});
@@ -34,18 +37,6 @@ class JobPage extends StatelessWidget {
         ),
         backgroundColor: const Color.fromARGB(255, 3, 169, 244),
         automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const NotificationPage()),
-              );
-            },
-          ),
-        ],
       ),
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: SingleChildScrollView(
@@ -61,7 +52,7 @@ class JobPage extends StatelessWidget {
                 height: 230,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 10,
+                  itemCount: 3,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(right: 10),
@@ -69,21 +60,20 @@ class JobPage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width *
                             0.8, //responsive na width
                         child: AboutJobCard(
-                          jobTitle: 'Recommended Job Title ${index + 1}',
-                          jobDescription:
-                              'This is the job description for recommended job ${index + 1}.',
-                          workPlace: 'Workplace ${index + 1}',
-                          category: 'Category ${index + 1}',
-                          date: 'Date: 2024-09-${index + 1}',
-                          wageRange:
-                              '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
-                          isCrypto: index % 2 == 0,
-                          professions: 'Profession ${index + 1}',
+                          jobTitle: 'Job Title $index', // Replace with actual data
+                          jobDescription: 'Description of job $index', // Replace with actual data
+                          workPlace: 'Workplace $index', // Replace with actual data
+                          date: 'Date $index', // Replace with actual data
+                          wageRange: 'Wage Range $index', // Replace with actual data
+                          contact: 'Contact $index', // Replace with actual data
+                          category: 'Category $index', // Replace with actual data
+                          isCrypto: index % 2 == 0, // Replace with actual data
+                          professions: 'Profession $index', // Replace with actual data
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const JobDetailPage(
+                                builder: (context) => const CurrentJobDetail(
                                   jobTitle: '',
                                   jobDescription: '',
                                   date: '',
@@ -119,22 +109,21 @@ class JobPage extends StatelessWidget {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width *
                             0.8, //responsive na width
-                        child: AboutJobCard(
-                          jobTitle: 'Recommended Job Title ${index + 1}',
-                          jobDescription:
-                              'This is the job description for recommended job ${index + 1}.',
-                          workPlace: 'Workplace ${index + 1}',
-                          category: 'Category ${index + 1}',
-                          date: 'Date: 2024-09-${index + 1}',
-                          wageRange:
-                              '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
-                          isCrypto: index % 2 == 0,
-                          professions: 'Profession ${index + 1}',
+                        child: CompletedJobCard2(
+                          jobTitle: 'Job Title $index', // Replace with actual data
+                          jobDescription: 'Description of job $index', // Replace with actual data
+                          workPlace: 'Workplace $index', // Replace with actual data
+                          date: 'Date $index', // Replace with actual data
+                          wageRange: 'Wage Range $index', // Replace with actual data
+                          contact: 'Contact $index', // Replace with actual data
+                          category: 'Category $index', // Replace with actual data
+                          isCrypto: index % 2 == 0, // Replace with actual data
+                          professions: 'Profession $index', // Replace with actual data
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const JobDetailPage(
+                                builder: (context) => const CompletedJobDetail(
                                   jobTitle: '',
                                   jobDescription: '',
                                   date: '',
@@ -171,21 +160,20 @@ class JobPage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width *
                             0.8, //responsive na width
                         child: AboutJobCard(
-                          jobTitle: 'Recommended Job Title ${index + 1}',
-                          jobDescription:
-                              'This is the job description for recommended job ${index + 1}.',
-                          workPlace: 'Workplace ${index + 1}',
-                          category: 'Category ${index + 1}',
-                          date: 'Date: 2024-09-${index + 1}',
-                          wageRange:
-                              '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
-                          isCrypto: index % 2 == 0,
-                          professions: 'Profession ${index + 1}',
+                          jobTitle: 'Job Title $index', // Replace with actual data
+                          jobDescription: 'Description of job $index', // Replace with actual data
+                          date: 'Date $index', // Replace with actual data
+                          workPlace: 'Workplace $index', // Replace with actual data
+                          wageRange: 'Wage Range $index', // Replace with actual data
+                          isCrypto: index % 2 == 0, // Replace with actual data
+                          professions: 'Profession $index', // Replace with actual data
+                          contact: 'Contact $index', // Replace with actual data
+                          category: 'Category $index', // Replace with actual data
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const JobDetailPage(
+                                builder: (context) => const PendingJobDetail(
                                   jobTitle: '',
                                   jobDescription: '',
                                   date: '',
@@ -222,21 +210,20 @@ class JobPage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width *
                             0.8, //responsive na width
                         child: AboutJobCard(
-                          jobTitle: 'Recommended Job Title ${index + 1}',
-                          jobDescription:
-                              'This is the job description for recommended job ${index + 1}.',
-                          workPlace: 'Workplace ${index + 1}',
-                          category: 'Category ${index + 1}',
-                          date: 'Date: 2024-09-${index + 1}',
-                          wageRange:
-                              '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
-                          isCrypto: index % 2 == 0,
-                          professions: 'Profession ${index + 1}',
+                          jobTitle: 'Job Title $index', // Replace with actual data
+                          jobDescription: 'Description of job $index', // Replace with actual data
+                          date: 'Date $index', // Replace with actual data
+                          workPlace: 'Workplace $index', // Replace with actual data
+                          wageRange: 'Wage Range $index', // Replace with actual data
+                          isCrypto: index % 2 == 0, // Replace with actual data
+                          professions: 'Profession $index', // Replace with actual data
+                          contact: 'Contact $index', // Replace with actual data
+                          category: 'Category $index', // Replace with actual data
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const JobDetailPage(
+                                builder: (context) => const RejectedJobDetail(
                                   jobTitle: '',
                                   jobDescription: '',
                                   date: '',
@@ -259,7 +246,7 @@ class JobPage extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Jobs You Posted Section
-              const SectionTitleAboutJob(title: 'Jobs You Posted'),
+              const SectionTitleAboutJob(title: 'Posted Jobs'),
               const SizedBox(height: 10),
               SizedBox(
                 height: 230,
@@ -272,17 +259,16 @@ class JobPage extends StatelessWidget {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width *
                             0.8, //responsive na width
-                        child: AboutJobCard(
-                          jobTitle: 'Recommended Job Title ${index + 1}',
-                          jobDescription:
-                              'This is the job description for recommended job ${index + 1}.',
-                          workPlace: 'Workplace ${index + 1}',
-                          category: 'Category ${index + 1}',
-                          date: 'Date: 2024-09-${index + 1}',
-                          wageRange:
-                              '\$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
-                          isCrypto: index % 2 == 0,
-                          professions: 'Profession ${index + 1}',
+                        child: PostedJobCard2(
+                          jobTitle: 'Job Title $index', // Replace with actual data
+                          jobDescription: 'Description of job $index', // Replace with actual data
+                          workPlace: 'Workplace $index', // Replace with actual data
+                          date: 'Date $index', // Replace with actual data
+                          wageRange: 'Wage Range $index', // Replace with actual data
+                          contact: 'Contact $index', // Replace with actual data
+                          category: 'Category $index', // Replace with actual data
+                          isCrypto: index % 2 == 0, // Replace with actual data
+                          professions: 'Profession $index', // Replace with actual data
                           onTap: () {
                             Navigator.push(
                               context,

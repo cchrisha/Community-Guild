@@ -32,7 +32,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
   // Mock data for Request and Workers dialogs
   final List<String> users = ['User 1', 'User 2', 'User 3', 'User 4', 'User 5', 'User 6', 'User 7']; // Sample larger list
 
-  void _showRequestDialog() {
+  void _showApplicantsDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -180,14 +180,6 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
             Navigator.pop(context);
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.share, color: Colors.white),
-            onPressed: () {
-              // Implement share functionality
-            },
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -379,17 +371,22 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(
-                    width: 120, // Set a specific width for consistency
+                    width: 120, // Same width as the View Applicants button
                     child: ElevatedButton(
-                      onPressed: _showRequestDialog,
-                      child: const Text('View Requests'),
+                      onPressed: _showApplicantsDialog,
+                      child: const Center(
+                        child: Text('View Applicants'),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 20),
                   SizedBox(
                     width: 120, // Same width as the View Applicants button
                     child: ElevatedButton(
                       onPressed: _showWorkersDialog,
-                      child: const Text('View Workers'),
+                      child: const Center(
+                        child: Text('View Workers'),
+                      ),
                     ),
                   ),
                 ],

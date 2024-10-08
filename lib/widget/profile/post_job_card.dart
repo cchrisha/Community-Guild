@@ -1,51 +1,89 @@
 import 'package:community_guild/screens/own_post_job_detail.dart';
 import 'package:flutter/material.dart';
 
+import 'package:community_guild/screens/completed_job.dart';
+import 'package:flutter/material.dart';
 
-class PostJobCard extends StatelessWidget {
-  const PostJobCard({super.key});
+class PostedJobCard extends StatelessWidget {
+  final String jobTitle;
+  final String jobDescription;
+  final String workPlace;
+  final String date;
+  final String wageRange;
+  final String category;
+  final bool isCrypto;
+  final String contact;
+  final String professions;
+  final VoidCallback onTap;
+  final bool showAddButton;
+
+  const PostedJobCard({
+    super.key,
+    required this.jobTitle,
+    required this.jobDescription,
+    required this.workPlace,
+    required this.date,
+    required this.wageRange,
+    required this.contact,
+    required this.category,
+    required this.isCrypto,
+    required this.professions,
+    required this.onTap,
+    this.showAddButton = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const OwnJobDetailPage(
-                    jobTitle: '',
-                    jobDescription: '',
-                    date: '',
-                    workPlace: '',
-                    wageRange: '',
-                    isCrypto: true,
-                    professions: '',
-                    contact: '',
-                    category: '',
-                  )),
-        );
-      },
-      child: Container(
-        height: 120,
-        padding: const EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: const Center(
-          child: Text(
-            'Post Job Details Here',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black87,
-            ),
+      onTap: onTap,
+      child: Card(
+        elevation: 3,
+        color: Colors.white, // Set the background color to white
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(jobTitle,
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(date, style: const TextStyle(color: Colors.grey)),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                jobDescription,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: Colors.black54),
+              ),
+              const SizedBox(height: 8),
+              Text('Wanted Profession: $professions'),
+              const SizedBox(height: 5),
+              Text('Category: $category'),
+              const SizedBox(height: 5),
+              Text('Workplace: $workPlace'),
+              const SizedBox(height: 5),
+              Text('Contact: $contact'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    // Ensure Wage takes equal space like Workplace
+                    child: Text('Wage: $wageRange'),
+                  ),
+                  Row(
+                    children: [
+                      Checkbox(value: isCrypto, onChanged: null),
+                      const Text('Crypto'),
+                    ],
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

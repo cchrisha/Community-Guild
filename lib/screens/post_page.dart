@@ -1,9 +1,12 @@
 import 'package:community_guild/screens/about_job.dart';
 import 'package:community_guild/screens/payment_page.dart';
 import 'package:community_guild/screens/profile_page.dart';
+import 'package:community_guild/widget/post_page/section_title.dart';
 import 'package:flutter/material.dart';
 import 'home.dart'; // assuming home.dart is in the same directory
 import 'post_input.dart';
+import 'package:community_guild/widget/post_page/post_job_card3.dart';
+import 'package:community_guild/screens/own_post_job_detail.dart';
 
 class PostPage extends StatelessWidget {
   const PostPage({super.key});
@@ -16,7 +19,7 @@ class PostPage extends StatelessWidget {
           padding: EdgeInsets.only(
               left: 16.0), // Adjust this value to move the text right
           child: Text(
-            'Post',
+            'Create a Job Post',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -26,14 +29,6 @@ class PostPage extends StatelessWidget {
         ),
         automaticallyImplyLeading: false,
         backgroundColor: const Color.fromARGB(255, 3, 169, 244),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              // Navigate to the notifications page
-            },
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -82,54 +77,47 @@ class PostPage extends StatelessWidget {
 
               const SizedBox(height: 20),
               // Recommended Section (example of the similar SizedBox from Recommended Section)
-              const Text(
-                'Your Posted Jobs',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
+              const SectionTitlePostPage(title: 'Posted Jobs'),
               const SizedBox(height: 10),
               SizedBox(
-                height: 250, // Adjusted to match Recommended Section size
+                height: 230,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 5, // sample count
+                  itemCount: 3,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: Card(
-                          elevation: 3,
-                          color: Colors.white,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Job Title ${index + 1}',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                        width: MediaQuery.of(context).size.width *
+                            0.8, //responsive na width
+                        child: PostedJobCard3(
+                          jobTitle: 'Job Title $index', // Replace with actual data
+                          jobDescription: 'Description of job $index', // Replace with actual data
+                          workPlace: 'Workplace $index', // Replace with actual data
+                          date: 'Date $index', // Replace with actual data
+                          wageRange: 'Wage Range $index', // Replace with actual data
+                          contact: 'Contact $index', // Replace with actual data
+                          category: 'Category $index', // Replace with actual data
+                          isCrypto: index % 2 == 0, // Replace with actual data
+                          professions: 'Profession $index', // Replace with actual data
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const OwnJobDetailPage(
+                                  jobTitle: '', // Replace with actual data
+                                  jobDescription: '', // Replace with actual data
+                                  date: '', // Replace with actual data
+                                  workPlace: '', // Replace with actual data
+                                  wageRange: '', // Replace with actual data
+                                  isCrypto: true, // Replace with actual data
+                                  professions: '', // Replace with actual data
+                                  contact: '', // Replace with actual data
+                                  category: '', // Replace with actual data
                                 ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  'Job Description for Job ${index + 1}',
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                                const SizedBox(height: 20),
-                                Text(
-                                  'Workplace ${index + 1}',
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  'Wage: \$${index * 1000 + 1000} - \$${index * 1000 + 2000}',
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     );

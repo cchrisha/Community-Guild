@@ -1,10 +1,11 @@
 import 'package:community_guild/repository/profile_repository.dart';
+import 'package:community_guild/screens/completed_job.dart';
+import 'package:community_guild/screens/own_post_job_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/profile/profile_bloc.dart';
 import '../bloc/profile/profile_event.dart';
 import '../bloc/profile/profile_state.dart';
-import '../widget/profile/completed_job_card.dart';
 import '../widget/profile/post_job_card.dart';
 import '../widget/profile/profile_header.dart';
 import '../widget/profile/section_with_see_all.dart';
@@ -12,6 +13,8 @@ import '../widget/profile/verify_account_card.dart';
 import '../widget/profile/profile_info_card.dart';
 import 'edit_profile_page.dart';
 import 'setting.dart';
+import '../widget/home/job_card.dart';
+import '../widget/profile/completed_job_card.dart'; // Make sure to import your completed job card
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -47,7 +50,6 @@ class ProfilePage extends StatelessWidget {
               child: PopupMenuButton<String>(
                 onSelected: (value) async {
                   if (value == 'Edit Info') {
-                    // Navigate to EditProfilePage and wait for the result
                     final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -55,7 +57,6 @@ class ProfilePage extends StatelessWidget {
                       ),
                     );
 
-                    // If the profile was edited successfully, reload the profile
                     if (result == true) {
                       context.read<ProfileBloc>().add(LoadProfile());
                     }
@@ -97,8 +98,7 @@ class ProfilePage extends StatelessWidget {
             builder: (context, state) {
               if (state is ProfileLoading) {
                 return const Center(
-                  child:
-                      CircularProgressIndicator(), // Display a loading indicator
+                  child: CircularProgressIndicator(),
                 );
               } else if (state is ProfileLoaded) {
                 return Column(
@@ -124,9 +124,17 @@ class ProfilePage extends StatelessWidget {
                     ),
                     const SizedBox(height: 30),
                     _buildSection(
-                        context, 'Completed Jobs', const CompletedJobCard()),
+                      context, 
+                      'Completed Jobs', 
+                      _buildCompletedJobList(context)
+                    ),
                     const SizedBox(height: 30),
-                    _buildSection(context, 'Posted Jobs', const PostJobCard()),
+                    _buildSection(
+                      context, 
+                      'Posted Jobs',
+                      _PostedJobList(context)
+                    ),
+                    const SizedBox(height: 30),
                   ],
                 );
               } else if (state is ProfileError) {
@@ -140,18 +148,115 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSection(BuildContext context, String title, Widget content,
-      {VoidCallback? onEdit, VoidCallback? seeAll}) {
+  Widget _buildCompletedJobList(BuildContext context) {
+    return SizedBox(
+      height: 210,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 3, // Change this to your actual data length
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: CompletedJobCard(
+                jobTitle: 'Job Title $index', // Replace with actual data
+                jobDescription: 'Description of job $index', // Replace with actual data
+                workPlace: 'Workplace $index', // Replace with actual data
+                date: 'Date $index', // Replace with actual data
+                wageRange: 'Wage Range $index', // Replace with actual data
+                contact: 'Contact $index', // Replace with actual data
+                category: 'Category $index', // Replace with actual data
+                isCrypto: index % 2 == 0, // Replace with actual data
+                professions: 'Profession $index', // Replace with actual data
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CompletedJobDetail(
+                        jobTitle: '', // Replace with actual data
+                        jobDescription: '', // Replace with actual data
+                        date: '', // Replace with actual data
+                        workPlace: '', // Replace with actual data
+                        wageRange: '', // Replace with actual data
+                        isCrypto: true, // Replace with actual data
+                        professions: '', // Replace with actual data
+                        contact: '', // Replace with actual data
+                        category: '', // Replace with actual data
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildSection(BuildContext context, String title, Widget content) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionWithSeeAll(
-          title: title,
-          onSeeAll: seeAll ?? () {},
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 10),
         content,
       ],
+    );
+  }
+
+
+  Widget _PostedJobList(BuildContext context) {
+    return SizedBox(
+      height: 210,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 3, // Change this to your actual data length
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: PostedJobCard(
+                jobTitle: 'Job Title $index', // Replace with actual data
+                jobDescription: 'Description of job $index', // Replace with actual data
+                workPlace: 'Workplace $index', // Replace with actual data
+                date: 'Date $index', // Replace with actual data
+                wageRange: 'Wage Range $index', // Replace with actual data
+                contact: 'Contact $index', // Replace with actual data
+                category: 'Category $index', // Replace with actual data
+                isCrypto: index % 2 == 0, // Replace with actual data
+                professions: 'Profession $index', // Replace with actual data
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OwnJobDetailPage(
+                        jobTitle: 'Job Title $index', // Replace with actual data
+                        jobDescription: 'Description of job $index', // Replace with actual data
+                        date: 'Date $index', // Replace with actual data
+                        workPlace: 'Workplace $index', // Replace with actual data
+                        wageRange: 'Wage Range $index', // Replace with actual data
+                        isCrypto: index % 2 == 0, // Replace with actual data
+                        professions: 'Profession $index', // Replace with actual data
+                        contact: 'Contact $index', // Replace with actual data
+                        category: 'Category $index', // Replace with actual data
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

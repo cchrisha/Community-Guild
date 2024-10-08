@@ -226,8 +226,8 @@ class _PaymentPageState extends State<PaymentPage> {
                     ),
                   ),
                 ),
-                actions: [
-                  const Expanded(
+                actions: const [
+                  Expanded(
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Padding(
@@ -242,17 +242,6 @@ class _PaymentPageState extends State<PaymentPage> {
                         ),
                       ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.notifications, color: Colors.white),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NotificationPage(),
-                        ),
-                      );
-                    },
                   ),
                 ],
               ),

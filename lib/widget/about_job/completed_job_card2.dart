@@ -1,6 +1,7 @@
+import 'package:community_guild/screens/completed_job.dart';
 import 'package:flutter/material.dart';
 
-class AboutJobCard extends StatelessWidget {
+class CompletedJobCard2 extends StatelessWidget {
   final String jobTitle;
   final String jobDescription;
   final String workPlace;
@@ -13,7 +14,7 @@ class AboutJobCard extends StatelessWidget {
   final VoidCallback onTap;
   final bool showAddButton;
 
-  const AboutJobCard({
+  const CompletedJobCard2({
     super.key,
     required this.jobTitle,
     required this.jobDescription,

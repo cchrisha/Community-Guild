@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import '../widget/current_job/current_info_card.dart';
+import '../widget/current_job/job_action_buttons.dart';
+import '../widget/current_job/job_app_bar.dart';
+import '../widget/current_job/job_description_tile.dart';
+import '../widget/current_job/job_photo_card.dart';
+import '../widget/current_job/job_reward_text.dart';
 
-class JobDetailPage extends StatefulWidget {
-  const JobDetailPage({
+class RejectedJobDetail extends StatefulWidget {
+  const RejectedJobDetail({
     super.key,
     required this.jobTitle,
     required this.jobDescription,
@@ -25,10 +31,10 @@ class JobDetailPage extends StatefulWidget {
   final String category;
 
   @override
-  State<JobDetailPage> createState() => _JobDetailPageState();
+  State<RejectedJobDetail> createState() => _RejectedJobDetailState();
 }
 
-class _JobDetailPageState extends State<JobDetailPage> {
+class _RejectedJobDetailState extends State<RejectedJobDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,12 +50,6 @@ class _JobDetailPageState extends State<JobDetailPage> {
         backgroundColor: Colors.lightBlueAccent,
         elevation: 0,
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -212,48 +212,24 @@ class _JobDetailPageState extends State<JobDetailPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 245, 238, 238),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 20,
-                      ),
-                    ),
-                    child: const Text(
-                      'Cancel this job',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
+              ElevatedButton(
+                onPressed: () {
                       // Implement Complete action here
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.lightBlueAccent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 20,
-                      ),
-                    ),
-                    child: const Text(
-                      'Accept',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                ],
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 20,
+                  ),
+                ),
+                child: const Text(
+                  'Remove',
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
               ),
             ],
           ),

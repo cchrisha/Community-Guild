@@ -38,19 +38,6 @@ class HomePage extends StatelessWidget {
           ),
           backgroundColor: const Color.fromARGB(255, 3, 169, 244),
           automaticallyImplyLeading: false,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications, color: Colors.white),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const NotificationPage()),
-                );
-                // Your notification logic here
-              },
-            ),
-          ],
         ),
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         body: BlocBuilder<HomeBloc, HomeState>(
