@@ -24,3 +24,5 @@ class EditProfileError extends EditProfileState {
   @override
   List<Object> get props => [message];
 }
+
+class EditProfileLoading extends EditProfileState {}
