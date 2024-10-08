@@ -20,7 +20,7 @@ class JobProfessionDropdown extends StatelessWidget {
         labelText: 'Profession',
         labelStyle: const TextStyle(color: Color.fromARGB(255, 3, 169, 244)),
         prefixIcon: const Icon(
-          Icons.code_rounded,
+          Icons.business_center,
           color: Color.fromARGB(255, 3, 169, 244),
         ),
         enabledBorder: OutlineInputBorder(
