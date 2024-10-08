@@ -35,25 +35,49 @@ class AuthRepository {
     }
   }
 
-  Future<String> loginUser(String email, String password) async {
-    final response = await httpClient.post(
-      Uri.parse('https://api-tau-plum.vercel.app/api/userLogin'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'email': email,
-        'password': password,
-      }),
-    );
+  // Future<String> loginUser(String email, String password) async {
+  //   final response = await httpClient.post(
+  //     Uri.parse('https://api-tau-plum.vercel.app/api/userLogin'),
+  //     headers: {'Content-Type': 'application/json'},
+  //     body: json.encode({
+  //       'email': email,
+  //       'password': password,
+  //     }),
+  //   );
 
-    if (response.statusCode == 200) {
-      final token = json.decode(response.body)['token'];
-      await saveToken(token);
-      print('Token saved: $token');
-      return token;
-    } else {
-      throw Exception('Login failed.');
-    }
+  //   if (response.statusCode == 200) {
+  //     final token = json.decode(response.body)['token'];
+  //     await saveToken(token);
+  //     print('Token saved: $token');
+  //     return token;
+  //   } else {
+  //     throw Exception('Login failed.');
+  //   }
+  // }
+
+  Future<Map<String, dynamic>> loginUser(String email, String password) async {
+  final response = await httpClient.post(
+    Uri.parse('https://api-tau-plum.vercel.app/api/userLogin'),
+    headers: {'Content-Type': 'application/json'},
+    body: json.encode({
+      'email': email,
+      'password': password,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    final data = json.decode(response.body);
+    print('Response data: $data'); // Log the response data
+    final token = data['token'] ?? ''; // Provide a default value if null
+    final userId = data['_id'] ?? ''; // Provide a default value if null // Assuming the user ID is in the response
+    await saveToken(token);
+    print('Token saved: $token');
+    return {'token': token, 'userId': userId}; // Return user ID along with token
+  } else {
+    throw Exception('Login failed.');
   }
+}
+
 
   Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
@@ -69,4 +93,15 @@ class AuthRepository {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
   }
+
+  Future<void> saveUserId(String userId) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('user_id', userId);
+  }
+
+  Future<String?> getUserId() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('user_id');
+  } 
+
 }

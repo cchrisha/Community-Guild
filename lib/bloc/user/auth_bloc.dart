@@ -73,25 +73,56 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
+    // on<LoginRequested>((event, emit) async {
+    //   emit(AuthLoading());
+    //   try {
+    //     if (!_isValidEmail(event.email)) {
+    //       emit(AuthFailure('Please enter a valid email address.'));
+    //       return;
+    //     }
+    //     if (event.password.length < 4) {
+    //       emit(AuthFailure('Password must be at least 4 characters long.'));
+    //       return;
+    //     }
+    //     final token =
+    //         await authRepository.loginUser(event.email, event.password);
+    //     await authRepository.saveToken(token);
+    //     emit(AuthSuccess());
+    //   } catch (error) {
+    //     emit(AuthFailure(error.toString()));
+    //   }
+    // });
+
     on<LoginRequested>((event, emit) async {
-      emit(AuthLoading());
-      try {
-        if (!_isValidEmail(event.email)) {
-          emit(AuthFailure('Please enter a valid email address.'));
-          return;
-        }
-        if (event.password.length < 4) {
-          emit(AuthFailure('Password must be at least 4 characters long.'));
-          return;
-        }
-        final token =
-            await authRepository.loginUser(event.email, event.password);
-        await authRepository.saveToken(token);
-        emit(AuthSuccess());
-      } catch (error) {
-        emit(AuthFailure(error.toString()));
-      }
-    });
+  emit(AuthLoading());
+  try {
+    if (!_isValidEmail(event.email)) {
+      emit(AuthFailure('Please enter a valid email address.'));
+      return;
+    }
+    if (event.password.length < 4) {
+      emit(AuthFailure('Password must be at least 4 characters long.'));
+      return;
+    }
+    // Retrieve both token and userId
+    final authData = await authRepository.loginUser(event.email, event.password);
+    await authRepository.saveToken(authData['token']);
+    
+    // Here you can also save the userId if needed
+    final userId = authData['userId'] ?? ''; // Provide a default value if null
+    if (userId.isEmpty) {
+      emit(AuthFailure('User ID is missing from the response.'));
+      return;
+    }
+
+    await authRepository.saveUserId(userId);
+    print('User ID: $userId'); // Log or handle the user ID as needed
+    
+    emit(AuthSuccess());
+  } catch (error) {
+    emit(AuthFailure(error.toString()));
+  }
+}); 
 
     on<TogglePasswordVisibility>((event, emit) {
       obscureText = !obscureText;
