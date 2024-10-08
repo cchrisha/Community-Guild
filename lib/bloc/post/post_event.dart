@@ -22,6 +22,7 @@ class SubmitJob extends PostEvent {
     required this.contact,
     required this.description,
     required this.isCrypto,
+    required String category,
   });
 
   @override

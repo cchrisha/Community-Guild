@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 
-class JobProfessionDropdown extends StatelessWidget {
-  final String? selectedProfession;
-  final List<String> professions;
+class JobCategoryDropdown extends StatelessWidget {
+  final String? selectedCategory;
+  final List<String> categories;
   final ValueChanged<String?> onChanged;
 
-  const JobProfessionDropdown({
+  const JobCategoryDropdown({
     super.key,
-    required this.selectedProfession,
+    required this.selectedCategory,
     required this.onChanged,
-    required this.professions,
+    required this.categories,
   });
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      value: selectedProfession,
+      value: selectedCategory,
       decoration: InputDecoration(
-        labelText: 'Profession',
+        labelText: 'Category',
         labelStyle: const TextStyle(color: Color.fromARGB(255, 3, 169, 244)),
         prefixIcon: const Icon(
-          Icons.code_rounded,
+          Icons.category,
           color: Color.fromARGB(255, 3, 169, 244),
         ),
         enabledBorder: OutlineInputBorder(
@@ -44,16 +44,16 @@ class JobProfessionDropdown extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
         ),
       ),
-      items: professions.map((String profession) {
+      items: categories.map((String category) {
         return DropdownMenuItem<String>(
-          value: profession,
-          child: Text(profession),
+          value: category,
+          child: Text(category),
         );
       }).toList(),
       onChanged: onChanged,
       validator: (value) {
         if (value == null) {
-          return 'Please select a Profession';
+          return 'Please select a Category';
         }
         return null;
       },

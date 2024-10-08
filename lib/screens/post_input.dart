@@ -5,9 +5,10 @@ import '../bloc/post/post_event.dart';
 import '../bloc/post/post_state.dart';
 import '../widget/post_page/job_details_header.dart';
 import '../widget/post_page/job_details_card.dart';
+import '../widget/post_page/job_profession_dropdown.dart';
 import '../widget/post_page/job_title_field.dart';
 import '../widget/post_page/job_location_field.dart';
-import '../widget/post_page/job_profession_dropdown.dart';
+import '../widget/post_page/job_category_dropdown.dart'; // Importing the new dropdown
 import '../widget/post_page/job_reward_field.dart';
 import '../widget/post_page/job_contact_field.dart';
 import '../widget/post_page/job_description_field.dart';
@@ -31,6 +32,23 @@ class PostInputState extends State<PostInput> {
 
   bool _isCrypto = false;
   String? _selectedProfession;
+  String? _selectedCategory;
+
+  // Example categories for the dropdown
+  final List<String> _categories = [
+    'Technology',
+    'Healthcare',
+    'Education',
+    'Finance',
+    'Construction',
+    'Marketing',
+    'Design',
+    'Legal',
+    'Retail',
+    'Engineering',
+    'Sales',
+    'Customer Service',
+  ];
 
   final List<String> _professions = [
     'Software Developer',
@@ -131,6 +149,16 @@ class PostInputState extends State<PostInput> {
                           const SizedBox(height: 16),
                           JobLocationField(controller: _locationController),
                           const SizedBox(height: 16),
+                          JobCategoryDropdown(
+                            selectedCategory: _selectedCategory,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedCategory = value;
+                              });
+                            },
+                            categories: _categories,
+                          ),
+                          const SizedBox(height: 16),
                           JobProfessionDropdown(
                             selectedProfession: _selectedProfession,
                             onChanged: (value) {
@@ -169,6 +197,7 @@ class PostInputState extends State<PostInput> {
                                 title: _titleController.text,
                                 location: _locationController.text,
                                 profession: _selectedProfession!,
+                                category: _selectedCategory!, // Added category
                                 wageRange: _rewardController.text,
                                 contact: _contactController.text,
                                 description: _descriptionController.text,
