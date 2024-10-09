@@ -1,3 +1,4 @@
+import 'package:community_guild/repository/job_repository.dart';
 import 'package:community_guild/widget/home/job_card.dart';
 import 'package:community_guild/widget/home/search_and_filter.dart';
 import 'package:community_guild/widget/home/section_title.dart';
@@ -12,6 +13,7 @@ import 'notif_page.dart';
 import 'payment_page.dart';
 import 'post_page.dart';
 import 'profile_page.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -19,22 +21,18 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          HomeBloc()..add(FetchJobs()), // Initialize Bloc and fetch jobs
+      create: (context) => HomeBloc(
+        jobRepository: JobRepository(httpClient: http.Client()), // Inject repository here
+      )..add(FetchJobs()), // Fetch jobs when the page loads
       child: Scaffold(
         appBar: AppBar(
-          title: const Row(
-            children: [
-              SizedBox(width: 16),
-              Text(
-                'Home',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ],
+          title: const Text(
+            'Home',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
           backgroundColor: const Color.fromARGB(255, 3, 169, 244),
           automaticallyImplyLeading: false,
@@ -45,7 +43,7 @@ class HomePage extends StatelessWidget {
             if (state is HomeLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is HomeLoaded) {
-              // Check if the fetched job list is empty
+              // Display jobs using the Job model
               if (state.jobs.isEmpty) {
                 return const Center(
                   child: Text(
@@ -79,93 +77,28 @@ class HomePage extends StatelessWidget {
                                     width:
                                         MediaQuery.of(context).size.width * 0.9,
                                     child: HomeJobCard(
-                                      jobTitle:
-                                          job['title'], // Fetched from API
-                                      jobDescription: job[
-                                          'description'], // Fetched from API
-                                      workPlace: job['workPlace'] ??
-                                          '', // Fetched from API (placeholder for now)
-                                      date: job['date'] ??
-                                          '', // Fetched from API (placeholder for now)
-                                      wageRange: job['wageRange'] ??
-                                          '', // Fetched from API (placeholder for now)
-                                      category: job['category'] ?? '',
-                                      isCrypto: job['isCrypto'] ??
-                                          false, // Fetched from API (placeholder for now)
-                                      professions: job['professions'] ??
-                                          '', // Fetched from API
+                                      jobTitle: job.title, // Use Job model properties
+                                      jobDescription: job.description, // Use Job model properties
+                                      workPlace: job.location, // Updated to use job model
+                                      date: job.datePosted.toString(), // Format as needed
+                                      wageRange: job.wageRange,
+                                      category: job.categories.join(', '), // Join categories
+                                      isCrypto: job.isCrypto,
+                                      professions: job.professions.join(', '), // Join professions
                                       onTap: () {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                const JobDetailPage(
-                                              jobTitle: '',
-                                              jobDescription: '',
-                                              date: '',
-                                              workPlace: '',
-                                              wageRange: '',
-                                              isCrypto: true,
-                                              professions: '',
-                                              contact: '',
-                                              category: '',
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          const SectionTitle(title: 'Most Recent Job'),
-                          const SizedBox(height: 10),
-                          SizedBox(
-                            height: 230,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: state.jobs
-                                  .length, // Use API data for recent jobs too
-                              itemBuilder: (context, index) {
-                                final job = state.jobs[index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.9,
-                                    child: HomeJobCard(
-                                      jobTitle:
-                                          job['title'], // Fetched from API
-                                      jobDescription: job[
-                                          'description'], // Fetched from API
-                                      workPlace: job['workPlace'] ??
-                                          '', // Fetched from API (placeholder for now)
-                                      date: job['date'] ??
-                                          '', // Fetched from API (placeholder for now)
-                                      wageRange: job['wageRange'] ??
-                                          '', // Fetched from API (placeholder for now)
-                                      category: job['category'] ?? '',
-                                      isCrypto: job['isCrypto'] ??
-                                          false, // Fetched from API (placeholder for now)
-                                      professions: job['professions'] ??
-                                          '', // Fetched from API
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const JobDetailPage(
-                                              jobTitle: '',
-                                              jobDescription: '',
-                                              date: '',
-                                              workPlace: '',
-                                              wageRange: '',
-                                              isCrypto: true,
-                                              professions: '',
-                                              contact: '',
-                                              category: '',
+                                            builder: (context) => JobDetailPage(
+                                              jobTitle: job.title,
+                                              jobDescription: job.description,
+                                              date: job.datePosted.toString(),
+                                              workPlace: job.location,
+                                              wageRange: job.wageRange,
+                                              isCrypto: job.isCrypto,
+                                              professions: job.professions.join(', '),
+                                              contact: job.poster,
+                                              category: job.categories.join(', '),
                                             ),
                                           ),
                                         );
