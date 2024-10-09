@@ -1,23 +1,25 @@
-import 'package:community_guild/repository/job_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:community_guild/models/job_model.dart';
 import 'home_event.dart';
 import 'home_state.dart';
+import 'package:community_guild/repository/home_repository.dart';  // Import the HomeRepository
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  final JobRepository jobRepository;
+  final HomeRepository homeRepository;  // Change to HomeRepository
 
-  HomeBloc({required this.jobRepository}) : super(HomeInitial()) {
-    on<FetchJobs>((event, emit) async {
-      emit(HomeLoading());
-
+  HomeBloc(this.homeRepository) : super(HomeLoading()) {
+    on<LoadJobs>((event, emit) async {
       try {
-        // Fetch jobs using the repository
-        final jobs = await jobRepository.getAllJobs();
-        emit(HomeLoaded(jobs));
+        final jobs = await homeRepository.getAllJobs();  // Fetch jobs from the HomeRepository
+        if (jobs.isNotEmpty) {
+          emit(HomeLoaded(jobs: jobs));
+        } else {
+          emit(HomeError("No jobs found"));
+        }
       } catch (e) {
-        emit(HomeError('Failed to load jobs.'));
+        print('Bloc error: $e');
+        emit(HomeError("Failed to load jobs"));
       }
     });
   }
 }
-

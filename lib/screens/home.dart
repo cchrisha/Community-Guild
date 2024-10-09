@@ -14,6 +14,7 @@ import 'payment_page.dart';
 import 'post_page.dart';
 import 'profile_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:community_guild/repository/home_repository.dart';  // Import the HomeRepository
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -22,8 +23,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => HomeBloc(
-        jobRepository: JobRepository(httpClient: http.Client()), // Inject repository here
-      )..add(FetchJobs()), // Fetch jobs when the page loads
+        HomeRepository(httpClient: http.Client()), // Inject HomeRepository here
+      )..add(LoadJobs()), // Fetch jobs when the page loads
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -43,82 +44,46 @@ class HomePage extends StatelessWidget {
             if (state is HomeLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is HomeLoaded) {
-              // Display jobs using the Job model
-              if (state.jobs.isEmpty) {
-                return const Center(
-                  child: Text(
-                    'No jobs available at the moment.',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                  ),
-                );
-              }
-
-              return CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SearchAndFilter(),
-                          const SizedBox(height: 20),
-                          const SectionTitle(title: 'Recommended'),
-                          SizedBox(
-                            height: 210,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: state.jobs.length,
-                              itemBuilder: (context, index) {
-                                final job = state.jobs[index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.9,
-                                    child: HomeJobCard(
-                                      jobTitle: job.title, // Use Job model properties
-                                      jobDescription: job.description, // Use Job model properties
-                                      workPlace: job.location, // Updated to use job model
-                                      date: job.datePosted.toString(), // Format as needed
-                                      wageRange: job.wageRange,
-                                      category: job.categories.join(', '), // Join categories
-                                      isCrypto: job.isCrypto,
-                                      professions: job.professions.join(', '), // Join professions
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => JobDetailPage(
-                                              jobTitle: job.title,
-                                              jobDescription: job.description,
-                                              date: job.datePosted.toString(),
-                                              workPlace: job.location,
-                                              wageRange: job.wageRange,
-                                              isCrypto: job.isCrypto,
-                                              professions: job.professions.join(', '),
-                                              contact: job.poster,
-                                              category: job.categories.join(', '),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+              // Display the jobs
+              return ListView.builder(
+                itemCount: state.jobs.length,
+                itemBuilder: (context, index) {
+                  final job = state.jobs[index];
+                  return HomeJobCard(
+                    jobTitle: job.title,
+                    jobDescription: job.description,
+                    workPlace: job.location,
+                    date: job.datePosted.toString(),
+                    wageRange: job.wageRange,
+                    category: job.categories.join(', '),
+                    isCrypto: job.isCrypto,
+                    professions: job.professions.join(', '),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => JobDetailPage(
+                            jobTitle: job.title,
+                            jobDescription: job.description,
+                            date: job.datePosted.toString(),
+                            wageRange: job.wageRange,
+                            isCrypto: job.isCrypto,
+                            professions: job.professions.join(', '),
+                            workPlace: job.location,
+                            contact: job.poster.name,  // Accessing poster details
+                            category: job.categories.join(', '),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                        ),
+                      );
+                    },
+                  );
+                },
               );
             } else if (state is HomeError) {
+              // Display the error message
               return Center(child: Text(state.message));
             }
-            return const Center(child: Text('Welcome to the home page!'));
+            return const SizedBox.shrink();
           },
         ),
         bottomNavigationBar: BottomNavigationBar(
