@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/about_job.dart';
 import 'package:community_guild/screens/home.dart';
-import 'package:community_guild/screens/notif_page.dart';
 import 'package:community_guild/screens/post_page.dart';
 import 'package:community_guild/screens/profile_page.dart';
 import 'package:reown_appkit/reown_appkit.dart';

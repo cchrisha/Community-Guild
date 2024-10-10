@@ -1,10 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widget/current_job/current_info_card.dart';
-import '../widget/current_job/job_action_buttons.dart';
-import '../widget/current_job/job_app_bar.dart';
-import '../widget/current_job/job_description_tile.dart';
-import '../widget/current_job/job_photo_card.dart';
-import '../widget/current_job/job_reward_text.dart';
 
 class CurrentJobDetail extends StatefulWidget {
   const CurrentJobDetail({

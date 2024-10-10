@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widget/pending_job/job_description_tile.dart';
-import '../widget/pending_job/job_photo_card.dart';
-import '../widget/pending_job/pending_info_card.dart';
-import '../widget/pending_job/pending_job_actions.dart';
-import '../widget/pending_job/pending_job_app_bar.dart';
 
 class PendingJobDetail extends StatefulWidget {
   const PendingJobDetail({

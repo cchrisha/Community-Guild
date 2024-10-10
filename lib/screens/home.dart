@@ -8,7 +8,6 @@ import 'package:community_guild/bloc/home/home_event.dart';
 import 'package:community_guild/bloc/home/home_state.dart';
 import 'about_job.dart';
 import 'job_detail.dart';
-import 'notif_page.dart';
 import 'payment_page.dart';
 import 'post_page.dart';
 import 'profile_page.dart';

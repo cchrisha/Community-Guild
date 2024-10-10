@@ -1,8 +1,5 @@
-import 'package:community_guild/screens/own_post_job_detail.dart';
 import 'package:flutter/material.dart';
 
-import 'package:community_guild/screens/completed_job.dart';
-import 'package:flutter/material.dart';
 
 class PostedJobCard extends StatelessWidget {
   final String jobTitle;

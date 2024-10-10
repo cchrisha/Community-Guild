@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widget/complete_job/complete_info_card.dart';
-import '../widget/complete_job/completed_job_app_bar.dart';
-import '../widget/complete_job/job_description.dart';
-import '../widget/complete_job/image_list.dart';
 
 class CompletedJobDetail extends StatefulWidget {
   const CompletedJobDetail({

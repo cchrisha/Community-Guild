@@ -8,12 +8,10 @@ import '../bloc/profile/profile_event.dart';
 import '../bloc/profile/profile_state.dart';
 import '../widget/profile/post_job_card.dart';
 import '../widget/profile/profile_header.dart';
-import '../widget/profile/section_with_see_all.dart';
 import '../widget/profile/verify_account_card.dart';
 import '../widget/profile/profile_info_card.dart';
 import 'edit_profile_page.dart';
 import 'setting.dart';
-import '../widget/home/job_card.dart';
 import '../widget/profile/completed_job_card.dart'; // Make sure to import your completed job card
 
 class ProfilePage extends StatelessWidget {
