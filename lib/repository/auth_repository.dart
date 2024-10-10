@@ -47,6 +47,9 @@ class AuthRepository {
 
     if (response.statusCode == 200) {
       final token = json.decode(response.body)['token'];
+      if (token == null || token.isEmpty) {  //CHRISHA add ko to
+        throw Exception('Login failed: Token is null or empty.');
+      }
       await saveToken(token);
       print('Token saved: $token');
       return token;
@@ -58,15 +61,24 @@ class AuthRepository {
   Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
+    print('Token saved to SharedPreferences.'); //CHRISHA pang debug lang
   }
 
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('auth_token');
+    //return prefs.getString('auth_token');
+    final token = prefs.getString('auth_token'); //itooo din
+    if (token == null || token.isEmpty) {
+      print('No token found in SharedPreferences.');
+    } else {
+      print('Token retrieved from SharedPreferences: $token');
+    }
+    return token;
   }
 
   Future<void> clearToken() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
+    print('Token cleared from SharedPreferences.'); //tas itoo
   }
 }

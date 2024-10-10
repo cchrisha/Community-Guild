@@ -9,18 +9,24 @@ class HomeRepository {
   HomeRepository({required this.httpClient});
 
   // Method to retrieve the auth token
-  Future<String> _getAuthToken() async {
+  Future<String?> _getAuthToken() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
     if (token == null || token.isEmpty) {
-      throw Exception('No token found. Please login first.');
+      print('No token found');
+      return null; // Return null if no token is found
     }
+    print('Token retrieved: $token');
     return token;
   }
 
   Future<List<Job>> getRecommendedJobs() async {
     try {
       final token = await _getAuthToken(); // Retrieve the token
+      if (token == null) {
+        throw Exception('No token available.');
+      }
+
       final response = await httpClient.get(
         Uri.parse('https://api-tau-plum.vercel.app/api/jobs/profession'), // Corrected endpoint
         headers: <String, String>{
@@ -31,7 +37,16 @@ class HomeRepository {
 
       if (response.statusCode == 200) {
         final List<dynamic> jobsJson = jsonDecode(response.body);
-        return jobsJson.map((job) => Job.fromJson(job)).toList();
+        print('Recommended jobs response: $jobsJson');
+        
+        // Handle potential null values in the response
+        return jobsJson.map((job) {
+          if (job != null) {
+            return Job.fromJson(job);
+          } else {
+            throw Exception('Job data is null');
+          }
+        }).toList();
       } else {
         throw Exception('Failed to load recommended jobs. Status code: ${response.statusCode}, Response: ${response.body}');
       }
@@ -53,7 +68,15 @@ class HomeRepository {
 
       if (response.statusCode == 200) {
         final List<dynamic> jobsJson = jsonDecode(response.body);
-        return jobsJson.map((job) => Job.fromJson(job)).toList();
+        print('Most recent jobs response: $jobsJson');
+        
+        return jobsJson.map((job) {
+          if (job != null) {
+            return Job.fromJson(job);
+          } else {
+            throw Exception('Job data is null');
+          }
+        }).toList();
       } else {
         throw Exception('Failed to load recent jobs. Status code: ${response.statusCode}, Response: ${response.body}');
       }

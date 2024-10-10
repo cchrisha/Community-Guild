@@ -78,15 +78,14 @@ class HomePage extends StatelessWidget {
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 10),
                                   child: SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.9,
+                                    width: MediaQuery.of(context).size.width * 0.9,
                                     child: HomeJobCard(
                                       jobTitle: job.title, // Corrected model fields
-                                      jobDescription: job.description,
+                                      jobDescription: job.description ?? 'No description available', // Handle nullable
                                       workPlace: job.location,
                                       date: job.datePosted.toString(),
-                                      wageRange: job.wageRange,
-                                      category: job.categories.join(', '),
+                                      wageRange: job.wageRange ?? 'No wage range specified', // Handle nullable
+                                      category: job.categories?.join(', ') ?? 'No categories available', // Handle nullable
                                       isCrypto: job.isCrypto,
                                       professions: job.professions.join(', '),
                                       onTap: () {
@@ -96,14 +95,14 @@ class HomePage extends StatelessWidget {
                                             builder: (context) => JobDetailPage(
                                               jobId: job.id,
                                               jobTitle: job.title,
-                                              jobDescription: job.description,
+                                              jobDescription: job.description ?? 'No description available',
                                               date: job.datePosted.toString(),
                                               workPlace: job.location,
-                                              wageRange: job.wageRange,
+                                              wageRange: job.wageRange ?? 'No wage range specified',
                                               isCrypto: job.isCrypto,
                                               professions: job.professions.join(', '),
                                               contact: '', // If not available
-                                              category: job.categories.join(', '),
+                                              category: job.categories?.join(', ') ?? 'No categories available',
                                             ),
                                           ),
                                         );
@@ -127,15 +126,14 @@ class HomePage extends StatelessWidget {
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 10),
                                   child: SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.9,
+                                    width: MediaQuery.of(context).size.width * 0.9,
                                     child: HomeJobCard(
                                       jobTitle: job.title,
-                                      jobDescription: job.description,
+                                      jobDescription: job.description ?? 'No description available',
                                       workPlace: job.location,
                                       date: job.datePosted.toString(),
-                                      wageRange: job.wageRange,
-                                      category: job.categories.join(', '),
+                                      wageRange: job.wageRange ?? 'No wage range specified',
+                                      category: job.categories?.join(', ') ?? 'No categories available',
                                       isCrypto: job.isCrypto,
                                       professions: job.professions.join(', '),
                                       onTap: () {
@@ -145,14 +143,14 @@ class HomePage extends StatelessWidget {
                                             builder: (context) => JobDetailPage(
                                               jobId: job.id,
                                               jobTitle: job.title,
-                                              jobDescription: job.description,
+                                              jobDescription: job.description ?? 'No description available',
                                               date: job.datePosted.toString(),
                                               workPlace: job.location,
-                                              wageRange: job.wageRange,
+                                              wageRange: job.wageRange ?? 'No wage range specified',
                                               isCrypto: job.isCrypto,
                                               professions: job.professions.join(', '),
                                               contact: '',
-                                              category: job.categories.join(', '),
+                                              category: job.categories?.join(', ') ?? 'No categories available',
                                             ),
                                           ),
                                         );
@@ -238,4 +236,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-

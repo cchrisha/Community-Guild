@@ -1,25 +1,25 @@
 class Job {
   final String id;
   final String title;
-  final String wageRange;
+  final String? wageRange; // Nullable to handle possible null values
   final bool isCrypto;
   final String location;
   final DateTime datePosted;
-  final String description;
+  final String? description; // Nullable to handle possible null values
   final List<String> professions;
-  final List<String> categories;
+  final List<String>? categories; // Nullable to handle possible null values
   final String? poster;
 
   Job({
     required this.id,
     required this.title,
-    required this.wageRange,
+    this.wageRange, // Nullable
     required this.isCrypto,
     required this.location,
     required this.datePosted,
-    required this.description,
+    this.description, // Nullable
     required this.professions,
-    required this.categories,
+    this.categories, // Nullable
     this.poster,
   });
 
@@ -27,14 +27,14 @@ class Job {
     return Job(
       id: json['_id'],
       title: json['title'],
-      wageRange: json['wageRange'],
+      wageRange: json['wageRange'] as String?, // Handling null for wageRange
       isCrypto: json['isCrypto'],
       location: json['location'],
       datePosted: DateTime.parse(json['datePosted']),
-      description: json['description'],
-      professions: List<String>.from(json['professions']),
-      categories: List<String>.from(json['categories']),
-      poster: json['poster'] != null ? json['poster']['name'] : null,
+      description: json['description'] as String?, // Handling null for description
+      professions: List<String>.from(json['professions'] ?? []), // Ensure professions is a valid list
+      categories: json['categories'] != null ? List<String>.from(json['categories']) : null, // Handling null for categories
+      poster: json['poster'] != null ? json['poster']['name'] as String? : null, // Handling null for poster
     );
   }
 }
