@@ -14,13 +14,11 @@ class ProfilePictureBloc
       ProfilePictureEvent event) async* {
     if (event is UploadProfilePicture) {
       yield ProfilePictureUploading();
-
       try {
-        final profileImageUrl =
-            await repository.uploadProfilePicture(event.profileImage);
-        yield ProfilePictureUploadSuccess(profileImageUrl);
+        final url = await repository.uploadProfilePicture(event.profileImage);
+        yield ProfilePictureUploaded(url);
       } catch (e) {
-        yield ProfilePictureUploadFailure(e.toString());
+        yield ProfilePictureError(e.toString());
       }
     }
   }

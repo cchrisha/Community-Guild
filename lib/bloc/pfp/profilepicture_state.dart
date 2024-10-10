@@ -4,14 +4,14 @@ class ProfilePictureInitial extends ProfilePictureState {}
 
 class ProfilePictureUploading extends ProfilePictureState {}
 
-class ProfilePictureUploadSuccess extends ProfilePictureState {
-  final String profileImageUrl;
+class ProfilePictureUploaded extends ProfilePictureState {
+  final String profilePictureUrl;
 
-  ProfilePictureUploadSuccess(this.profileImageUrl);
+  ProfilePictureUploaded(this.profilePictureUrl);
 }
 
-class ProfilePictureUploadFailure extends ProfilePictureState {
-  final String error;
+class ProfilePictureError extends ProfilePictureState {
+  final String message;
 
-  ProfilePictureUploadFailure(this.error);
+  ProfilePictureError(this.message);
 }
