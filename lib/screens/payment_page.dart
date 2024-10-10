@@ -4,11 +4,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/about_job.dart';
 import 'package:community_guild/screens/home.dart';
+
 import 'package:community_guild/screens/post_page.dart';
 import 'package:community_guild/screens/profile_page.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../models/payment_model.dart';
 import '../widget/payment/balance_card.dart';
 import '../widget/payment/section_title.dart';
 import '../widget/payment/job_card.dart';
@@ -560,22 +562,4 @@ class _PaymentPageState extends State<PaymentPage> {
       });
     }
   }
-}
-
-class TransactionDetails {
-  final String sender;
-  final String recipient;
-  final String amount;
-  final String hash;
-  final DateTime date;
-  final bool isSent;
-
-  TransactionDetails({
-    required this.sender,
-    required this.recipient,
-    required this.amount,
-    required this.hash,
-    required this.date,
-    required this.isSent,
-  });
 }

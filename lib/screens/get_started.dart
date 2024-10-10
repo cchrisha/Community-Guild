@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:community_guild/screens/login_page.dart';
 
 class GetStartedPage extends StatefulWidget {
+  const GetStartedPage({super.key});
+
   @override
-  _GetStartedPageState createState() => _GetStartedPageState();
+  State<GetStartedPage> createState() => _GetStartedPageState();
 }
 
-class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProviderStateMixin {
+class _GetStartedPageState extends State<GetStartedPage>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeInAnimation;
   late PageController _pageController;
@@ -18,7 +20,7 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
     );
 
     _fadeInAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -52,7 +54,7 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 40), // Adjusted space at the top
+              const SizedBox(height: 40), // Adjusted space at the top
               Expanded(
                 child: PageView(
                   controller: _pageController,
@@ -61,41 +63,46 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
                     _buildPageContent(
                       image: 'assets/images/job_hunt.png',
                       title: 'Find Jobs Easily',
-                      description: 'Browse and apply for jobs in various categories. Connect with employers quickly.',
+                      description:
+                          'Browse and apply for jobs in various categories. Connect with employers quickly.',
                     ),
                     _buildPageContent(
                       image: 'assets/images/posting.png',
                       title: 'Post Your Own Jobs',
-                      description: 'Create job postings, manage applications, and find the best talents.',
+                      description:
+                          'Create job postings, manage applications, and find the best talents.',
                     ),
-                   _buildPageContent(
+                    _buildPageContent(
                       image: 'assets/images/bit.png',
                       title: 'Send & Receive Cryptocurrency',
-                      description: 'Effortlessly send and receive cryptocurrencies with fast and secure transactions.',
+                      description:
+                          'Effortlessly send and receive cryptocurrencies with fast and secure transactions.',
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(3, (index) {
                   return AnimatedContainer(
-                    duration: Duration(milliseconds: 300),
-                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
                     width: _currentPage == index ? 14 : 8,
                     height: 8,
                     decoration: BoxDecoration(
-                      color: _currentPage == index ? Colors.blueAccent : Colors.grey[300],
+                      color: _currentPage == index
+                          ? Colors.blueAccent
+                          : Colors.grey[300],
                       borderRadius: BorderRadius.circular(4),
                     ),
                   );
                 }),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               SlideTransition(
                 position: Tween<Offset>(
-                  begin: Offset(0, 1),
+                  begin: const Offset(0, 1),
                   end: Offset.zero,
                 ).animate(
                   CurvedAnimation(
@@ -105,7 +112,7 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
                 ),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -116,10 +123,10 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
                   onPressed: () {
                     Navigator.push(
                       context,
-                      _createRoute(LoginPage()),
+                      _createRoute(const LoginPage()),
                     );
                   },
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'Get Started',
                       style: TextStyle(
@@ -131,7 +138,7 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               FadeTransition(
                 opacity: _fadeInAnimation,
                 child: Text(
@@ -150,7 +157,10 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
     );
   }
 
-  Widget _buildPageContent({required String image, required String title, required String description}) {
+  Widget _buildPageContent(
+      {required String image,
+      required String title,
+      required String description}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
@@ -161,17 +171,17 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
             height: 240, // Increased height for larger images
             fit: BoxFit.cover,
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
               color: Colors.black87,
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
             description,
             textAlign: TextAlign.center,
@@ -193,7 +203,8 @@ class _GetStartedPageState extends State<GetStartedPage> with SingleTickerProvid
         const end = Offset.zero;
         const curve = Curves.ease;
 
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
         return SlideTransition(
           position: animation.drive(tween),

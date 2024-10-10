@@ -1,4 +1,4 @@
-import 'package:community_guild/screens/get_started';
+import 'package:community_guild/screens/get_started.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -36,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen>
         Navigator.of(context).pushReplacement(
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) =>
-                GetStartedPage(),
+                const GetStartedPage(),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
               const begin = Offset(1.0, 0.0);
