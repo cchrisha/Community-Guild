@@ -97,17 +97,23 @@ class HomePage extends StatelessWidget {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                const JobDetailPage(
-                                              jobTitle: '',
-                                              jobDescription: '',
-                                              date: '',
-                                              workPlace: '',
-                                              wageRange: '',
-                                              isCrypto: true,
-                                              professions: '',
+                                            builder: (context) => JobDetailPage(
+                                              jobId: job['id'] is int
+                                                  ? job['id']
+                                                  : int.parse(
+                                                      job['id'].toString()),
+                                              jobTitle: job['title'],
+                                              jobDescription:
+                                                  job['description'],
+                                              date: job['date'] ?? '',
+                                              workPlace: job['workPlace'] ?? '',
+                                              wageRange: job['wageRange'] ?? '',
+                                              isCrypto:
+                                                  job['isCrypto'] ?? false,
+                                              professions:
+                                                  job['professions'] ?? '',
                                               contact: '',
-                                              category: '',
+                                              category: job['category'] ?? '',
                                             ),
                                           ),
                                         );
@@ -125,8 +131,7 @@ class HomePage extends StatelessWidget {
                             height: 230,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              itemCount: state.jobs
-                                  .length, // Use API data for recent jobs too
+                              itemCount: state.jobs.length,
                               itemBuilder: (context, index) {
                                 final job = state.jobs[index];
                                 return Padding(
@@ -135,36 +140,35 @@ class HomePage extends StatelessWidget {
                                     width:
                                         MediaQuery.of(context).size.width * 0.9,
                                     child: HomeJobCard(
-                                      jobTitle:
-                                          job['title'], // Fetched from API
-                                      jobDescription: job[
-                                          'description'], // Fetched from API
-                                      workPlace: job['workPlace'] ??
-                                          '', // Fetched from API (placeholder for now)
-                                      date: job['date'] ??
-                                          '', // Fetched from API (placeholder for now)
-                                      wageRange: job['wageRange'] ??
-                                          '', // Fetched from API (placeholder for now)
+                                      jobTitle: job['title'],
+                                      jobDescription: job['description'],
+                                      workPlace: job['workPlace'] ?? '',
+                                      date: job['date'] ?? '',
+                                      wageRange: job['wageRange'] ?? '',
                                       category: job['category'] ?? '',
-                                      isCrypto: job['isCrypto'] ??
-                                          false, // Fetched from API (placeholder for now)
-                                      professions: job['professions'] ??
-                                          '', // Fetched from API
+                                      isCrypto: job['isCrypto'] ?? false,
+                                      professions: job['professions'] ?? '',
                                       onTap: () {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                const JobDetailPage(
-                                              jobTitle: '',
-                                              jobDescription: '',
-                                              date: '',
-                                              workPlace: '',
-                                              wageRange: '',
-                                              isCrypto: true,
-                                              professions: '',
+                                            builder: (context) => JobDetailPage(
+                                              jobId: job['id'] is int
+                                                  ? job['id']
+                                                  : int.parse(
+                                                      job['id'].toString()),
+                                              jobTitle: job['title'],
+                                              jobDescription:
+                                                  job['description'],
+                                              date: job['date'] ?? '',
+                                              workPlace: job['workPlace'] ?? '',
+                                              wageRange: job['wageRange'] ?? '',
+                                              isCrypto:
+                                                  job['isCrypto'] ?? false,
+                                              professions:
+                                                  job['professions'] ?? '',
                                               contact: '',
-                                              category: '',
+                                              category: job['category'] ?? '',
                                             ),
                                           ),
                                         );

@@ -1,13 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/job_detail/job_detail_bloc.dart';
-import '../bloc/job_detail/job_detail_event.dart';
-import '../bloc/job_detail/job_detail_state.dart';
 
 class JobDetailPage extends StatefulWidget {
-  final int jobId;
+  const JobDetailPage({
+    super.key,
+    required this.jobId, // Add jobId as a required parameter
+    required this.jobTitle,
+    required this.jobDescription,
+    required this.date,
+    required this.wageRange,
+    required this.isCrypto,
+    required this.professions,
+    required this.workPlace,
+    required this.contact,
+    required this.category,
+  });
 
-  const JobDetailPage({super.key, required this.jobId});
+  final int jobId; // Define jobId as an integer
+  final String jobTitle;
+  final String jobDescription;
+  final String date;
+  final String wageRange;
+  final bool isCrypto;
+  final String professions;
+  final String workPlace;
+  final String contact;
+  final String category;
 
   @override
   State<JobDetailPage> createState() => _JobDetailPageState();
@@ -15,120 +32,233 @@ class JobDetailPage extends StatefulWidget {
 
 class _JobDetailPageState extends State<JobDetailPage> {
   @override
-  void initState() {
-    super.initState();
-    context.read<JobBloc>().add(FetchJobDetail(widget.jobId));
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Job Details'),
+        title: const Text(
+          'Job Details',
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Colors.lightBlueAccent,
         elevation: 0,
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
-      body: BlocBuilder<JobBloc, JobState>(
-        builder: (context, state) {
-          if (state is JobLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is JobLoaded) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                children: [
+                  Container(
+                    height: 180,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.lightBlueAccent, Colors.blueAccent],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius:
+                          BorderRadius.vertical(bottom: Radius.circular(30)),
+                    ),
+                  ),
+                  Positioned(
+                    top: 28,
+                    left: 16,
+                    right: 16,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 3,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        child: const Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 30,
+                              backgroundColor: Colors.lightBlueAccent,
+                              child: Icon(Icons.person,
+                                  color: Colors.white, size: 30),
+                            ),
+                            SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Name',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Job Title: ${state.job['jobTitle']}',
+                    'Job Title: ${widget.jobTitle}',
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
                   ),
-                  const SizedBox(height: 10),
                   Text(
-                    'Job Description: ${state.job['jobDescription']}',
-                    style: const TextStyle(fontSize: 16),
+                    'Date: ${widget.date}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
                   ),
-                  const SizedBox(height: 10),
+                ],
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Job Description:',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                widget.jobDescription,
+                style: const TextStyle(fontSize: 16, color: Colors.black87),
+              ),
+              const SizedBox(height: 5),
+              const Text(
+                'More Info',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   Text(
-                    'Date: ${state.job['date']}',
-                    style: const TextStyle(fontSize: 16),
+                    'Wage Range: ${widget.wageRange}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Wage Range: ${state.job['wageRange']}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 10),
                   Row(
                     children: [
                       const Text('Is Crypto: '),
                       Checkbox(
-                        value: state.job['isCrypto'],
+                        value: widget.isCrypto,
                         onChanged: (bool? value) {},
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Profession: ${state.job['professions']}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Workplace: ${state.job['workPlace']}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Contact: ${state.job['contact']}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Category: ${state.job['category']}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[200],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text('Cancel this job'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Implement Accept Job
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.lightBlueAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text('Accept'),
                       ),
                     ],
                   ),
                 ],
               ),
-            );
-          } else if (state is JobError) {
-            return Center(child: Text('Error: ${state.error}'));
-          }
-          return const Center(child: Text('No Job Data'));
-        },
+              const SizedBox(height: 5),
+              Text(
+                'Wanted Profession: ${widget.professions}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Workplace: ${widget.workPlace}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Contact: ${widget.contact}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Category: ${widget.category}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 245, 238, 238),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 20,
+                      ),
+                    ),
+                    child: const Text(
+                      'Cancel this job',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Implement Complete action here
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.lightBlueAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 20,
+                      ),
+                    ),
+                    child: const Text(
+                      'Accept',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
