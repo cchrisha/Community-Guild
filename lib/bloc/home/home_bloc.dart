@@ -14,7 +14,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(HomeLoading());
 
     try {
-      final recommendedJobs = await homeRepository.getRecommendedJobs(event.profession);
+      final recommendedJobs = await homeRepository.getRecommendedJobs();
       final recentJobs = await homeRepository.getMostRecentJobs();
       emit(HomeLoaded(recommendedJobs: recommendedJobs, recentJobs: recentJobs));
     } catch (e) {
