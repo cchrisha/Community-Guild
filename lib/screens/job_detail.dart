@@ -15,7 +15,7 @@ class JobDetailPage extends StatefulWidget {
     required this.category,
   });
 
-  final int jobId; // Define jobId as an integer
+  final String jobId; // Define jobId as an integer
   final String jobTitle;
   final String jobDescription;
   final String date;

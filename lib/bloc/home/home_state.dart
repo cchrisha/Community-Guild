@@ -1,28 +1,33 @@
 import 'package:equatable/equatable.dart';
+import 'package:community_guild/models/job_model.dart';
 
 abstract class HomeState extends Equatable {
-  @override
-  List<Object?> get props => [];
-}
+  const HomeState();
 
-class HomeInitial extends HomeState {}
+  @override
+  List<Object> get props => [];
+}
 
 class HomeLoading extends HomeState {}
 
 class HomeLoaded extends HomeState {
-  final List<dynamic> jobs; // Replace with actual job data later
+  final List<Job> recommendedJobs;
+  final List<Job> recentJobs;
 
-  HomeLoaded(this.jobs);
+  const HomeLoaded({
+    required this.recommendedJobs,
+    required this.recentJobs,
+  });
 
   @override
-  List<Object?> get props => [jobs];
+  List<Object> get props => [recommendedJobs, recentJobs];
 }
 
 class HomeError extends HomeState {
   final String message;
 
-  HomeError(this.message);
+  const HomeError({required this.message});
 
   @override
-  List<Object?> get props => [message];
+  List<Object> get props => [message];
 }
