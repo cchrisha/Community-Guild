@@ -70,7 +70,8 @@ class HomePage extends StatelessWidget {
                             isCrypto: job.isCrypto,
                             professions: job.professions.join(', '),
                             workPlace: job.location,
-                            contact: job.poster.name,  // Accessing poster details
+                            // Ensure this is correct
+                            contact: job.poster?.name ?? 'N/A',
                             category: job.categories.join(', '),
                           ),
                         ),
