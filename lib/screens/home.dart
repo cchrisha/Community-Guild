@@ -13,6 +13,7 @@ import 'payment_page.dart';
 import 'post_page.dart';
 import 'profile_page.dart';
 import 'package:http/http.dart' as http; // Required for the repository
+import 'package:intl/intl.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -47,7 +48,6 @@ class HomePage extends StatelessWidget {
             if (state is HomeLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is HomeLoaded) {
-              // Use 'recommendedJobs' or 'recentJobs' instead of 'jobs'
               if (state.recommendedJobs.isEmpty) {
                 return const Center(
                   child: Text(
@@ -80,12 +80,12 @@ class HomePage extends StatelessWidget {
                                   child: SizedBox(
                                     width: MediaQuery.of(context).size.width * 0.9,
                                     child: HomeJobCard(
-                                      jobTitle: job.title, // Corrected model fields
-                                      jobDescription: job.description ?? 'No description available', // Handle nullable
+                                      jobTitle: job.title,
+                                      jobDescription: job.description ?? 'No description available',
                                       workPlace: job.location,
-                                      date: job.datePosted.toString(),
-                                      wageRange: job.wageRange ?? 'No wage range specified', // Handle nullable
-                                      category: job.categories?.join(', ') ?? 'No categories available', // Handle nullable
+                                      date: DateFormat('MMMM dd, yyyy').format((job.datePosted)),
+                                      wageRange: job.wageRange ?? 'No wage range specified',
+                                      category: job.categories?.join(', ') ?? 'No categories available',
                                       isCrypto: job.isCrypto,
                                       professions: job.professions.join(', '),
                                       onTap: () {
@@ -96,12 +96,12 @@ class HomePage extends StatelessWidget {
                                               jobId: job.id,
                                               jobTitle: job.title,
                                               jobDescription: job.description ?? 'No description available',
-                                              date: job.datePosted.toString(),
+                                              date: DateFormat('MMMM dd, yyyy').format((job.datePosted)),
                                               workPlace: job.location,
                                               wageRange: job.wageRange ?? 'No wage range specified',
                                               isCrypto: job.isCrypto,
                                               professions: job.professions.join(', '),
-                                              contact: '', // If not available
+                                              contact: '',
                                               category: job.categories?.join(', ') ?? 'No categories available',
                                             ),
                                           ),
@@ -131,7 +131,7 @@ class HomePage extends StatelessWidget {
                                       jobTitle: job.title,
                                       jobDescription: job.description ?? 'No description available',
                                       workPlace: job.location,
-                                      date: job.datePosted.toString(),
+                                      date: DateFormat('MMMM dd, yyyy').format((job.datePosted)),
                                       wageRange: job.wageRange ?? 'No wage range specified',
                                       category: job.categories?.join(', ') ?? 'No categories available',
                                       isCrypto: job.isCrypto,
@@ -144,7 +144,7 @@ class HomePage extends StatelessWidget {
                                               jobId: job.id,
                                               jobTitle: job.title,
                                               jobDescription: job.description ?? 'No description available',
-                                              date: job.datePosted.toString(),
+                                              date: DateFormat('MMMM dd, yyyy').format((job.datePosted)),
                                               workPlace: job.location,
                                               wageRange: job.wageRange ?? 'No wage range specified',
                                               isCrypto: job.isCrypto,
