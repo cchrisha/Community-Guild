@@ -18,7 +18,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
       } catch (e) {
         print('Bloc error: $e');
-        emit(HomeError("Failed to load jobs"));
+        emit(HomeError("Failed to load jobs: $e")); // Print the exact error message
       }
     });
   }

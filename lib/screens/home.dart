@@ -41,6 +41,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         body: BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
+            print('Current state: $state'); // Debugging
             if (state is HomeLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is HomeLoaded) {

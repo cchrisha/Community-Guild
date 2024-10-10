@@ -26,8 +26,8 @@ class Job {
     required this.poster, // Initialize the poster field
   });
 
-  // Factory method to convert JSON to Job object
   factory Job.fromJson(Map<String, dynamic> json) {
+  try {
     return Job(
       id: json['id'],
       title: json['title'],
@@ -38,9 +38,14 @@ class Job {
       categories: List<String>.from(json['categories']),
       isCrypto: json['isCrypto'],
       professions: List<String>.from(json['professions']),
-      poster: User.fromJson(json['poster']), // Parse the poster field from JSON
+      poster: User.fromJson(json['poster']),
     );
+  } catch (e) {
+    print('Error parsing job JSON: $e');
+    throw Exception('Failed to parse job');
   }
+}
+
 
   // Convert Job object to JSON
   Map<String, dynamic> toJson() {
