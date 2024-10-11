@@ -2,12 +2,10 @@ import 'package:community_guild/screens/completed_job.dart';
 import 'package:community_guild/screens/pending_job_detail.dart';
 import 'package:community_guild/screens/rejected_job_details.dart';
 import 'package:community_guild/widget/about_job/job_card.dart';
-import 'package:community_guild/widget/about_job/post_job_card2.dart';
 import 'package:community_guild/widget/about_job/section_title.dart';
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/current_job_detail.dart';
-import 'package:community_guild/screens/home.dart';
-import 'package:community_guild/screens/own_post_job_detail.dart'; // Update import if necessary
+import 'package:community_guild/screens/home.dart'; // Update import if necessary
 import 'package:community_guild/screens/payment_page.dart';
 import 'package:community_guild/screens/post_page.dart';
 import 'package:community_guild/screens/profile_page.dart';
@@ -47,7 +45,7 @@ class JobPage extends StatelessWidget {
               const SectionTitleAboutJob(title: 'Current Jobs'),
               const SizedBox(height: 10),
               SizedBox(
-                height: 230,
+                height: 240,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 3,
@@ -58,15 +56,21 @@ class JobPage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width *
                             0.8, //responsive na width
                         child: AboutJobCard(
-                          jobTitle: 'Job Title $index', // Replace with actual data
-                          jobDescription: 'Description of job $index', // Replace with actual data
-                          workPlace: 'Workplace $index', // Replace with actual data
+                          jobTitle:
+                              'Job Title $index', // Replace with actual data
+                          jobDescription:
+                              'Description of job $index', // Replace with actual data
+                          workPlace:
+                              'Workplace $index', // Replace with actual data
                           date: 'Date $index', // Replace with actual data
-                          wageRange: 'Wage Range $index', // Replace with actual data
+                          wageRange:
+                              'Wage Range $index', // Replace with actual data
                           contact: 'Contact $index', // Replace with actual data
-                          category: 'Category $index', // Replace with actual data
+                          category:
+                              'Category $index', // Replace with actual data
                           isCrypto: index % 2 == 0, // Replace with actual data
-                          professions: 'Profession $index', // Replace with actual data
+                          professions:
+                              'Profession $index', // Replace with actual data
                           onTap: () {
                             Navigator.push(
                               context,
@@ -97,7 +101,7 @@ class JobPage extends StatelessWidget {
               const SectionTitleAboutJob(title: 'Completed Jobs'),
               const SizedBox(height: 10),
               SizedBox(
-                height: 230,
+                height: 240,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 10,
@@ -108,15 +112,21 @@ class JobPage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width *
                             0.8, //responsive na width
                         child: CompletedJobCard2(
-                          jobTitle: 'Job Title $index', // Replace with actual data
-                          jobDescription: 'Description of job $index', // Replace with actual data
-                          workPlace: 'Workplace $index', // Replace with actual data
+                          jobTitle:
+                              'Job Title $index', // Replace with actual data
+                          jobDescription:
+                              'Description of job $index', // Replace with actual data
+                          workPlace:
+                              'Workplace $index', // Replace with actual data
                           date: 'Date $index', // Replace with actual data
-                          wageRange: 'Wage Range $index', // Replace with actual data
+                          wageRange:
+                              'Wage Range $index', // Replace with actual data
                           contact: 'Contact $index', // Replace with actual data
-                          category: 'Category $index', // Replace with actual data
+                          category:
+                              'Category $index', // Replace with actual data
                           isCrypto: index % 2 == 0, // Replace with actual data
-                          professions: 'Profession $index', // Replace with actual data
+                          professions:
+                              'Profession $index', // Replace with actual data
                           onTap: () {
                             Navigator.push(
                               context,
@@ -147,7 +157,7 @@ class JobPage extends StatelessWidget {
               const SectionTitleAboutJob(title: 'Requested Jobs'),
               const SizedBox(height: 10),
               SizedBox(
-                height: 230,
+                height: 240,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 10,
@@ -158,15 +168,21 @@ class JobPage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width *
                             0.8, //responsive na width
                         child: AboutJobCard(
-                          jobTitle: 'Job Title $index', // Replace with actual data
-                          jobDescription: 'Description of job $index', // Replace with actual data
+                          jobTitle:
+                              'Job Title $index', // Replace with actual data
+                          jobDescription:
+                              'Description of job $index', // Replace with actual data
                           date: 'Date $index', // Replace with actual data
-                          workPlace: 'Workplace $index', // Replace with actual data
-                          wageRange: 'Wage Range $index', // Replace with actual data
+                          workPlace:
+                              'Workplace $index', // Replace with actual data
+                          wageRange:
+                              'Wage Range $index', // Replace with actual data
                           isCrypto: index % 2 == 0, // Replace with actual data
-                          professions: 'Profession $index', // Replace with actual data
+                          professions:
+                              'Profession $index', // Replace with actual data
                           contact: 'Contact $index', // Replace with actual data
-                          category: 'Category $index', // Replace with actual data
+                          category:
+                              'Category $index', // Replace with actual data
                           onTap: () {
                             Navigator.push(
                               context,
@@ -197,7 +213,7 @@ class JobPage extends StatelessWidget {
               const SectionTitleAboutJob(title: 'Rejected Jobs'),
               const SizedBox(height: 10),
               SizedBox(
-                height: 230,
+                height: 240,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 10,
@@ -208,15 +224,21 @@ class JobPage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width *
                             0.8, //responsive na width
                         child: AboutJobCard(
-                          jobTitle: 'Job Title $index', // Replace with actual data
-                          jobDescription: 'Description of job $index', // Replace with actual data
+                          jobTitle:
+                              'Job Title $index', // Replace with actual data
+                          jobDescription:
+                              'Description of job $index', // Replace with actual data
                           date: 'Date $index', // Replace with actual data
-                          workPlace: 'Workplace $index', // Replace with actual data
-                          wageRange: 'Wage Range $index', // Replace with actual data
+                          workPlace:
+                              'Workplace $index', // Replace with actual data
+                          wageRange:
+                              'Wage Range $index', // Replace with actual data
                           isCrypto: index % 2 == 0, // Replace with actual data
-                          professions: 'Profession $index', // Replace with actual data
+                          professions:
+                              'Profession $index', // Replace with actual data
                           contact: 'Contact $index', // Replace with actual data
-                          category: 'Category $index', // Replace with actual data
+                          category:
+                              'Category $index', // Replace with actual data
                           onTap: () {
                             Navigator.push(
                               context,

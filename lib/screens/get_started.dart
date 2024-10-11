@@ -92,7 +92,7 @@ class _GetStartedPageState extends State<GetStartedPage>
                     height: 8,
                     decoration: BoxDecoration(
                       color: _currentPage == index
-                          ? Colors.blueAccent
+                          ? Colors.lightBlue
                           : Colors.grey[300],
                       borderRadius: BorderRadius.circular(4),
                     ),
@@ -118,10 +118,11 @@ class _GetStartedPageState extends State<GetStartedPage>
                     ),
                     elevation: 6,
                     shadowColor: Colors.black.withOpacity(0.2),
-                    backgroundColor: Colors.blueAccent,
+                    backgroundColor: Colors.lightBlue,
                   ),
                   onPressed: () {
-                    Navigator.push(
+                    // Replace the current screen with LoginPage and prevent duplication
+                    Navigator.pushReplacement(
                       context,
                       _createRoute(const LoginPage()),
                     );
