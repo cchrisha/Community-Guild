@@ -168,7 +168,7 @@ class PostPage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const JobPage()));
               break;
             case 2:
-              break;
+              break; // Current page
             case 3:
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const PaymentPage()));

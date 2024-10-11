@@ -85,31 +85,31 @@ class PostInputState extends State<PostInput> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PostBloc(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Create New Job Post',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: const Color.fromARGB(255, 3, 169, 244),
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Create New Job Post',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        body: Padding(
+        backgroundColor: const Color.fromARGB(255, 3, 169, 244),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: BlocProvider(
+        create: (context) => PostBloc(),
+        child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: BlocListener<PostBloc, PostState>(
             listener: (context, state) {
               if (state is PostLoading) {
-                // Show loading indicator or similar UI
+                // Show loading indicator
                 showDialog(
                   context: context,
                   barrierDismissible: false,
@@ -123,8 +123,6 @@ class PostInputState extends State<PostInput> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Job posted successfully!')),
                 );
-                // Optionally navigate to another page
-                // Navigator.pop(context);
               } else if (state is PostFailure) {
                 // Close the loading indicator
                 Navigator.pop(context);
@@ -197,11 +195,20 @@ class PostInputState extends State<PostInput> {
                                 title: _titleController.text,
                                 location: _locationController.text,
                                 profession: _selectedProfession!,
-                                category: _selectedCategory!, // Added category
+                                categories: _selectedCategory!,
                                 wageRange: _rewardController.text,
                                 contact: _contactController.text,
                                 description: _descriptionController.text,
                                 isCrypto: _isCrypto,
+                              ),
+                            );
+                          } else {
+                            print(
+                                "Form is not valid"); // Log to check form validation
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content:
+                                    Text('Please fill in all required fields.'),
                               ),
                             );
                           }

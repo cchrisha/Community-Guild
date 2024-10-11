@@ -1,4 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'post_event.dart';
 import 'post_state.dart';
 
@@ -7,15 +10,41 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<SubmitJob>((event, emit) async {
       emit(PostLoading());
       try {
-        // Simulate a network call for job posting
-        await Future.delayed(const Duration(seconds: 2));
+        final prefs = await SharedPreferences.getInstance();
+        final authToken = prefs.getString('auth_token');
 
-        // Here you would normally send the job data to your backend
-        // For example: await jobRepository.postJob(event);
+        if (authToken == null) {
+          emit(PostFailure('No token found'));
+          return;
+        }
 
-        emit(PostSuccess());
+        final response = await http.post(
+          Uri.parse('https://api-tau-plum.vercel.app/api/jobs'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $authToken',
+          },
+          body: jsonEncode({
+            'title': event.title,
+            'location': event.location,
+            'profession': event.profession,
+            'category': event.categories,
+            'wageRange': event.wageRange,
+            'contact': event.contact,
+            'description': event.description,
+            'isCrypto': event.isCrypto,
+          }),
+        );
+
+        if (response.statusCode == 201) {
+          emit(PostSuccess());
+        } else {
+          final errorMessage =
+              jsonDecode(response.body)['message'] ?? 'Failed to post job.';
+          emit(PostFailure(errorMessage));
+        }
       } catch (e) {
-        emit(PostFailure('Failed to post job.', message: ''));
+        emit(PostFailure('Network Error: ${e.toString()}'));
       }
     });
   }

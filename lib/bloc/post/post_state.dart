@@ -14,8 +14,7 @@ class PostSuccess extends PostState {}
 class PostFailure extends PostState {
   final String message;
 
-  PostFailure(String s, {required this.message});
-
+  PostFailure(this.message);
   @override
   List<Object?> get props => [message];
 }
