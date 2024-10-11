@@ -7,7 +7,7 @@ import 'package:community_guild/widget/forgot_password/send_otp_button.dart';
 import 'package:community_guild/widget/forgot_password/verify_otp_button.dart';
 import 'package:community_guild/bloc/forgetpassword/forgetpassword_bloc.dart';
 import 'package:community_guild/bloc/forgetpassword/forgetpassword_state.dart';
-import 'package:community_guild/repository/forgotpass_repository.dart';
+import 'package:community_guild/repository/authentication/forgotpass_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'login_page.dart';

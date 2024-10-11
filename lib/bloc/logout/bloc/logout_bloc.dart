@@ -1,4 +1,4 @@
-import 'package:community_guild/repository/logout_repository.dart';
+import 'package:community_guild/repository/authentication/logout_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'logout_event.dart';

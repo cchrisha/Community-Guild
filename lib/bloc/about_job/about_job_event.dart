@@ -1,10 +1,11 @@
-import 'package:equatable/equatable.dart';
+abstract class AboutJobEvent {}
 
-abstract class JobEvent extends Equatable {
-  const JobEvent();
+class FetchCurrentJobs extends AboutJobEvent {}
 
-  @override
-  List<Object> get props => [];
-}
+class FetchCompletedJobs extends AboutJobEvent {}
 
-class FetchJobs extends JobEvent {}
+class FetchRequestedJobs extends AboutJobEvent {}
+
+class FetchRejectedJobs extends AboutJobEvent {}
+
+class FetchPostedJobs extends AboutJobEvent {}

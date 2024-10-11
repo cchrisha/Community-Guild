@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:community_guild/models/job_model.dart';
+import 'package:community_guild/models/job_home_model.dart';
 
 abstract class HomeState extends Equatable {
   const HomeState();

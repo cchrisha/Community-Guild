@@ -8,10 +8,11 @@ import 'package:community_guild/screens/profile_page.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../models/payment_model.dart';
 import '../widget/payment/balance_card.dart';
 import '../widget/payment/section_title.dart';
 import '../widget/payment/job_card.dart';
-import 'package:http/http.dart' as http; 
+import 'package:http/http.dart' as http;
 
 class PaymentPage extends StatefulWidget {
   const PaymentPage({super.key});
@@ -22,12 +23,12 @@ class PaymentPage extends StatefulWidget {
 
 class _PaymentPageState extends State<PaymentPage> {
   ReownAppKitModal? appKitModal;
-   String walletAddress = '';
-   String _balance = '0';
-   bool isLoading = false;
-   List<TransactionDetails> transactions = []; 
+  String walletAddress = '';
+  String _balance = '0';
+  bool isLoading = false;
+  List<TransactionDetails> transactions = [];
 
-    final customNetwork = ReownAppKitModalNetworkInfo(
+  final customNetwork = ReownAppKitModalNetworkInfo(
     name: 'Sepolia',
     chainId: '11155111',
     currency: 'ETH',
@@ -65,11 +66,11 @@ class _PaymentPageState extends State<PaymentPage> {
     await appKitModal!.init();
     appKitModal!.addListener(updateWalletAddress);
     // Listen for session updates
-   setState(() {
+    setState(() {
       fetchTransactions(walletAddress); // Fetch transactions when initialized
     });
 
-     // Load wallet address from SharedPreferences
+    // Load wallet address from SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? savedWalletAddress = prefs.getString('walletAddress');
     if (savedWalletAddress != null) {
@@ -78,65 +79,66 @@ class _PaymentPageState extends State<PaymentPage> {
       });
     }
   }
-  
+
   Future<String?> getToken() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getString('auth_token');
-}
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_token');
+  }
 
-Future<void> updateWalletAddressInAPI(String walletAddress) async {
-  final token = await getToken(); // Retrieve the token
-  const url = 'https://api-tau-plum.vercel.app/api/users'; // No userId needed here since you're using verifyToken
+  Future<void> updateWalletAddressInAPI(String walletAddress) async {
+    final token = await getToken(); // Retrieve the token
+    const url =
+        'https://api-tau-plum.vercel.app/api/users'; // No userId needed here since you're using verifyToken
 
-  try {
-    final response = await http.put(
-      Uri.parse(url),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token', // Include the token in the headers
-      },
-      body: jsonEncode({'walletAddress': walletAddress}),
-    );
+    try {
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token', // Include the token in the headers
+        },
+        body: jsonEncode({'walletAddress': walletAddress}),
+      );
 
-    if (response.statusCode == 200) {
-      // Handle successful response
-      print('Wallet address updated successfully');
-    } else {
-      // Handle error response
-      print('Failed to update wallet address: ${response.body}');
+      if (response.statusCode == 200) {
+        // Handle successful response
+        print('Wallet address updated successfully');
+      } else {
+        // Handle error response
+        print('Failed to update wallet address: ${response.body}');
+      }
+    } catch (e) {
+      print('Error updating wallet address: $e');
     }
-  } catch (e) {
-    print('Error updating wallet address: $e');
   }
-}
 
- void updateWalletAddress() async {
-  if (appKitModal?.session != null) {
-    setState(() {
-      walletAddress = appKitModal!.session!.address ?? 'No Address';
-      _balance = appKitModal!.balanceNotifier.value;
-      fetchTransactions(walletAddress); // Fetch transactions whenever the wallet address is updated
-    });
+  void updateWalletAddress() async {
+    if (appKitModal?.session != null) {
+      setState(() {
+        walletAddress = appKitModal!.session!.address ?? 'No Address';
+        _balance = appKitModal!.balanceNotifier.value;
+        fetchTransactions(
+            walletAddress); // Fetch transactions whenever the wallet address is updated
+      });
 
-    // Save the wallet address to SharedPreferences
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('walletAddress', walletAddress);
+      // Save the wallet address to SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('walletAddress', walletAddress);
 
-    // Update the wallet address in the API
-    await updateWalletAddressInAPI(walletAddress); // No userId needed here
-  } else {
-    setState(() {
-      walletAddress = 'No Address';
-      _balance = 'No Balance';
-      transactions.clear(); // Clear transactions when no address
-    });
+      // Update the wallet address in the API
+      await updateWalletAddressInAPI(walletAddress); // No userId needed here
+    } else {
+      setState(() {
+        walletAddress = 'No Address';
+        _balance = 'No Balance';
+        transactions.clear(); // Clear transactions when no address
+      });
 
-    // Remove the wallet address from SharedPreferences
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('walletAddress');
+      // Remove the wallet address from SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove('walletAddress');
+    }
   }
-}
-
 
   Future<void> fetchTransactions(String address) async {
     setState(() {
@@ -152,24 +154,24 @@ Future<void> updateWalletAddressInAPI(String walletAddress) async {
         if (data['status'] == '1') {
           final txList = data['result'] as List;
           setState(() {
-            if (txList.isEmpty) {
-              transactions = []; // Set transactions to empty if there are no transactions
-            } else {
-              transactions = txList.map((tx) {
-                final String addressLowerCase = address.toLowerCase(); // Convert address to lowercase for comparison
-                final String sender = tx['from'];
-                final String recipient = tx['to'];
-                bool isSent = sender.toLowerCase() == addressLowerCase;
-                return TransactionDetails(
-                  sender: sender,
-                  recipient: recipient,
-                  amount: (BigInt.parse(tx['value']) / BigInt.from(10).pow(18)).toString(),
-                  hash: tx['hash'],
-                  isSent: isSent,
-                  date: DateTime.fromMillisecondsSinceEpoch(int.parse(tx['timeStamp']) * 1000),
-                );
-              }).toList();
-            }
+            transactions = txList.map((tx) {
+              // Check if the transaction is sent by the current address
+              final String addressLowerCase = address
+                  .toLowerCase(); // Convert address to lower case for comparison
+              final String sender = tx['from'];
+              final String recipient = tx['to'];
+              bool isSent = sender.toLowerCase() == addressLowerCase;
+              return TransactionDetails(
+                sender: sender,
+                recipient: recipient,
+                amount: (BigInt.parse(tx['value']) / BigInt.from(10).pow(18))
+                    .toString(),
+                hash: tx['hash'],
+                isSent: isSent,
+                date: DateTime.fromMillisecondsSinceEpoch(
+                    int.parse(tx['timeStamp']) * 1000),
+              );
+            }).toList();
           });
         } else {
           throw Exception('Failed to load transactions');
@@ -186,87 +188,94 @@ Future<void> updateWalletAddressInAPI(String walletAddress) async {
     }
   }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: Stack(
-      children: [
-        CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              automaticallyImplyLeading: false,
-              pinned: true,
-              expandedHeight: 200.0,
-              flexibleSpace: FlexibleSpaceBar(
-                title: const SizedBox.shrink(),
-                background: Container(
-                  color: const Color.fromARGB(255, 3, 169, 244),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          children: [
-                            BalanceCard(balance: _balance, address: walletAddress),
-                            const SizedBox(width: 5),
-                          ],
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                automaticallyImplyLeading: false,
+                pinned: true,
+                expandedHeight: 200.0,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: const SizedBox.shrink(),
+                  background: Container(
+                    color: const Color.fromARGB(255, 3, 169, 244),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            children: [
+                              BalanceCard(
+                                  balance: _balance, address: walletAddress),
+                              const SizedBox(width: 5),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              actions: const [
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 30.0),
-                      child: Text(
-                        'Payment',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                actions: [
+                  const Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 30.0),
+                        child: Text(
+                          'Payment',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                     const PaymentSectionTitle(title: 'Actions'),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const PaymentSectionTitle(title: 'Actions'),
                       const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           const SizedBox(height: 16),
                           AppKitModalConnectButton(
-                                appKit: appKitModal!,
-                                custom: ElevatedButton(
-                                  onPressed: () {
-                                      if (appKitModal!.isConnected) {
-                                        // Add logic for disconnecting
-                                        appKitModal!.disconnect(); // Example method for disconnecting
-                                      } else {
-                                        appKitModal!.openModalView(); // Open connection modal
-                                      }
-                                    },
-                                  child: Text(appKitModal!.isConnected ? 'Disconnect' : 'Connect Wallet'),
-                                ),
-                              ),
+                            appKit: appKitModal!,
+                            custom: ElevatedButton(
+                              onPressed: () {
+                                if (appKitModal!.isConnected) {
+                                  // Add logic for disconnecting
+                                  appKitModal!
+                                      .disconnect(); // Example method for disconnecting
+                                } else {
+                                  appKitModal!
+                                      .openModalView(); // Open connection modal
+                                }
+                              },
+                              child: Text(appKitModal!.isConnected
+                                  ? 'Disconnect'
+                                  : 'Connect Wallet'),
+                            ),
+                          ),
                           const SizedBox(height: 16),
-                             Visibility(
-                            visible: !appKitModal!.isConnected, //kapag !appKitModal! naman ay yan yung kapag hindi connected tsaka lalabas yan
-                            child: AppKitModalNetworkSelectButton(appKit: appKitModal!),
+                          Visibility(
+                            visible: !appKitModal!
+                                .isConnected, //kapag !appKitModal! naman ay yan yung kapag hindi connected tsaka lalabas yan
+                            child: AppKitModalNetworkSelectButton(
+                                appKit: appKitModal!),
                           ),
                           const SizedBox(height: 16),
                           Visibility(
@@ -276,7 +285,8 @@ Widget build(BuildContext context) {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                     _showSendDialog(context); // Show send dialog on press
+                                    _showSendDialog(
+                                        context); // Show send dialog on press
                                   },
                                   child: const Text('Send'),
                                 ),
@@ -290,101 +300,97 @@ Widget build(BuildContext context) {
                               ],
                             ),
                           ),
-                          
                         ],
-                      ),    
+                      ),
                       const SizedBox(height: 10),
-                    const PaymentSectionTitle(title: 'Transactions'),
-                    Visibility(
-                      visible: appKitModal!.isConnected,
-                      child: isLoading
-                          ? const Center(child: CircularProgressIndicator())
-                          : transactions.isNotEmpty
-                              ? SizedBox(
-                                  height: 350,
-                                  child: ListView.builder(
-                                    itemCount: transactions.length,
-                                    itemBuilder: (context, index) {
-                                      final transaction = transactions[index];
-                                      return PaymentJobCardPage(
-                                        amount: transaction.amount,
-                                        sender: transaction.sender,
-                                        recipient: transaction.recipient,
-                                        hash: transaction.hash,
-                                        date: transaction.date,
-                                        isSent: transaction.isSent,
-                                  );
-                                },
+                      const PaymentSectionTitle(title: 'Transactions'),
+                      Visibility(
+                        visible: appKitModal!.isConnected,
+                        child: isLoading
+                            ? const Center(child: CircularProgressIndicator())
+                            : Container(
+                                height:
+                                    350, // Specify a fixed height as per your requirement
+                                child: ListView.builder(
+                                  itemCount: transactions.length,
+                                  itemBuilder: (context, index) {
+                                    final transaction = transactions[index];
+                                    return PaymentJobCardPage(
+                                      amount: transaction.amount,
+                                      sender: transaction.sender,
+                                      recipient: transaction.recipient,
+                                      hash: transaction.hash,
+                                      date: transaction.date,
+                                      isSent: transaction.isSent,
+                                    );
+                                  },
+                                ),
                               ),
-                            )
-                            : const Center(
-                                child: Text('No transactions available'),
-                          ),
-                        )
-                      ],
-                    ),
+                      )
+                    ],
                   ),
                 ),
-              ],
-            ),
-             //if (isLoading)
-           // const Center(child: CircularProgressIndicator()),
-          ],
-        ),
-    bottomNavigationBar: BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      currentIndex: 3,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home_outlined),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.info_outline),
-          label: 'About Job',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.post_add),
-          label: 'Post',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.payment_outlined),
-          label: 'Payment',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person_2_outlined),
-          label: 'Profile',
-        ),
-      ],
-      selectedItemColor: Colors.lightBlue,
-      unselectedItemColor: Colors.black,
-      onTap: (index) {
-        switch (index) {
-          case 0:
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
-            break;
-          case 1:
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const JobPage()),
-            );
-            break;
-          case 2:
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const PostPage()),
-            );
-            break;
-          case 3:
-            break;
-          case 4:
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ProfilePage()),
+              ),
+            ],
+          ),
+          //if (isLoading)
+          // const Center(child: CircularProgressIndicator()),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        currentIndex: 3,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info_outline),
+            label: 'About Job',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.post_add),
+            label: 'Post',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.payment_outlined),
+            label: 'Payment',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_2_outlined),
+            label: 'Profile',
+          ),
+        ],
+        selectedItemColor: Colors.lightBlue,
+        unselectedItemColor: Colors.black,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              );
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const JobPage()),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PostPage()),
+              );
+              break;
+            case 3:
+              break;
+            case 4:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
               );
               break;
           }
@@ -392,60 +398,62 @@ Widget build(BuildContext context) {
       ),
     );
   }
+
   void _showSendDialog(BuildContext context) {
-  final TextEditingController addressController = TextEditingController();
-  final TextEditingController amountController = TextEditingController();
-  
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('Send Crypto'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: addressController,
-              decoration: const InputDecoration(
-                hintText: 'Recipient Address (0x..)',
+    final TextEditingController addressController = TextEditingController();
+    final TextEditingController amountController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Send Crypto'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: addressController,
+                decoration: const InputDecoration(
+                  hintText: 'Recipient Address (0x..)',
+                ),
               ),
-            ),
-            TextField(
-              controller: amountController,
-              decoration: const InputDecoration(
-                hintText: 'Amount to Send',
+              TextField(
+                controller: amountController,
+                decoration: const InputDecoration(
+                  hintText: 'Amount to Send',
+                ),
+                keyboardType: TextInputType.number,
               ),
-              keyboardType: TextInputType.number,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              String recipient = addressController.text;
-              double amount = double.parse(amountController.text);
-              BigInt bigIntValue = BigInt.from(amount * pow(10, 18));
-              EtherAmount ethAmount = EtherAmount.fromBigInt(EtherUnit.wei, bigIntValue);
-              Navigator.of(context).pop();
-              setState(() {
-                  isLoading = true; 
-                      final Uri metamaskUri = Uri.parse("metamask://"); 
-                  // Launch the MetaMask URI without checking
-                      launchUrl(metamaskUri, mode: LaunchMode.externalApplication);
-              });
-              try {
-                await sendTransaction(recipient, ethAmount); 
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error: ${e.toString()}')),
-                );
-              }
-            },
-            child: const Text('Send'),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
+          actions: [
+            TextButton(
+              onPressed: () async {
+                String recipient = addressController.text;
+                double amount = double.parse(amountController.text);
+                BigInt bigIntValue = BigInt.from(amount * pow(10, 18));
+                EtherAmount ethAmount =
+                    EtherAmount.fromBigInt(EtherUnit.wei, bigIntValue);
+                Navigator.of(context).pop();
+                setState(() {
+                  isLoading = true;
+                  final Uri metamaskUri = Uri.parse("metamask://");
+                  // Launch the MetaMask URI without checking
+                  launchUrl(metamaskUri, mode: LaunchMode.externalApplication);
+                });
+                try {
+                  await sendTransaction(recipient, ethAmount);
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: ${e.toString()}')),
+                  );
+                }
+              },
+              child: const Text('Send'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
               },
               child: const Text('Cancel'),
             ),
@@ -462,29 +470,23 @@ Widget build(BuildContext context) {
 
     final tetherContract = DeployedContract(
       ContractAbi.fromJson(
-        jsonEncode([{
-          "constant": false,
-          "inputs": [
-            {
-              "internalType": "address",
-              "name": "_to",
-              "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "_value",
-              "type": "uint256"
-            }
-          ],
-          "name": "transfer",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        }]), 
+        jsonEncode([
+          {
+            "constant": false,
+            "inputs": [
+              {"internalType": "address", "name": "_to", "type": "address"},
+              {"internalType": "uint256", "name": "_value", "type": "uint256"}
+            ],
+            "name": "transfer",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+          }
+        ]),
         'ETH',
       ),
-      EthereumAddress.fromHex(receiver), 
+      EthereumAddress.fromHex(receiver),
     );
 
     try {
@@ -504,12 +506,11 @@ Widget build(BuildContext context) {
         throw Exception('Error parsing wallet balance: $e');
       }
 
-      final balanceInWei = EtherAmount.fromUnitAndValue(
-        EtherUnit.wei, balanceInWeiValue
-      );
+      final balanceInWei =
+          EtherAmount.fromUnitAndValue(EtherUnit.wei, balanceInWeiValue);
 
       // Calculate total cost including transaction fee
-      final totalCost = txValue.getInWei + BigInt.from(100000 * 21000); 
+      final totalCost = txValue.getInWei + BigInt.from(100000 * 21000);
       if (balanceInWei.getInWei < totalCost) {
         throw Exception('Insufficient funds for transaction!');
       }
@@ -527,10 +528,10 @@ Widget build(BuildContext context) {
           maxGas: 100000,
         ),
         parameters: [
-          EthereumAddress.fromHex(receiver), 
-          txValue.getInWei, 
+          EthereumAddress.fromHex(receiver),
+          txValue.getInWei,
         ],
-      );  
+      );
       //print('Transaction result: $result');
 
       if (result != null) {
@@ -556,22 +557,3 @@ Widget build(BuildContext context) {
     }
   }
 }
-
-class TransactionDetails {
-  final String sender;
-  final String recipient;
-  final String amount;
-  final String hash;
-  final DateTime date;
-  final bool isSent;
-
-  TransactionDetails({
-    required this.sender,
-    required this.recipient,
-    required this.amount,
-    required this.hash,
-    required this.date,
-    required this.isSent,
-  });
-}
-

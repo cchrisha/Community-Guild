@@ -1,4 +1,4 @@
-import 'package:community_guild/repository/forgotpass_repository.dart';
+import 'package:community_guild/repository/authentication/forgotpass_repository.dart';
 
 import 'forgetpassword_event.dart';
 import 'forgetpassword_state.dart';

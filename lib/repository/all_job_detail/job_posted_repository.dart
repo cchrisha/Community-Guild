@@ -1,8 +1,8 @@
-import '../models/job_posted_model.dart';
+import '../../models/job_posted_model.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class JobRepository {
+class JobPostedRepository {
   final String apiUrl =
       "https://api.example.com/jobs"; // Replace with actual API URL
 

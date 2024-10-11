@@ -1,30 +1,18 @@
-import 'package:equatable/equatable.dart';
+abstract class AboutJobState {}
 
-abstract class JobState extends Equatable {
-  const JobState();
+class JobInitial extends AboutJobState {}
 
-  @override
-  List<Object> get props => [];
+class JobLoading extends AboutJobState {}
+
+class JobLoaded extends AboutJobState {
+  final List<String>
+      jobTitles; // This can be replaced with your actual job model
+
+  JobLoaded(this.jobTitles);
 }
 
-class JobInitial extends JobState {}
-
-class JobLoading extends JobState {}
-
-class JobLoaded extends JobState {
-  final List<dynamic> jobs;
-
-  const JobLoaded(this.jobs);
-
-  @override
-  List<Object> get props => [jobs];
-}
-
-class JobError extends JobState {
+class JobError extends AboutJobState {
   final String message;
 
-  const JobError(this.message);
-
-  @override
-  List<Object> get props => [message];
+  JobError(this.message);
 }

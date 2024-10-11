@@ -1,6 +1,6 @@
 import 'package:community_guild/bloc/logout/bloc/logout_event.dart';
 import 'package:community_guild/bloc/logout/bloc/logout_state.dart';
-import 'package:community_guild/repository/logout_repository.dart';
+import 'package:community_guild/repository/authentication/logout_repository.dart';
 import 'package:community_guild/screens/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

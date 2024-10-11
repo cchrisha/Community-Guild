@@ -2,7 +2,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'change_password_event.dart';
 import 'change_password_state.dart';
-import 'package:community_guild/repository/change_password_repository.dart';
+import 'package:community_guild/repository/authentication/change_password_repository.dart';
 
 class ChangePasswordBloc
     extends Bloc<ChangePasswordEvent, ChangePasswordState> {
