@@ -9,7 +9,7 @@ class AuthRepository {
   AuthRepository({required this.httpClient});
 
   Future<void> registerUser({
-    required BuildContext context, // Pass context to show SnackBar
+    required BuildContext context, 
     required String name,
     required String email,
     required String password,
