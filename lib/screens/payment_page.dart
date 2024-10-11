@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/about_job.dart';
 import 'package:community_guild/screens/home.dart';
-import 'package:community_guild/screens/notif_page.dart';
 import 'package:community_guild/screens/post_page.dart';
 import 'package:community_guild/screens/profile_page.dart';
 import 'package:reown_appkit/reown_appkit.dart';
@@ -143,38 +141,42 @@ Future<void> updateWalletAddressInAPI(String walletAddress) async {
   Future<void> fetchTransactions(String address) async {
     setState(() {
       isLoading = true;
+      transactions.clear(); // Clear previous transactions while loading
     });
     try {
       final url =
           'https://api-sepolia.etherscan.io/api?module=account&action=txlist&address=$address&startblock=0&endblock=99999999&sort=desc&apikey=$etherscanApiKey';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-            final data = jsonDecode(response.body);
-            if (data['status'] == '1') {
-              final txList = data['result'] as List;
-              setState(() {
-                transactions = txList.map((tx) {
-                  // Check if the transaction is sent by the current address
-                  final String addressLowerCase = address.toLowerCase(); // Convert address to lower case for comparison
-                  final String sender = tx['from'];
-                  final String recipient = tx['to'];
-                  bool isSent = sender.toLowerCase() == addressLowerCase;
-                  return TransactionDetails(
-                    sender: sender,
-                    recipient: recipient,
-                    amount: (BigInt.parse(tx['value']) / BigInt.from(10).pow(18)).toString(),
-                    hash: tx['hash'],
-                    isSent: isSent, 
-                    date: DateTime.fromMillisecondsSinceEpoch(int.parse(tx['timeStamp']) * 1000),
-                  );
-                }).toList();
-              });
+        final data = jsonDecode(response.body);
+        if (data['status'] == '1') {
+          final txList = data['result'] as List;
+          setState(() {
+            if (txList.isEmpty) {
+              transactions = []; // Set transactions to empty if there are no transactions
             } else {
-              throw Exception('Failed to load transactions');
+              transactions = txList.map((tx) {
+                final String addressLowerCase = address.toLowerCase(); // Convert address to lowercase for comparison
+                final String sender = tx['from'];
+                final String recipient = tx['to'];
+                bool isSent = sender.toLowerCase() == addressLowerCase;
+                return TransactionDetails(
+                  sender: sender,
+                  recipient: recipient,
+                  amount: (BigInt.parse(tx['value']) / BigInt.from(10).pow(18)).toString(),
+                  hash: tx['hash'],
+                  isSent: isSent,
+                  date: DateTime.fromMillisecondsSinceEpoch(int.parse(tx['timeStamp']) * 1000),
+                );
+              }).toList();
             }
-          } else {
-            throw Exception('Failed to fetch transactions');
-          }
+          });
+        } else {
+          throw Exception('Failed to load transactions');
+        }
+      } else {
+        throw Exception('Failed to fetch transactions');
+      }
     } catch (e) {
       print('Error fetching transactions: $e');
     } finally {
@@ -184,7 +186,7 @@ Future<void> updateWalletAddressInAPI(String walletAddress) async {
     }
   }
 
- @override
+@override
 Widget build(BuildContext context) {
   return Scaffold(
     body: Stack(
@@ -216,8 +218,8 @@ Widget build(BuildContext context) {
                   ),
                 ),
               ),
-              actions: [
-                const Expanded(
+              actions: const [
+                Expanded(
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
@@ -293,27 +295,31 @@ Widget build(BuildContext context) {
                       ),    
                       const SizedBox(height: 10),
                     const PaymentSectionTitle(title: 'Transactions'),
-                   Visibility(
+                    Visibility(
                       visible: appKitModal!.isConnected,
                       child: isLoading
                           ? const Center(child: CircularProgressIndicator())
-                          : Container(
-                              height: 350, // Specify a fixed height as per your requirement
-                              child: ListView.builder(
-                                itemCount: transactions.length,
-                                itemBuilder: (context, index) {
-                                  final transaction = transactions[index];
-                                  return PaymentJobCardPage(
-                                    amount: transaction.amount,
-                                    sender: transaction.sender,
-                                    recipient: transaction.recipient,
-                                    hash: transaction.hash,
-                                    date: transaction.date,
-                                    isSent: transaction.isSent,
+                          : transactions.isNotEmpty
+                              ? SizedBox(
+                                  height: 350,
+                                  child: ListView.builder(
+                                    itemCount: transactions.length,
+                                    itemBuilder: (context, index) {
+                                      final transaction = transactions[index];
+                                      return PaymentJobCardPage(
+                                        amount: transaction.amount,
+                                        sender: transaction.sender,
+                                        recipient: transaction.recipient,
+                                        hash: transaction.hash,
+                                        date: transaction.date,
+                                        isSent: transaction.isSent,
                                   );
                                 },
                               ),
-                            ),
+                            )
+                            : const Center(
+                                child: Text('No transactions available'),
+                          ),
                         )
                       ],
                     ),
