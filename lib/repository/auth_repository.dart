@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,6 +9,7 @@ class AuthRepository {
   AuthRepository({required this.httpClient});
 
   Future<void> registerUser({
+    required BuildContext context, // Pass context to show SnackBar
     required String name,
     required String email,
     required String password,
@@ -30,10 +32,21 @@ class AuthRepository {
       }),
     );
 
-    if (response.statusCode != 201) {
-      throw Exception('Registration failed.');
+    if (response.statusCode == 409) {
+      // 409 Conflict is typically used for duplicate entries like an email
+      _showSnackBar(context, 'Email already exists. Please use a different email.');
+    } else if (response.statusCode != 201) {
+      // Other error codes
+      _showSnackBar(context, 'Registration failed. Please try again.');
     }
   }
+
+  void _showSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+}
+
 
   Future<String> loginUser(String email, String password) async {
     final response = await httpClient.post(
