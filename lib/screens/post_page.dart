@@ -1,3 +1,4 @@
+import 'package:community_guild/bloc/post/post_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/jobposted/job_posted_bloc.dart';
@@ -51,7 +52,12 @@ class PostPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const PostInput()),
+                          builder: (context) => BlocProvider(
+                            create: (context) =>
+                                PostBloc(), // Provide PostBloc here
+                            child: const PostInput(),
+                          ),
+                        ),
                       );
                     },
                     style: ElevatedButton.styleFrom(

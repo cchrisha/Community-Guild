@@ -8,7 +8,7 @@ import '../widget/post_page/job_details_card.dart';
 import '../widget/post_page/job_profession_dropdown.dart';
 import '../widget/post_page/job_title_field.dart';
 import '../widget/post_page/job_location_field.dart';
-import '../widget/post_page/job_category_dropdown.dart'; // Importing the new dropdown
+import '../widget/post_page/job_category_dropdown.dart';
 import '../widget/post_page/job_reward_field.dart';
 import '../widget/post_page/job_contact_field.dart';
 import '../widget/post_page/job_description_field.dart';
@@ -34,7 +34,6 @@ class PostInputState extends State<PostInput> {
   String? _selectedProfession;
   String? _selectedCategory;
 
-  // Example categories for the dropdown
   final List<String> _categories = [
     'Technology',
     'Healthcare',
@@ -51,17 +50,59 @@ class PostInputState extends State<PostInput> {
   ];
 
   final List<String> _professions = [
-  'Programmer', 'Software Developer', 'Cook', 'Accountant', 'Gardener',
-  'Farmer', 'Plumber', 'Electrician', 'Mechanic', 'Carpenter',
-  'Teacher', 'Nurse', 'Doctor', 'Construction Worker', 'Painter',
-  'Driver', 'Delivery Person', 'Salesperson', 'Cashier', 'Marketing Specialist',
-  'Business Manager', 'Customer Support', 'Graphic Designer', 'Project Manager', 'Content Writer',
-  'Cleaner', 'Security Guard', 'Photographer', 'Social Media Manager', 'Data Analyst',
-  'Event Planner', 'Waiter', 'Hairdresser', 'Technician', 'Receptionist',
-  'Tailor', 'Chef', 'Fitness Trainer', 'Barista', 'Web Developer',
-  'UX/UI Designer', 'System Administrator', 'Cybersecurity Analyst', 'Mobile Developer', 'Game Developer',
-  'Real Estate Agent', 'Lawyer', 'Paralegal', 'Veterinarian', 'Architect',
-  'Journalist', 'Civil Engineer', 'Digital Marketer'
+    'Programmer',
+    'Software Developer',
+    'Cook',
+    'Accountant',
+    'Gardener',
+    'Farmer',
+    'Plumber',
+    'Electrician',
+    'Mechanic',
+    'Carpenter',
+    'Teacher',
+    'Nurse',
+    'Doctor',
+    'Construction Worker',
+    'Painter',
+    'Driver',
+    'Delivery Person',
+    'Salesperson',
+    'Cashier',
+    'Marketing Specialist',
+    'Business Manager',
+    'Customer Support',
+    'Graphic Designer',
+    'Project Manager',
+    'Content Writer',
+    'Cleaner',
+    'Security Guard',
+    'Photographer',
+    'Social Media Manager',
+    'Data Analyst',
+    'Event Planner',
+    'Waiter',
+    'Hairdresser',
+    'Technician',
+    'Receptionist',
+    'Tailor',
+    'Chef',
+    'Fitness Trainer',
+    'Barista',
+    'Web Developer',
+    'UX/UI Designer',
+    'System Administrator',
+    'Cybersecurity Analyst',
+    'Mobile Developer',
+    'Game Developer',
+    'Real Estate Agent',
+    'Lawyer',
+    'Paralegal',
+    'Veterinarian',
+    'Architect',
+    'Journalist',
+    'Civil Engineer',
+    'Digital Marketer'
   ];
 
   @override
@@ -76,13 +117,8 @@ class PostInputState extends State<PostInput> {
           ),
           backgroundColor: const Color.fromARGB(255, 3, 169, 244),
           leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
           ),
         ),
         body: Padding(
@@ -90,7 +126,6 @@ class PostInputState extends State<PostInput> {
           child: BlocListener<PostBloc, PostState>(
             listener: (context, state) {
               if (state is PostLoading) {
-                // Show loading indicator or similar UI
                 showDialog(
                   context: context,
                   barrierDismissible: false,
@@ -98,18 +133,12 @@ class PostInputState extends State<PostInput> {
                       const Center(child: CircularProgressIndicator()),
                 );
               } else if (state is PostSuccess) {
-                // Close the loading indicator
-                Navigator.pop(context);
-                // Show success message
+                Navigator.pop(context); // Close loading dialog
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Job posted successfully!')),
                 );
-                // Optionally navigate to another page
-                // Navigator.pop(context);
               } else if (state is PostFailure) {
-                // Close the loading indicator
-                Navigator.pop(context);
-                // Show error message
+                Navigator.pop(context); // Close loading dialog
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Error: ${state.message}')),
                 );
@@ -168,26 +197,27 @@ class PostInputState extends State<PostInput> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    Center(
-                      child: PostButton(
-                        onPressed: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            BlocProvider.of<PostBloc>(context).add(
-                              SubmitJob(
-                                title: _titleController.text,
-                                location: _locationController.text,
-                                profession: _selectedProfession!,
-                                category: _selectedCategory!, // Added category
-                                wageRange: _rewardController.text,
-                                contact: _contactController.text,
-                                description: _descriptionController.text,
-                                isCrypto: _isCrypto,
-                              ),
-                            );
-                          }
-                        },
-                      ),
+                    const SizedBox(height: 16),
+                    PostButton(
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          print("Form is valid"); // Add this line
+                          context.read<PostBloc>().add(
+                                SubmitJob(
+                                  title: _titleController.text,
+                                  location: _locationController.text,
+                                  profession: _selectedProfession ?? '',
+                                  wageRange: _rewardController.text,
+                                  contact: _contactController.text,
+                                  description: _descriptionController.text,
+                                  isCrypto: _isCrypto,
+                                  category: _selectedCategory ?? '',
+                                ),
+                              );
+                        } else {
+                          print("Form is invalid"); // Add this line
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -197,15 +227,5 @@ class PostInputState extends State<PostInput> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _locationController.dispose();
-    _rewardController.dispose();
-    _descriptionController.dispose();
-    _contactController.dispose();
-    super.dispose();
   }
 }

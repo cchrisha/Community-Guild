@@ -13,6 +13,7 @@ class SubmitJob extends PostEvent {
   final String contact;
   final String description;
   final bool isCrypto;
+  final String category;
 
   SubmitJob({
     required this.title,
@@ -22,10 +23,18 @@ class SubmitJob extends PostEvent {
     required this.contact,
     required this.description,
     required this.isCrypto,
-    required String category,
+    required this.category,
   });
 
   @override
-  List<Object?> get props =>
-      [title, location, profession, wageRange, contact, description, isCrypto];
+  List<Object?> get props => [
+        title,
+        location,
+        profession,
+        wageRange,
+        contact,
+        description,
+        isCrypto,
+        category
+      ];
 }
