@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/about_job.dart';
 import 'package:community_guild/screens/home.dart';
@@ -144,6 +143,7 @@ class _PaymentPageState extends State<PaymentPage> {
   Future<void> fetchTransactions(String address) async {
     setState(() {
       isLoading = true;
+      transactions.clear(); // Clear previous transactions while loading
     });
     try {
       final url =
