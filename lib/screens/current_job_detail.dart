@@ -208,7 +208,7 @@ class _CurrentJobDetailState extends State<CurrentJobDetail> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                      // Implement Complete action here
+                  // Implement Complete action here
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.lightBlueAccent,

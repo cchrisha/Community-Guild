@@ -121,17 +121,11 @@ class ProfilePage extends StatelessWidget {
                       profession: state.profession,
                     ),
                     const SizedBox(height: 30),
-                    _buildSection(
-                      context, 
-                      'Completed Jobs', 
-                      _buildCompletedJobList(context)
-                    ),
+                    _buildSection(context, 'Completed Jobs',
+                        _buildCompletedJobList(context)),
                     const SizedBox(height: 30),
                     _buildSection(
-                      context, 
-                      'Posted Jobs',
-                      _PostedJobList(context)
-                    ),
+                        context, 'Posted Jobs', _PostedJobList(context)),
                     const SizedBox(height: 30),
                   ],
                 );
@@ -159,7 +153,8 @@ class ProfilePage extends StatelessWidget {
               width: MediaQuery.of(context).size.width * 0.9,
               child: CompletedJobCard(
                 jobTitle: 'Job Title $index', // Replace with actual data
-                jobDescription: 'Description of job $index', // Replace with actual data
+                jobDescription:
+                    'Description of job $index', // Replace with actual data
                 workPlace: 'Workplace $index', // Replace with actual data
                 date: 'Date $index', // Replace with actual data
                 wageRange: 'Wage Range $index', // Replace with actual data
@@ -210,7 +205,6 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-
   Widget _PostedJobList(BuildContext context) {
     return SizedBox(
       height: 210,
@@ -224,7 +218,8 @@ class ProfilePage extends StatelessWidget {
               width: MediaQuery.of(context).size.width * 0.9,
               child: PostedJobCard(
                 jobTitle: 'Job Title $index', // Replace with actual data
-                jobDescription: 'Description of job $index', // Replace with actual data
+                jobDescription:
+                    'Description of job $index', // Replace with actual data
                 workPlace: 'Workplace $index', // Replace with actual data
                 date: 'Date $index', // Replace with actual data
                 wageRange: 'Wage Range $index', // Replace with actual data
@@ -237,13 +232,18 @@ class ProfilePage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => OwnJobDetailPage(
-                        jobTitle: 'Job Title $index', // Replace with actual data
-                        jobDescription: 'Description of job $index', // Replace with actual data
+                        jobTitle:
+                            'Job Title $index', // Replace with actual data
+                        jobDescription:
+                            'Description of job $index', // Replace with actual data
                         date: 'Date $index', // Replace with actual data
-                        workPlace: 'Workplace $index', // Replace with actual data
-                        wageRange: 'Wage Range $index', // Replace with actual data
+                        workPlace:
+                            'Workplace $index', // Replace with actual data
+                        wageRange:
+                            'Wage Range $index', // Replace with actual data
                         isCrypto: index % 2 == 0, // Replace with actual data
-                        professions: 'Profession $index', // Replace with actual data
+                        professions:
+                            'Profession $index', // Replace with actual data
                         contact: 'Contact $index', // Replace with actual data
                         category: 'Category $index', // Replace with actual data
                       ),
