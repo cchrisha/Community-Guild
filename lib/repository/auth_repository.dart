@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,6 +9,7 @@ class AuthRepository {
   AuthRepository({required this.httpClient});
 
   Future<void> registerUser({
+    required BuildContext context, 
     required String name,
     required String email,
     required String password,
@@ -32,9 +34,18 @@ class AuthRepository {
       }),
     );
 
-    if (response.statusCode != 201) {
-      throw Exception('Registration failed.');
+    if (response.statusCode == 409) {
+      // 409 Conflict is typically used for duplicate entries like an email
+      _showSnackBar(context, 'Email already exists. Please use a different email.');
+    } else if (response.statusCode != 201) {
+      // Other error codes
+      _showSnackBar(context, 'Registration failed. Please try again.');
     }
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Future<String> loginUser(String email, String password) async {
@@ -49,6 +60,9 @@ class AuthRepository {
 
     if (response.statusCode == 200) {
       final token = json.decode(response.body)['token'];
+      if (token == null || token.isEmpty) {  //CHRISHA add ko to
+        throw Exception('Login failed: Token is null or empty.');
+      }
       await saveToken(token);
       print('Token saved: $token');
       return token;
@@ -60,15 +74,24 @@ class AuthRepository {
   Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
+    print('Token saved to SharedPreferences.'); //CHRISHA pang debug lang
   }
 
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('auth_token');
+    //return prefs.getString('auth_token');
+    final token = prefs.getString('auth_token'); //itooo din
+    if (token == null || token.isEmpty) {
+      print('No token found in SharedPreferences.');
+    } else {
+      print('Token retrieved from SharedPreferences: $token');
+    }
+    return token;
   }
 
   Future<void> clearToken() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
+    print('Token cleared from SharedPreferences.'); //tas itoo
   }
 }

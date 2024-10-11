@@ -1,23 +1,24 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'home_event.dart';
 import 'home_state.dart';
+import 'package:community_guild/repository/home_repository.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc() : super(HomeInitial()) {
-    on<FetchJobs>((event, emit) async {
-      emit(HomeLoading());
+  final HomeRepository homeRepository;
 
-      try {
-        // Simulate an API call (replace with actual API call later)
-        await Future.delayed(const Duration(seconds: 2));
+  HomeBloc({required this.homeRepository}) : super(HomeLoading()) {
+    on<LoadJobs>(_onLoadJobs);
+  }
 
-        // Simulating no jobs returned by API
-        List<dynamic> jobs = []; // Empty list to simulate no jobs in database
+  void _onLoadJobs(LoadJobs event, Emitter<HomeState> emit) async {
+    emit(HomeLoading());
 
-        emit(HomeLoaded(jobs));
-      } catch (e) {
-        emit(HomeError('Failed to load jobs.'));
-      }
-    });
+    try {
+      final recommendedJobs = await homeRepository.getRecommendedJobs();
+      final recentJobs = await homeRepository.getMostRecentJobs();
+      emit(HomeLoaded(recommendedJobs: recommendedJobs, recentJobs: recentJobs));
+    } catch (e) {
+      emit(HomeError(message: e.toString()));
+    }
   }
 }

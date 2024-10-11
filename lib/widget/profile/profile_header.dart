@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:community_guild/bloc/profile/profile_bloc.dart';
+import 'package:community_guild/bloc/profile/profile_event.dart';
+import 'package:community_guild/bloc/profile/profile_state.dart';
 
 class ProfileHeader extends StatefulWidget {
   final String name;
@@ -110,11 +114,18 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           actions: [
             TextButton(
               onPressed: () {
+                // Dispatch the event to change the profile picture using Bloc
+                context.read<ProfileBloc>().add(
+                      ChangeProfilePicture(
+                          _tempImage!), // Pass the selected image
+                    );
+
                 setState(() {
                   _profileImage = _tempImage; // Save the selected image
                 });
                 Navigator.pop(context);
-                // You can add save logic here if needed
+
+                // Optionally show a snackbar or any other feedback
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Profile picture saved!')),
                 );
@@ -170,66 +181,76 @@ class _ProfileHeaderState extends State<ProfileHeader> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Stack(
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, state) {
+        if (state is ProfileLoaded) {
+          // If the profile is loaded, use the profile image from the state
+          _profileImage = state.profileImage;
+        }
+
+        return Column(
           children: [
-            GestureDetector(
-              onTap: _showFullProfilePicture,
-              child: CircleAvatar(
-                radius: 60,
-                backgroundImage: _profileImage != null
-                    ? FileImage(_profileImage!)
-                    : const AssetImage('assets/images/profile.png')
-                        as ImageProvider,
-                backgroundColor: Colors.lightBlue,
-                child: _profileImage == null
-                    ? const Icon(Icons.person, color: Colors.white, size: 60)
-                    : null,
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: Container(
-                width: 40,
-                height: 40,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.lightBlue,
-                ),
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.camera_alt,
-                    color: Colors.white,
-                    size: 20,
+            Stack(
+              children: [
+                GestureDetector(
+                  onTap: _showFullProfilePicture,
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundImage: _profileImage != null
+                        ? FileImage(_profileImage!)
+                        : const AssetImage('assets/images/profile.png')
+                            as ImageProvider,
+                    backgroundColor: Colors.lightBlue,
+                    child: _profileImage == null
+                        ? const Icon(Icons.person,
+                            color: Colors.white, size: 60)
+                        : null,
                   ),
-                  onPressed: _showChangeProfileDialog,
                 ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.lightBlue,
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.camera_alt,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      onPressed: _showChangeProfileDialog,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Text(
+              widget.name, // Display the passed name
+              style: const TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
             ),
+            const SizedBox(height: 5),
+            Text(
+              widget.profession, // Display the passed profession
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w400,
+                color: Colors.lightBlue,
+              ),
+            ),
+            const SizedBox(height: 10),
           ],
-        ),
-        const SizedBox(height: 20),
-        Text(
-          widget.name, // Display the passed name
-          style: const TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          widget.profession, // Display the passed profession
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w400,
-            color: Colors.lightBlue,
-          ),
-        ),
-        const SizedBox(height: 10),
-      ],
+        );
+      },
     );
   }
 }

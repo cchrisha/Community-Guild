@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class JobDetailPage extends StatefulWidget {
   const JobDetailPage({
     super.key,
+    required this.jobId, // Add jobId as a required parameter
     required this.jobTitle,
     required this.jobDescription,
     required this.date,
@@ -12,8 +13,10 @@ class JobDetailPage extends StatefulWidget {
     required this.workPlace,
     required this.contact,
     required this.category,
+    required this.posterName, // Add posterName as a required parameter
   });
 
+  final String jobId; // Define jobId as an integer
   final String jobTitle;
   final String jobDescription;
   final String date;
@@ -23,6 +26,7 @@ class JobDetailPage extends StatefulWidget {
   final String workPlace;
   final String contact;
   final String category;
+  final String posterName; // Add this for the poster's name
 
   @override
   State<JobDetailPage> createState() => _JobDetailPageState();
@@ -50,14 +54,6 @@ class _JobDetailPageState extends State<JobDetailPage> {
             Navigator.pop(context);
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.share, color: Colors.white),
-            onPressed: () {
-              // Implement share functionality
-            },
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -89,8 +85,8 @@ class _JobDetailPageState extends State<JobDetailPage> {
                       ),
                       elevation: 3,
                       child: Container(
-                        padding: const EdgeInsets.all(16), // Add padding
-                        child: const Row(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
                           children: [
                             CircleAvatar(
                               radius: 30,
@@ -98,13 +94,12 @@ class _JobDetailPageState extends State<JobDetailPage> {
                               child: Icon(Icons.person,
                                   color: Colors.white, size: 30),
                             ),
-                            SizedBox(
-                                width: 16), // Spacing between avatar and text
+                            SizedBox(width: 16),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Name',
+                                  widget.posterName, // Display the poster's name here
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
@@ -220,27 +215,6 @@ class _JobDetailPageState extends State<JobDetailPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              SizedBox(
-                height: 200,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5, // Replace with actual number of photos
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: Image.network(
-                          'https://via.placeholder.com/150', // Replace with actual photo URL
-                          fit: BoxFit.cover,
-                          width: 150,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -259,7 +233,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
                       ),
                     ),
                     child: const Text(
-                      'Cancel this job',
+                      'Cancel request',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -278,7 +252,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
                       ),
                     ),
                     child: const Text(
-                      'Start',
+                      'Request',
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),

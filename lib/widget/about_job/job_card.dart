@@ -8,6 +8,7 @@ class AboutJobCard extends StatelessWidget {
   final String wageRange;
   final String category;
   final bool isCrypto;
+  final String contact;
   final String professions;
   final VoidCallback onTap;
   final bool showAddButton;
@@ -19,6 +20,7 @@ class AboutJobCard extends StatelessWidget {
     required this.workPlace,
     required this.date,
     required this.wageRange,
+    required this.contact,
     required this.category,
     required this.isCrypto,
     required this.professions,
@@ -32,6 +34,7 @@ class AboutJobCard extends StatelessWidget {
       onTap: onTap,
       child: Card(
         elevation: 3,
+        color: Colors.white, // Set the background color to white
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         child: Container(
           padding: const EdgeInsets.all(12),
@@ -50,8 +53,7 @@ class AboutJobCard extends StatelessWidget {
               Text(
                 jobDescription,
                 maxLines: 2,
-                overflow:
-                    TextOverflow.ellipsis, // Add "..." kapag maraming ka-OA-an
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(color: Colors.black54),
               ),
               const SizedBox(height: 8),
@@ -60,6 +62,8 @@ class AboutJobCard extends StatelessWidget {
               Text('Category: $category'),
               const SizedBox(height: 5),
               Text('Workplace: $workPlace'),
+              const SizedBox(height: 5),
+              Text('Contact: $contact'),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

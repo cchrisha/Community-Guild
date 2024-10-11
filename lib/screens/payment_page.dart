@@ -4,12 +4,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/about_job.dart';
 import 'package:community_guild/screens/home.dart';
-import 'package:community_guild/screens/notif_page.dart';
+
 import 'package:community_guild/screens/post_page.dart';
 import 'package:community_guild/screens/profile_page.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../models/payment_model.dart';
 import '../widget/payment/balance_card.dart';
 import '../widget/payment/section_title.dart';
 import '../widget/payment/job_card.dart';
@@ -80,45 +81,15 @@ class _PaymentPageState extends State<PaymentPage> {
       });
     }
   }
-  
-  Future<String?> getToken() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getString('auth_token');
-}
 
-Future<void> updateWalletAddressInAPI(String walletAddress) async {
-  final token = await getToken(); // Retrieve the token
-  const url = 'https://api-tau-plum.vercel.app/api/users'; // No userId needed here since you're using verifyToken
-
-  try {
-    final response = await http.put(
-      Uri.parse(url),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token', // Include the token in the headers
-      },
-      body: jsonEncode({'walletAddress': walletAddress}),
-    );
-
-    if (response.statusCode == 200) {
-      // Handle successful response
-      print('Wallet address updated successfully');
-    } else {
-      // Handle error response
-      print('Failed to update wallet address: ${response.body}');
-    }
-  } catch (e) {
-    print('Error updating wallet address: $e');
-  }
-}
-
- void updateWalletAddress() async {
-  if (appKitModal?.session != null) {
-    setState(() {
-      walletAddress = appKitModal!.session!.address ?? 'No Address';
-      _balance = appKitModal!.balanceNotifier.value;
-      fetchTransactions(walletAddress); // Fetch transactions whenever the wallet address is updated
-    });
+  void updateWalletAddress() async {
+    if (appKitModal?.session != null) {
+      setState(() {
+        walletAddress = appKitModal!.session!.address ?? 'No Address';
+        _balance = appKitModal!.balanceNotifier.value;
+        fetchTransactions(
+            walletAddress); // Fetch transactions whenever the wallet address is updated
+      });
 
     // Save the wallet address to SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -184,75 +155,65 @@ Future<void> updateWalletAddressInAPI(String walletAddress) async {
     }
   }
 
- @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: Stack(
-      children: [
-        CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              automaticallyImplyLeading: false,
-              pinned: true,
-              expandedHeight: 200.0,
-              flexibleSpace: FlexibleSpaceBar(
-                title: const SizedBox.shrink(),
-                background: Container(
-                  color: const Color.fromARGB(255, 3, 169, 244),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          children: [
-                            BalanceCard(balance: _balance, address: walletAddress),
-                            const SizedBox(width: 5),
-                          ],
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                automaticallyImplyLeading: false,
+                pinned: true,
+                expandedHeight: 200.0,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: const SizedBox.shrink(),
+                  background: Container(
+                    color: const Color.fromARGB(255, 3, 169, 244),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            children: [
+                              BalanceCard(
+                                  balance: _balance, address: walletAddress),
+                              const SizedBox(width: 5),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              actions: [
-                const Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 30.0),
-                      child: Text(
-                        'Payment',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                actions: const [
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 30.0),
+                        child: Text(
+                          'Payment',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.notifications, color: Colors.white),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const NotificationPage(),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                     const PaymentSectionTitle(title: 'Actions'),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const PaymentSectionTitle(title: 'Actions'),
                       const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -561,22 +522,3 @@ Widget build(BuildContext context) {
     }
   }
 }
-
-class TransactionDetails {
-  final String sender;
-  final String recipient;
-  final String amount;
-  final String hash;
-  final DateTime date;
-  final bool isSent;
-
-  TransactionDetails({
-    required this.sender,
-    required this.recipient,
-    required this.amount,
-    required this.hash,
-    required this.date,
-    required this.isSent,
-  });
-}
-

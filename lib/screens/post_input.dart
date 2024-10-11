@@ -5,9 +5,10 @@ import '../bloc/post/post_event.dart';
 import '../bloc/post/post_state.dart';
 import '../widget/post_page/job_details_header.dart';
 import '../widget/post_page/job_details_card.dart';
+import '../widget/post_page/job_profession_dropdown.dart';
 import '../widget/post_page/job_title_field.dart';
 import '../widget/post_page/job_location_field.dart';
-import '../widget/post_page/job_profession_dropdown.dart';
+import '../widget/post_page/job_category_dropdown.dart'; // Importing the new dropdown
 import '../widget/post_page/job_reward_field.dart';
 import '../widget/post_page/job_contact_field.dart';
 import '../widget/post_page/job_description_field.dart';
@@ -31,38 +32,36 @@ class PostInputState extends State<PostInput> {
 
   bool _isCrypto = false;
   String? _selectedProfession;
+  String? _selectedCategory;
+
+  // Example categories for the dropdown
+  final List<String> _categories = [
+    'Technology',
+    'Healthcare',
+    'Education',
+    'Finance',
+    'Construction',
+    'Marketing',
+    'Design',
+    'Legal',
+    'Retail',
+    'Engineering',
+    'Sales',
+    'Customer Service',
+  ];
 
   final List<String> _professions = [
-    'Software Developer',
-    'Data Scientist',
-    'Graphic Designer',
-    'Project Manager',
-    'Marketing Specialist',
-    'Web Developer',
-    'UX/UI Designer',
-    'System Administrator',
-    'Network Engineer',
-    'Database Administrator',
-    'Business Analyst',
-    'DevOps Engineer',
-    'Cybersecurity Analyst',
-    'Content Writer',
-    'SEO Specialist',
-    'Product Manager',
-    'Mobile Developer',
-    'Game Developer',
-    'QA Tester',
-    'Technical Support',
-    'Cloud Engineer',
-    'Artificial Intelligence Engineer',
-    'Machine Learning Engineer',
-    'Blockchain Developer',
-    'Data Analyst',
-    'IT Consultant',
-    'Digital Marketing Manager',
-    'Social Media Manager',
-    'Content Strategist',
-    'E-commerce Specialist',
+  'Programmer', 'Software Developer', 'Cook', 'Accountant', 'Gardener',
+  'Farmer', 'Plumber', 'Electrician', 'Mechanic', 'Carpenter',
+  'Teacher', 'Nurse', 'Doctor', 'Construction Worker', 'Painter',
+  'Driver', 'Delivery Person', 'Salesperson', 'Cashier', 'Marketing Specialist',
+  'Business Manager', 'Customer Support', 'Graphic Designer', 'Project Manager', 'Content Writer',
+  'Cleaner', 'Security Guard', 'Photographer', 'Social Media Manager', 'Data Analyst',
+  'Event Planner', 'Waiter', 'Hairdresser', 'Technician', 'Receptionist',
+  'Tailor', 'Chef', 'Fitness Trainer', 'Barista', 'Web Developer',
+  'UX/UI Designer', 'System Administrator', 'Cybersecurity Analyst', 'Mobile Developer', 'Game Developer',
+  'Real Estate Agent', 'Lawyer', 'Paralegal', 'Veterinarian', 'Architect',
+  'Journalist', 'Civil Engineer', 'Digital Marketer'
   ];
 
   @override
@@ -131,6 +130,16 @@ class PostInputState extends State<PostInput> {
                           const SizedBox(height: 16),
                           JobLocationField(controller: _locationController),
                           const SizedBox(height: 16),
+                          JobCategoryDropdown(
+                            selectedCategory: _selectedCategory,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedCategory = value;
+                              });
+                            },
+                            categories: _categories,
+                          ),
+                          const SizedBox(height: 16),
                           JobProfessionDropdown(
                             selectedProfession: _selectedProfession,
                             onChanged: (value) {
@@ -169,6 +178,7 @@ class PostInputState extends State<PostInput> {
                                 title: _titleController.text,
                                 location: _locationController.text,
                                 profession: _selectedProfession!,
+                                category: _selectedCategory!, // Added category
                                 wageRange: _rewardController.text,
                                 contact: _contactController.text,
                                 description: _descriptionController.text,

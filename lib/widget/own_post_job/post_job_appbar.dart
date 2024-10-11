@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class PostJobAppBar extends StatelessWidget implements PreferredSizeWidget {
+class OwnPostJobAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Function(int) onSelected;
 
-  const PostJobAppBar({super.key, required this.onSelected});
+  const OwnPostJobAppBar({super.key, required this.onSelected});
 
   @override
   Widget build(BuildContext context) {

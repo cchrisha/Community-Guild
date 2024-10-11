@@ -1,16 +1,20 @@
 import 'package:community_guild/repository/profile_repository.dart';
+import 'package:community_guild/screens/about_job.dart';
+import 'package:community_guild/screens/completed_job.dart'; // Ensure this is the correct import
+import 'package:community_guild/screens/own_post_job_detail.dart';
+import 'package:community_guild/screens/post_page.dart'; // Ensure this is the correct import
+import 'package:community_guild/screens/payment_page.dart'; // Ensure this is the correct import// Ensure this is the correct import
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/profile/profile_bloc.dart';
 import '../bloc/profile/profile_event.dart';
 import '../bloc/profile/profile_state.dart';
 import '../widget/profile/completed_job_card.dart';
-import '../widget/profile/post_job_card.dart';
 import '../widget/profile/profile_header.dart';
-import '../widget/profile/section_with_see_all.dart';
 import '../widget/profile/verify_account_card.dart';
 import '../widget/profile/profile_info_card.dart';
 import 'edit_profile_page.dart';
+import 'home.dart';
 import 'setting.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -38,20 +42,26 @@ class ProfilePage extends StatelessWidget {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pop(
+                  context, true); // Pop and go back to the previous page
             },
           ),
           actions: [
             PopupMenuTheme(
               data: const PopupMenuThemeData(color: Colors.white),
               child: PopupMenuButton<String>(
-                onSelected: (value) {
+                onSelected: (value) async {
                   if (value == 'Edit Info') {
-                    Navigator.push(
+                    final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const EditProfilePage()),
+                        builder: (context) => const EditProfilePage(),
+                      ),
                     );
+
+                    if (result == true) {
+                      context.read<ProfileBloc>().add(LoadProfile());
+                    }
                   } else if (value == 'Settings') {
                     Navigator.push(
                       context,
@@ -88,15 +98,17 @@ class ProfilePage extends StatelessWidget {
           padding: const EdgeInsets.all(15.0),
           child: BlocBuilder<ProfileBloc, ProfileState>(
             builder: (context, state) {
-              if (state is ProfileLoaded) {
+              if (state is ProfileLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (state is ProfileLoaded) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ProfileHeader(
-                      name: state
-                          .name, // Pass the name from the ProfileLoaded state
-                      profession: state
-                          .profession, // Pass the profession from the ProfileLoaded state
+                      name: state.name,
+                      profession: state.profession,
                     ),
                     const SizedBox(height: 15),
                     VerifyAccountCard(
@@ -113,10 +125,12 @@ class ProfilePage extends StatelessWidget {
                       profession: state.profession,
                     ),
                     const SizedBox(height: 30),
-                    _buildSection(
-                        context, 'Completed Jobs', const CompletedJobCard()),
+                    _buildSection(context, 'Completed Jobs',
+                        _buildCompletedJobList(context)),
                     const SizedBox(height: 30),
-                    _buildSection(context, 'Posted Jobs', const PostJobCard()),
+                    _buildSection(
+                        context, 'Posted Jobs', _PostedJobList(context)),
+                    const SizedBox(height: 30),
                   ],
                 );
               } else if (state is ProfileError) {
@@ -126,22 +140,179 @@ class ProfilePage extends StatelessWidget {
             },
           ),
         ),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+          currentIndex: 4, // Set to 4 for 'Profile' to be selected by default
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.info_outline),
+              label: 'About Job',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.post_add),
+              label: 'Post',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.payment_outlined),
+              label: 'Payment',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_2_outlined),
+              label: 'Profile',
+            ),
+          ],
+          selectedItemColor: Colors.lightBlue,
+          unselectedItemColor: Colors.black,
+          onTap: (index) {
+            switch (index) {
+              case 0:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+                break;
+              case 1:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const JobPage()),
+                );
+                break;
+              case 2:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PostPage()),
+                );
+                break;
+              case 3:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PaymentPage()),
+                );
+                break;
+              case 4:
+                break; // Already on Profile page, no need to do anything
+            }
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildSection(BuildContext context, String title, Widget content,
-      {VoidCallback? onEdit, VoidCallback? seeAll}) {
+  Widget _buildCompletedJobList(BuildContext context) {
+    return SizedBox(
+      height: 240,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 3, // Change this to your actual data length
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: CompletedJobCard(
+                jobTitle: 'Job Title $index', // Replace with actual data
+                jobDescription:
+                    'Description of job $index', // Replace with actual data
+                workPlace: 'Workplace $index', // Replace with actual data
+                date: 'Date $index', // Replace with actual data
+                wageRange: 'Wage Range $index', // Replace with actual data
+                contact: 'Contact $index', // Replace with actual data
+                category: 'Category $index', // Replace with actual data
+                isCrypto: index % 2 == 0, // Replace with actual data
+                professions: 'Profession $index', // Replace with actual data
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CompletedJobDetail(
+                        jobTitle: '', // Replace with actual data
+                        jobDescription: '', // Replace with actual data
+                        date: '', // Replace with actual data
+                        workPlace: '', // Replace with actual data
+                        wageRange: '', // Replace with actual data
+                        isCrypto: true, // Replace with actual data
+                        professions: '', // Replace with actual data
+                        contact: '', // Replace with actual data
+                        category: '', // Replace with actual data
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildSection(BuildContext context, String title, Widget content) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionWithSeeAll(
-          title: title,
-          onSeeAll: seeAll ?? () {},
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 10),
         content,
       ],
+    );
+  }
+
+  Widget _PostedJobList(BuildContext context) {
+    return SizedBox(
+      height: 240,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 3, // Change this to your actual data length
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: CompletedJobCard(
+                jobTitle: 'Job Title $index', // Replace with actual data
+                jobDescription:
+                    'Description of job $index', // Replace with actual data
+                workPlace: 'Workplace $index', // Replace with actual data
+                date: 'Date $index', // Replace with actual data
+                wageRange: 'Wage Range $index', // Replace with actual data
+                contact: 'Contact $index', // Replace with actual data
+                category: 'Category $index', // Replace with actual data
+                isCrypto: index % 2 == 0, // Replace with actual data
+                professions: 'Profession $index', // Replace with actual data
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OwnJobDetailPage(
+                        jobTitle: '', // Replace with actual data
+                        jobDescription: '', // Replace with actual data
+                        date: '', // Replace with actual data
+                        workPlace: '', // Replace with actual data
+                        wageRange: '', // Replace with actual data
+                        isCrypto: true, // Replace with actual data
+                        professions: '', // Replace with actual data
+                        contact: '', // Replace with actual data
+                        category: '', // Replace with actual data
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
