@@ -231,7 +231,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
                       ),
                     ),
                     child: const Text(
-                      'Cancel this job',
+                      'Cancel request',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -250,7 +250,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
                       ),
                     ),
                     child: const Text(
-                      'Accept',
+                      'Request',
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
