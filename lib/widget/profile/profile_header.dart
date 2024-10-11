@@ -1,4 +1,7 @@
+import 'package:community_guild/bloc/pfp/profilepicture_bloc.dart';
+import 'package:community_guild/bloc/pfp/profilepicture_event.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -7,18 +10,17 @@ class ProfileHeader extends StatefulWidget {
   final String profession;
 
   const ProfileHeader({
-    super.key,
+    Key? key,
     required this.name,
     required this.profession,
-  });
+  }) : super(key: key);
 
   @override
   State<ProfileHeader> createState() => _ProfileHeaderState();
 }
 
 class _ProfileHeaderState extends State<ProfileHeader> {
-  File? _profileImage; // Currently displayed profile image
-  File? _tempImage; // Temporarily holds the selected image
+  File? _profileImage;
 
   void _showChangeProfileDialog() {
     showDialog(
@@ -78,68 +80,19 @@ class _ProfileHeaderState extends State<ProfileHeader> {
 
     if (pickedFile != null) {
       setState(() {
-        _tempImage =
-            File(pickedFile.path); // Store the picked image temporarily
+        _profileImage = File(pickedFile.path);
       });
 
-      // Show dialog to confirm saving the profile picture
-      _showSaveProfileDialog();
+      // Dispatch the upload event to the bloc
+      context
+          .read<ProfilePictureBloc>()
+          .add(UploadProfilePicture(_profileImage!));
+
+      // Optionally, show a snackbar indicating upload is in progress
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Uploading profile picture...')),
+      );
     }
-  }
-
-  // Function to show the dialog to save the profile picture
-  void _showSaveProfileDialog() {
-    if (_tempImage == null) return;
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'Save Profile Picture?',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.file(_tempImage!,
-                  width: 200, height: 200), // Show the selected image
-              const SizedBox(height: 10),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _profileImage = _tempImage; // Save the selected image
-                });
-                Navigator.pop(context);
-                // You can add save logic here if needed
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Profile picture saved!')),
-                );
-              },
-              child: const Text(
-                'Save',
-                style: TextStyle(color: Colors.lightBlue),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                setState(() {
-                  _tempImage = null;
-                });
-              },
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: Colors.lightBlue),
-              ),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   void _showFullProfilePicture() {
@@ -148,18 +101,16 @@ class _ProfileHeaderState extends State<ProfileHeader> {
         context: context,
         builder: (BuildContext context) {
           return Dialog(
-            backgroundColor:
-                Colors.transparent, // Set background to transparent
+            backgroundColor: Colors.transparent,
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Colors.black
-                    .withOpacity(0.0), // Semi-transparent black background
+                color: Colors.black.withOpacity(0.0),
               ),
               padding: const EdgeInsets.all(16),
               child: Image.file(
                 _profileImage!,
-                fit: BoxFit.cover, // Ensure the image covers the dialog
+                fit: BoxFit.cover,
               ),
             ),
           );
@@ -180,8 +131,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 radius: 60,
                 backgroundImage: _profileImage != null
                     ? FileImage(_profileImage!)
-                    : const AssetImage('assets/images/profile.png')
-                        as ImageProvider,
+                    : const AssetImage('') as ImageProvider,
                 backgroundColor: Colors.lightBlue,
                 child: _profileImage == null
                     ? const Icon(Icons.person, color: Colors.white, size: 60)
@@ -212,7 +162,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
         ),
         const SizedBox(height: 20),
         Text(
-          widget.name, // Display the passed name
+          widget.name,
           style: const TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -221,7 +171,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
         ),
         const SizedBox(height: 5),
         Text(
-          widget.profession, // Display the passed profession
+          widget.profession,
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w400,
