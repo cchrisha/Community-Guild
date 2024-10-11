@@ -54,23 +54,23 @@ class RegisterPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AuthWidgets.logo(),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 5),
                       AuthWidgets.welcomeText(isLogin: false),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 3),
                       AuthWidgets.textField(
-                        hintText: 'Name',
+                        labelText: 'Name',
                         controller: authBloc.nameController,
                         obscureText: false,
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
-                        hintText: 'Email',
+                        labelText: 'Email',
                         controller: authBloc.emailController,
                         obscureText: false,
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
-                        hintText: 'Password',
+                        labelText: 'Password',
                         controller: authBloc.passwordController,
                         obscureText: authBloc.obscureText,
                         suffixIcon: IconButton(
@@ -87,7 +87,7 @@ class RegisterPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
-                        hintText: 'Confirm Password',
+                        labelText: 'Confirm Password',
                         controller: authBloc.confirmPasswordController,
                         obscureText: authBloc.obscureConfirmPassword,
                         suffixIcon: IconButton(
@@ -104,19 +104,19 @@ class RegisterPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
-                        hintText: 'Location',
+                        labelText: 'Location',
                         controller: authBloc.locationController,
                         obscureText: false,
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
-                        hintText: 'Contact',
+                        labelText: 'Contact',
                         controller: authBloc.contactController,
                         obscureText: false,
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
-                        hintText: 'Profession',
+                        labelText: 'Profession',
                         controller: authBloc.professionController,
                         obscureText: false,
                       ),
@@ -152,7 +152,7 @@ class RegisterPage extends StatelessWidget {
                           }
                         },
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 5),
                       AuthWidgets.navigationLink(
                         isLogin: false,
                         onPressed: () {

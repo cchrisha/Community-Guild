@@ -73,17 +73,17 @@ class LoginPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           AuthWidgets.logo(),
-                          const SizedBox(height: 40),
+                          const SizedBox(height: 5),
                           AuthWidgets.welcomeText(isLogin: true),
                           const SizedBox(height: 30),
                           AuthWidgets.textField(
-                            hintText: 'Email',
+                            labelText: 'Email',
                             controller: authBloc.emailController,
                             obscureText: false,
                           ),
                           const SizedBox(height: 20),
                           AuthWidgets.textField(
-                            hintText: 'Password',
+                            labelText: 'Password',
                             controller: authBloc.passwordController,
                             obscureText: authBloc.obscureText,
                             suffixIcon: IconButton(

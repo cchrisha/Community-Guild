@@ -20,7 +20,7 @@ class AuthWidgets {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Text(
           isLogin ? 'Sign in to continue' : 'Sign up to join',
           style: GoogleFonts.poppins(fontSize: 16),
@@ -30,7 +30,7 @@ class AuthWidgets {
   }
 
   static Widget textField({
-    required String hintText,
+    required String labelText,
     required TextEditingController controller,
     required bool obscureText,
     Widget? suffixIcon,
@@ -60,8 +60,8 @@ class AuthWidgets {
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide.none,
           ),
-          hintText: hintText,
-          hintStyle: GoogleFonts.poppins(color: Colors.grey[600]),
+          labelText: labelText,
+          labelStyle: GoogleFonts.poppins(color: const Color.fromARGB(255, 0, 0, 0)),
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           suffixIcon: suffixIcon,
