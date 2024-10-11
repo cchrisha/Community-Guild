@@ -1,4 +1,3 @@
-import 'package:community_guild/screens/completed_job.dart';
 import 'package:flutter/material.dart';
 
 class CompletedJobCard2 extends StatelessWidget {

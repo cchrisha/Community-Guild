@@ -9,6 +9,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc({required this.profileRepository}) : super(ProfileInitial()) {
     on<LoadProfile>(_onLoadProfile);
     on<VerifyAccount>(_onVerifyAccount);
+    on<ChangeProfilePicture>(
+        _onChangeProfilePicture); // Add the event handler here
   }
 
   Future<void> _onLoadProfile(
@@ -30,5 +32,21 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   void _onVerifyAccount(VerifyAccount event, Emitter<ProfileState> emit) {
     // Implement account verification logic here
+  }
+
+  // Add the new event handler for changing the profile picture
+  void _onChangeProfilePicture(
+      ChangeProfilePicture event, Emitter<ProfileState> emit) {
+    final currentState = state;
+    if (currentState is ProfileLoaded) {
+      emit(ProfileLoaded(
+        name: currentState.name,
+        location: currentState.location,
+        contact: currentState.contact,
+        email: currentState.email,
+        profession: currentState.profession,
+        profileImage: event.newProfileImage, // Update profile image
+      ));
+    }
   }
 }

@@ -9,6 +9,7 @@ import '../bloc/logout/bloc/logout_bloc.dart';
 import '../widget/settings/section_header.dart';
 import '../widget/settings/settings_app_bar.dart';
 import '../widget/settings/settings_tile.dart';
+import 'about_app.dart';
 import 'change_password.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -61,7 +62,12 @@ class SettingsPage extends StatelessWidget {
                       icon: Icons.info_outline,
                       title: 'About the App',
                       onTap: () {
-                        // Navigate to app info page
+                        // Navigate to AboutAppPage
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AboutAppPage()),
+                        );
                       },
                     ),
                     SettingsTile(
