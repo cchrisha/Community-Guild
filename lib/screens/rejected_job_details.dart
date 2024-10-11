@@ -206,25 +206,6 @@ class _RejectedJobDetailState extends State<RejectedJobDetail> {
                 ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                      // Implement Complete action here
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 20,
-                  ),
-                ),
-                child: const Text(
-                  'Remove',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ),
             ],
           ),
         ),

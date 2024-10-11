@@ -144,7 +144,7 @@ class JobPage extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Pending Jobs Section
-              const SectionTitleAboutJob(title: 'Pending Jobs'),
+              const SectionTitleAboutJob(title: 'Requested Jobs'),
               const SizedBox(height: 10),
               SizedBox(
                 height: 230,
@@ -242,55 +242,6 @@ class JobPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Jobs You Posted Section
-              const SectionTitleAboutJob(title: 'Posted Jobs'),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 230,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width *
-                            0.8, //responsive na width
-                        child: PostedJobCard2(
-                          jobTitle: 'Job Title $index', // Replace with actual data
-                          jobDescription: 'Description of job $index', // Replace with actual data
-                          workPlace: 'Workplace $index', // Replace with actual data
-                          date: 'Date $index', // Replace with actual data
-                          wageRange: 'Wage Range $index', // Replace with actual data
-                          contact: 'Contact $index', // Replace with actual data
-                          category: 'Category $index', // Replace with actual data
-                          isCrypto: index % 2 == 0, // Replace with actual data
-                          professions: 'Profession $index', // Replace with actual data
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const OwnJobDetailPage(
-                                  jobTitle: '',
-                                  jobDescription: '',
-                                  date: '',
-                                  workPlace: '',
-                                  wageRange: '',
-                                  isCrypto: true,
-                                  professions: '',
-                                  contact: '',
-                                  category: '',
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
             ],
           ),
         ),
