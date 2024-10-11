@@ -1,10 +1,10 @@
-import 'package:community_guild/bloc/pfp/profilepicture_bloc.dart';
-import 'package:community_guild/bloc/pfp/profilepicture_event.dart';
-import 'package:community_guild/bloc/pfp/profilepicture_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:community_guild/bloc/pfp/profilepicture_bloc.dart';
+import 'package:community_guild/bloc/pfp/profilepicture_event.dart';
+import 'package:community_guild/bloc/pfp/profilepicture_state.dart';
 
 class ProfileHeader extends StatefulWidget {
   final String name;
@@ -26,11 +26,14 @@ class _ProfileHeaderState extends State<ProfileHeader> {
   @override
   void initState() {
     super.initState();
+    // Fetch the initial profile picture when the widget is created
     _fetchProfilePicture();
   }
 
-  void _fetchProfilePicture() {
-    context.read<ProfilePictureBloc>().add(FetchProfilePicture());
+  Future<void> _fetchProfilePicture() async {
+    // Assuming you have a method to fetch the profile picture URL
+    final bloc = context.read<ProfilePictureBloc>();
+    bloc.add(FetchProfilePicture());
   }
 
   void _showChangeProfileDialog() {
@@ -99,7 +102,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           .read<ProfilePictureBloc>()
           .add(UploadProfilePicture(_profileImage!));
 
-      // Optionally, show a snackbar indicating upload is in progress
+      // Show a snackbar indicating upload is in progress
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Uploading profile picture...')),
       );
@@ -132,16 +135,16 @@ class _ProfileHeaderState extends State<ProfileHeader> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProfilePictureBloc, ProfilePictureState>(
+    return BlocListener<ProfilePictureBloc, ProfilePictureState>(
       listener: (context, state) {
-        if (state is ProfilePictureUploaded) {
+        if (state is ProfilePictureUploading) {
+          // Optionally show a loading indicator
+        } else if (state is ProfilePictureUploaded) {
           setState(() {
-            // Update the profile image with the uploaded URL if needed
-            // This may require you to store the URL in a variable and fetch it when needed
+            _profileImage = File(state.profilePictureUrl);
           });
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Profile picture uploaded successfully!')),
+            SnackBar(content: Text('Profile picture uploaded successfully!')),
           );
         } else if (state is ProfilePictureError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -149,70 +152,66 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           );
         }
       },
-      builder: (context, state) {
-        return Column(
-          children: [
-            Stack(
-              children: [
-                GestureDetector(
-                  onTap: _showFullProfilePicture,
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundImage: _profileImage != null
-                        ? FileImage(_profileImage!)
-                        : const AssetImage('assets/default_profile.png')
-                            as ImageProvider,
-                    backgroundColor: Colors.lightBlue,
-                    child: _profileImage == null
-                        ? const Icon(Icons.person,
-                            color: Colors.white, size: 60)
-                        : null,
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              GestureDetector(
+                onTap: _showFullProfilePicture,
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundImage: _profileImage != null
+                      ? FileImage(_profileImage!)
+                      : const AssetImage('') as ImageProvider,
+                  backgroundColor: Colors.lightBlue,
+                  child: _profileImage == null
+                      ? const Icon(Icons.person, color: Colors.white, size: 60)
+                      : null,
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.lightBlue,
+                  ),
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.camera_alt,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    onPressed: _showChangeProfileDialog,
                   ),
                 ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.lightBlue,
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.camera_alt,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                      onPressed: _showChangeProfileDialog,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Text(
-              widget.name,
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
               ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Text(
+            widget.name,
+            style: const TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
             ),
-            const SizedBox(height: 5),
-            Text(
-              widget.profession,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
-                color: Colors.lightBlue,
-              ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            widget.profession,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w400,
+              color: Colors.lightBlue,
             ),
-            const SizedBox(height: 10),
-          ],
-        );
-      },
+          ),
+          const SizedBox(height: 10),
+        ],
+      ),
     );
   }
 }
