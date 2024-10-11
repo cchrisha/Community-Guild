@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/jobposted/job_posted_bloc.dart';
 import '../bloc/jobposted/job_posted_event.dart';
 import '../bloc/jobposted/job_posted_state.dart';
-import '../repository/job_posted_repository.dart';
+import '../repository/all_job_detail/job_posted_repository.dart';
 import '../widget/post_page/post_job_card3.dart';
 import '../widget/post_page/section_title.dart';
 import 'about_job.dart';
@@ -35,8 +35,8 @@ class PostPage extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 3, 169, 244),
       ),
       body: BlocProvider(
-        create: (context) =>
-            PostPageBloc(jobRepository: JobRepository())..add(FetchJobsEvent()),
+        create: (context) => PostPageBloc(jobRepository: JobPostedRepository())
+          ..add(FetchJobsEvent()),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),

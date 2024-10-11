@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:community_guild/models/job_model.dart';
+import 'package:community_guild/models/job_home_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeRepository {
@@ -28,17 +28,19 @@ class HomeRepository {
       }
 
       final response = await httpClient.get(
-        Uri.parse('https://api-tau-plum.vercel.app/api/jobs/profession'), // Corrected endpoint
+        Uri.parse(
+            'https://api-tau-plum.vercel.app/api/jobs/profession'), // Corrected endpoint
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer $token',  // Send token in Authorization header
+          'Authorization':
+              'Bearer $token', // Send token in Authorization header
         },
       );
 
       if (response.statusCode == 200) {
         final List<dynamic> jobsJson = jsonDecode(response.body);
         print('Recommended jobs response: $jobsJson');
-        
+
         // Handle potential null values in the response
         return jobsJson.map((job) {
           if (job != null) {
@@ -48,7 +50,8 @@ class HomeRepository {
           }
         }).toList();
       } else {
-        throw Exception('Failed to load recommended jobs. Status code: ${response.statusCode}, Response: ${response.body}');
+        throw Exception(
+            'Failed to load recommended jobs. Status code: ${response.statusCode}, Response: ${response.body}');
       }
     } catch (e) {
       print('Error loading recommended jobs: $e');
@@ -69,7 +72,7 @@ class HomeRepository {
       if (response.statusCode == 200) {
         final List<dynamic> jobsJson = jsonDecode(response.body);
         print('Most recent jobs response: $jobsJson');
-        
+
         return jobsJson.map((job) {
           if (job != null) {
             return Job.fromJson(job);
@@ -78,7 +81,8 @@ class HomeRepository {
           }
         }).toList();
       } else {
-        throw Exception('Failed to load recent jobs. Status code: ${response.statusCode}, Response: ${response.body}');
+        throw Exception(
+            'Failed to load recent jobs. Status code: ${response.statusCode}, Response: ${response.body}');
       }
     } catch (e) {
       print('Error loading recent jobs: $e');

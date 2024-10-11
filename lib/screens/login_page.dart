@@ -1,5 +1,5 @@
 import 'dart:async'; // Importing Timer
-import 'package:community_guild/repository/auth_repository.dart';
+import 'package:community_guild/repository/authentication/auth_repository.dart';
 import 'package:community_guild/screens/forget_password.dart';
 import 'package:community_guild/widget/login_and_register/login_register_widget.dart';
 import 'package:flutter/material.dart';

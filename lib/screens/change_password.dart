@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/change_password/change_password_bloc.dart';
 import '../bloc/change_password/change_password_event.dart';
 import '../bloc/change_password/change_password_state.dart';
-import '../repository/change_password_repository.dart';
+import '../repository/authentication/change_password_repository.dart';
 import '../widget/change_password/password_field.dart';
 import '../widget/change_password/password_strength_indicator.dart';
 import '../widget/change_password/security_tips.dart';

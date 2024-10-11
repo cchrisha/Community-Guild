@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import '../../repository/job_repository.dart';
+import '../../repository/all_job_detail/job_repository.dart';
 import 'job_detail_event.dart';
 import 'job_detail_state.dart';
 
