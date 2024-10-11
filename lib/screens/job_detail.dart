@@ -13,6 +13,7 @@ class JobDetailPage extends StatefulWidget {
     required this.workPlace,
     required this.contact,
     required this.category,
+    required this.posterName, // Add posterName as a required parameter
   });
 
   final String jobId; // Define jobId as an integer
@@ -25,6 +26,7 @@ class JobDetailPage extends StatefulWidget {
   final String workPlace;
   final String contact;
   final String category;
+  final String posterName; // Add this for the poster's name
 
   @override
   State<JobDetailPage> createState() => _JobDetailPageState();
@@ -84,7 +86,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
                       elevation: 3,
                       child: Container(
                         padding: const EdgeInsets.all(16),
-                        child: const Row(
+                        child: Row(
                           children: [
                             CircleAvatar(
                               radius: 30,
@@ -97,7 +99,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Name',
+                                  widget.posterName, // Display the poster's name here
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,

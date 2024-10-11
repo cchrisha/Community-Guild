@@ -103,6 +103,7 @@ class HomePage extends StatelessWidget {
                                               professions: job.professions.join(', '),
                                               contact: '',
                                               category: job.categories?.join(', ') ?? 'No categories available',
+                                              posterName: job.posterName ?? 'Unknown poster',  // Add this line
                                             ),
                                           ),
                                         );
@@ -151,6 +152,7 @@ class HomePage extends StatelessWidget {
                                               professions: job.professions.join(', '),
                                               contact: '',
                                               category: job.categories?.join(', ') ?? 'No categories available',
+                                              posterName: job.posterName ?? 'Unknown poster',  // Add this line
                                             ),
                                           ),
                                         );

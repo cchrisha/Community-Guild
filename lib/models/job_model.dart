@@ -8,7 +8,7 @@ class Job {
   final String? description; // Nullable to handle possible null values
   final List<String> professions;
   final List<String>? categories; // Nullable to handle possible null values
-  final String? poster;
+  final String? posterName;
 
   Job({
     required this.id,
@@ -20,7 +20,7 @@ class Job {
     this.description, // Nullable
     required this.professions,
     this.categories, // Nullable
-    this.poster,
+    this.posterName,
   });
 
   factory Job.fromJson(Map<String, dynamic> json) {
@@ -34,7 +34,7 @@ class Job {
       description: json['description'] as String?, // Handling null for description
       professions: List<String>.from(json['professions'] ?? []), // Ensure professions is a valid list
       categories: json['categories'] != null ? List<String>.from(json['categories']) : null, // Handling null for categories
-      poster: json['poster'] != null ? json['poster']['name'] as String? : null, // Handling null for poster
+      posterName: json['poster'] != null ? json['poster']['name'] as String? : null, // Handling null for poster
     );
   }
 }
