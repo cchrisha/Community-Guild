@@ -88,7 +88,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
 Future<void> updateWalletAddressInAPI(String walletAddress) async {
   final token = await getToken(); // Retrieve the token
-  const url = 'https://api-tau-plum.vercel.app/api/users'; // No userId needed here since you're using verifyToken
+  const url = 'https://api-tau-plum.vercel.app/api/users'; // API URL
 
   try {
     final response = await http.put(
@@ -103,13 +103,37 @@ Future<void> updateWalletAddressInAPI(String walletAddress) async {
     if (response.statusCode == 200) {
       // Handle successful response
       print('Wallet address updated successfully');
+    } else if (response.statusCode == 400) {
+      // Wallet address already associated with another account
+      String errorMessage = jsonDecode(response.body)['message'];
+      _showErrorDialog(context, errorMessage); // Show error dialog
     } else {
-      // Handle error response
+      // Handle other errors
       print('Failed to update wallet address: ${response.body}');
     }
   } catch (e) {
     print('Error updating wallet address: $e');
   }
+}
+
+void _showErrorDialog(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
 }
 
  void updateWalletAddress() async {
