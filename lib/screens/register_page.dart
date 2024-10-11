@@ -130,6 +130,7 @@ class RegisterPage extends StatelessWidget {
                               authBloc.contactController.text.isNotEmpty &&
                               authBloc.professionController.text.isNotEmpty) {
                             authBloc.add(RegisterRequested(
+                              context: context,
                               userauth: Userauth(
                                 id: '',
                                 name: authBloc.nameController.text,
