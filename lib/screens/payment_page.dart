@@ -80,69 +80,64 @@ class _PaymentPageState extends State<PaymentPage> {
       });
     }
   }
-
-  void updateWalletAddress() async {
-    if (appKitModal?.session != null) {
-      setState(() {
-        walletAddress = appKitModal!.session!.address ?? 'No Address';
-        _balance = appKitModal!.balanceNotifier.value;
-        fetchTransactions(walletAddress); // Fetch transactions whenever the wallet address is updated
-      });
-
-      // Save the wallet address to SharedPreferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('walletAddress', walletAddress);
-    } else {
-      setState(() {
-        walletAddress = 'No Address';
-        _balance = 'No Balance';
-        transactions.clear(); // Clear transactions when no address
-      });
-
-      // Remove the wallet address from SharedPreferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.remove('walletAddress');
-    }
+  
+  Future<String?> getToken() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('auth_token');
 }
 
-    Future<void> loginWithMetaMask(String email, String password, String metamaskAddress) async {
-      final response = await http.post(
-        Uri.parse('https://api-tau-plum.vercel.app/api/userLogin'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: json.encode({
-          'email': email,
-          'password': password,
-          'walletAddress': metamaskAddress // Send wallet address
-        }),
-      );
+Future<void> updateWalletAddressInAPI(String walletAddress) async {
+  final token = await getToken(); // Retrieve the token
+  const url = 'https://api-tau-plum.vercel.app/api/users'; // No userId needed here since you're using verifyToken
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        // Handle successful login, e.g., save the token
-        print('Login successful: ${data['message']}');
-      } else {
-        print('Login failed: ${response.body}');
-      }
+  try {
+    final response = await http.put(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token', // Include the token in the headers
+      },
+      body: jsonEncode({'walletAddress': walletAddress}),
+    );
+
+    if (response.statusCode == 200) {
+      // Handle successful response
+      print('Wallet address updated successfully');
+    } else {
+      // Handle error response
+      print('Failed to update wallet address: ${response.body}');
     }
+  } catch (e) {
+    print('Error updating wallet address: $e');
+  }
+}
 
-    Future<void> logout() async {
-      final response = await http.post(
-        Uri.parse('https://api-tau-plum.vercel.app/api/logout'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
+ void updateWalletAddress() async {
+  if (appKitModal?.session != null) {
+    setState(() {
+      walletAddress = appKitModal!.session!.address ?? 'No Address';
+      _balance = appKitModal!.balanceNotifier.value;
+      fetchTransactions(walletAddress); // Fetch transactions whenever the wallet address is updated
+    });
 
-      if (response.statusCode == 200) {
-        print('Logout successful: ${json.decode(response.body)['message']}');
-        // Clear MetaMask session
-        // Implement the actual logout logic for MetaMask, e.g., disconnecting from wallet
-      } else {
-        print('Logout failed: ${response.body}');
-      }
-    }
+    // Save the wallet address to SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('walletAddress', walletAddress);
+
+    // Update the wallet address in the API
+    await updateWalletAddressInAPI(walletAddress); // No userId needed here
+  } else {
+    setState(() {
+      walletAddress = 'No Address';
+      _balance = 'No Balance';
+      transactions.clear(); // Clear transactions when no address
+    });
+
+    // Remove the wallet address from SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('walletAddress');
+  }
+}
 
 
   Future<void> fetchTransactions(String address) async {
