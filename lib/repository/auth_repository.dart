@@ -45,8 +45,6 @@ class AuthRepository {
     final snackBar = SnackBar(content: Text(message));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
-}
-
 
   Future<String> loginUser(String email, String password) async {
     final response = await httpClient.post(
