@@ -42,7 +42,7 @@ dependencies:
   get: ^4.6.6
   google_fonts: ^6.2.1
   get_storage: ^2.1.1
-  image_picker: ^0.8.5+3
+  image_picker: ^1.1.2
   shared_preferences: ^2.3.2
   web3modal_flutter: ^3.3.4
   reown_appkit: ^1.0.1
