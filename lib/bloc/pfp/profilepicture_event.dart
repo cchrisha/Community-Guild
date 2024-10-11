@@ -7,3 +7,5 @@ class UploadProfilePicture extends ProfilePictureEvent {
 
   UploadProfilePicture(this.profileImage);
 }
+
+class FetchProfilePicture extends ProfilePictureEvent {}

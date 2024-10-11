@@ -1,7 +1,7 @@
-import 'package:community_guild/bloc/pfp/profilepicture_event.dart';
-import 'package:community_guild/bloc/pfp/profilepicture_state.dart';
-import 'package:community_guild/repository/profilepicture_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'profilepicture_event.dart';
+import 'profilepicture_state.dart';
+import 'package:community_guild/repository/profilepicture_repository.dart';
 
 class ProfilePictureBloc
     extends Bloc<ProfilePictureEvent, ProfilePictureState> {
