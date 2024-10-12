@@ -58,7 +58,7 @@ class LoginPage extends StatelessWidget {
                         });
                       } else if (state is AuthFailure) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(state.error)),
+                          SnackBar(content: Text(state.error),backgroundColor: Colors.red,),
                         );
                       }
                     },
