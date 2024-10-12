@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/login_page.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 
 class GetStartedPage extends StatefulWidget {
   const GetStartedPage({super.key});
@@ -18,6 +19,8 @@ class _GetStartedPageState extends State<GetStartedPage>
   @override
   void initState() {
     super.initState();
+    _checkIfLoggedIn(); // Check if the user is already logged in
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -29,6 +32,20 @@ class _GetStartedPageState extends State<GetStartedPage>
 
     _controller.forward();
     _pageController = PageController();
+  }
+
+// Function to check if the user is logged in
+  Future<void> _checkIfLoggedIn() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? authToken = prefs.getString('auth_token'); // Get the auth token
+
+    if (authToken != null && authToken.isNotEmpty) {
+      // If the auth token exists, navigate to the LoginPage or home screen
+      Navigator.pushReplacement(
+        context,
+        _createRoute(const LoginPage()),
+      );
+    }
   }
 
   @override
