@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:community_guild/screens/post_input.dart';
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/about_job.dart';
 import 'package:community_guild/screens/home.dart';
@@ -382,7 +383,7 @@ class _PaymentPageState extends State<PaymentPage> {
             case 2:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const PostPage()),
+                MaterialPageRoute(builder: (context) => const PostInput()),
               );
               break;
             case 3:

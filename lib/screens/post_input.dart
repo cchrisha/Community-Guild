@@ -51,17 +51,8 @@ class PostInputState extends State<PostInput> {
   ];
 
   final List<String> _professions = [
-  'Programmer', 'Software Developer', 'Cook', 'Accountant', 'Gardener',
-  'Farmer', 'Plumber', 'Electrician', 'Mechanic', 'Carpenter',
-  'Teacher', 'Nurse', 'Doctor', 'Construction Worker', 'Painter',
-  'Driver', 'Delivery Person', 'Salesperson', 'Cashier', 'Marketing Specialist',
-  'Business Manager', 'Customer Support', 'Graphic Designer', 'Project Manager', 'Content Writer',
-  'Cleaner', 'Security Guard', 'Photographer', 'Social Media Manager', 'Data Analyst',
-  'Event Planner', 'Waiter', 'Hairdresser', 'Technician', 'Receptionist',
-  'Tailor', 'Chef', 'Fitness Trainer', 'Barista', 'Web Developer',
-  'UX/UI Designer', 'System Administrator', 'Cybersecurity Analyst', 'Mobile Developer', 'Game Developer',
-  'Real Estate Agent', 'Lawyer', 'Paralegal', 'Veterinarian', 'Architect',
-  'Journalist', 'Civil Engineer', 'Digital Marketer'
+  'Programmer', 'Gardener', 'Carpenter', 'Plumber', 'Cleaner',
+  'Cook', 'Driver', 'Electrician', 'Salesperson', 'Crew' 
   ];
 
   @override

@@ -2,6 +2,7 @@ import 'package:community_guild/repository/profile_repository.dart';
 import 'package:community_guild/screens/about_job.dart';
 import 'package:community_guild/screens/completed_job.dart'; // Ensure this is the correct import
 import 'package:community_guild/screens/own_post_job_detail.dart';
+import 'package:community_guild/screens/post_input.dart';
 import 'package:community_guild/screens/post_page.dart'; // Ensure this is the correct import
 import 'package:community_guild/screens/payment_page.dart'; // Ensure this is the correct import// Ensure this is the correct import
 import 'package:flutter/material.dart';
@@ -179,7 +180,7 @@ class ProfilePage extends StatelessWidget {
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const PostPage()),
+                  MaterialPageRoute(builder: (context) => const PostInput()),
                 );
                 break;
               case 3:
