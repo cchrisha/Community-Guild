@@ -2,8 +2,11 @@ import 'package:community_guild/bloc/about_job/about_job_bloc.dart';
 import 'package:community_guild/bloc/about_job/about_job_event.dart';
 import 'package:community_guild/bloc/about_job/about_job_state.dart';
 import 'package:community_guild/repository/all_job_detail/about_job_repository.dart';
+import 'package:community_guild/repository/authentication/auth_repository.dart'; // Import AuthRepository
+import 'package:community_guild/repository/authentication/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http; // Import for Http Client
 
 import 'package:community_guild/screens/current_job_detail.dart';
 import 'package:community_guild/screens/completed_job.dart';
@@ -23,8 +26,11 @@ class JobPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Create an instance of AuthRepository with the HTTP client
+    final authRepository = AuthRepository(httpClient: http.Client());
+
     return BlocProvider(
-      create: (context) => AboutJobBloc(AboutJobRepository())
+      create: (context) => AboutJobBloc(AboutJobRepository(authRepository: authRepository))
         ..add(FetchAboutJobsByStatus('working on')), // Fetch "working on" jobs initially
       child: Scaffold(
         appBar: AppBar(
@@ -119,7 +125,7 @@ class JobPage extends StatelessWidget {
                 const SectionTitleAboutJob(title: 'Completed Jobs'),
                 const SizedBox(height: 10),
                 BlocProvider(
-                  create: (context) => AboutJobBloc(AboutJobRepository())
+                  create: (context) => AboutJobBloc(AboutJobRepository(authRepository: authRepository))
                     ..add(FetchAboutJobsByStatus('done')), // Fetch "completed" jobs
                   child: BlocBuilder<AboutJobBloc, AboutJobState>(
                     builder: (context, state) {
@@ -187,7 +193,7 @@ class JobPage extends StatelessWidget {
                 const SectionTitleAboutJob(title: 'Requested Jobs'),
                 const SizedBox(height: 10),
                 BlocProvider(
-                  create: (context) => AboutJobBloc(AboutJobRepository())
+                  create: (context) => AboutJobBloc(AboutJobRepository(authRepository: authRepository))
                     ..add(FetchAboutJobsByStatus('requested')), // Fetch "requested" jobs
                   child: BlocBuilder<AboutJobBloc, AboutJobState>(
                     builder: (context, state) {
