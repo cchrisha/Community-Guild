@@ -2,6 +2,7 @@ import 'package:community_guild/repository/profile_repository.dart';
 import 'package:community_guild/screens/about_job.dart';
 import 'package:community_guild/screens/completed_job.dart'; // Ensure this is the correct import
 import 'package:community_guild/screens/own_post_job_detail.dart';
+import 'package:community_guild/screens/post_input.dart';
 import 'package:community_guild/screens/post_page.dart'; // Ensure this is the correct import
 import 'package:community_guild/screens/payment_page.dart'; // Ensure this is the correct import// Ensure this is the correct import
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class ProfilePage extends StatelessWidget {
       )..add(LoadProfile()),
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: const Text(
             'Profile',
             style: TextStyle(
@@ -39,13 +41,6 @@ class ProfilePage extends StatelessWidget {
           backgroundColor: Colors.lightBlue,
           elevation: 0,
           centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              Navigator.pop(
-                  context, true); // Pop and go back to the previous page
-            },
-          ),
           actions: [
             PopupMenuTheme(
               data: const PopupMenuThemeData(color: Colors.white),
@@ -185,7 +180,7 @@ class ProfilePage extends StatelessWidget {
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const PostPage()),
+                  MaterialPageRoute(builder: (context) => const PostInput()),
                 );
                 break;
               case 3:

@@ -42,7 +42,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           return;
         }
 
-        // Existing validations
         if (!_isValidEmail(event.userauth.email)) {
           emit(AuthFailure('Please enter a valid email address.'));
           return;
@@ -65,12 +64,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           location: event.userauth.location,
           contact: event.userauth.contact,
           profession: event.userauth.profession,
-          // walletAddress can be omitted as it's not required
         );
 
         emit(AuthSuccess());
       } catch (error) {
-        emit(AuthFailure(error.toString()));
+        if (error.toString().contains('Email already exists')) {
+          emit(AuthFailure(
+              'Email already exists. Please use a different email.'));
+        } else {
+          emit(AuthFailure(error.toString()));
+        }
       }
     });
 

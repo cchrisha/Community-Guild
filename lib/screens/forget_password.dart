@@ -23,7 +23,28 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
   bool _isPasswordVisible = false;
+  String _passwordStrength = '';
+  Color _strengthColor = Colors.grey;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Add listener to the password controller to check strength
+    _passwordController.addListener(() {
+      _checkPasswordStrength(_passwordController.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _otpController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,25 +56,37 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         appBar: const CustomAppBar(title: 'Forgot Password'),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: BlocBuilder<ForgetPasswordBloc, ForgetPasswordState>(
-            builder: (context, state) {
-              if (state is SendingOtpState ||
-                  state is OtpVerificationLoading ||
-                  state is PasswordResetLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is OtpSentState) {
-                return _buildOtpInput(context);
-              } else if (state is OtpVerified) {
-                return _buildPasswordInput(context);
-              } else if (state is PasswordResetSuccess) {
-                return _buildSuccessDialog(
-                    context, 'Password reset successful.');
-              } else if (state is ForgetPasswordFailure) {
-                return _buildErrorDialog(context, state.error);
-              } else {
-                return _buildEmailInput(context);
+          child: BlocListener<ForgetPasswordBloc, ForgetPasswordState>(
+            listener: (context, state) {
+              if (state is OtpSentState) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('OTP sent successfully!'),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
               }
             },
+            child: BlocBuilder<ForgetPasswordBloc, ForgetPasswordState>(
+              builder: (context, state) {
+                if (state is SendingOtpState ||
+                    state is OtpVerificationLoading ||
+                    state is PasswordResetLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is OtpSentState) {
+                  return _buildOtpInput(context);
+                } else if (state is OtpVerified) {
+                  return _buildPasswordInput(context);
+                } else if (state is PasswordResetSuccess) {
+                  return _buildSuccessDialog(
+                      context, 'Password reset successful.');
+                } else if (state is ForgetPasswordFailure) {
+                  return _buildErrorDialog(context, state.error);
+                } else {
+                  return _buildEmailInput(context);
+                }
+              },
+            ),
           ),
         ),
       ),
@@ -122,12 +155,18 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         PasswordInput(
           controller: _passwordController,
           isVisible: _isPasswordVisible,
-          onChanged: (value) {},
+          onChanged:
+              (value) {}, // You can leave this as is or implement additional logic
           onToggleVisibility: () {
             setState(() {
               _isPasswordVisible = !_isPasswordVisible;
             });
           },
+        ),
+        const SizedBox(height: 10),
+        Text(
+          _passwordStrength,
+          style: TextStyle(color: _strengthColor),
         ),
         const SizedBox(height: 20),
         ElevatedButton(
@@ -155,6 +194,54 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         ),
       ],
     );
+  }
+
+  void _checkPasswordStrength(String password) {
+    // Same password strength checking logic as before...
+    if (password.isEmpty) {
+      setState(() {
+        _passwordStrength = 'Enter a password'; // Prompt to enter a password
+        _strengthColor = Colors.grey;
+      });
+      return;
+    }
+
+    int strength = 0;
+    String strengthName = ''; // Variable for the strength name
+
+    if (password.length >= 8) strength++;
+    if (RegExp(r'[A-Z]').hasMatch(password)) strength++;
+    if (RegExp(r'[a-z]').hasMatch(password)) strength++;
+    if (RegExp(r'[0-9]').hasMatch(password)) strength++;
+    if (RegExp(r'[!@#\$%\^&\*]').hasMatch(password)) strength++;
+
+    switch (strength) {
+      case 0:
+      case 1:
+        strengthName = 'Very Weak';
+        _strengthColor = Colors.red;
+        break;
+      case 2:
+        strengthName = 'Weak';
+        _strengthColor = Colors.orange;
+        break;
+      case 3:
+        strengthName = 'Moderate';
+        _strengthColor = Colors.yellow;
+        break;
+      case 4:
+        strengthName = 'Strong';
+        _strengthColor = Colors.lightGreen;
+        break;
+      case 5:
+        strengthName = 'Very Strong';
+        _strengthColor = Colors.green;
+        break;
+    }
+
+    setState(() {
+      _passwordStrength = strengthName; // Set the strength name
+    });
   }
 
   Widget _buildSuccessDialog(BuildContext context, String message) {

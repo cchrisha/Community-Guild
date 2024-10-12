@@ -23,7 +23,7 @@ class HomeJobCard extends StatelessWidget {
     required this.isCrypto,
     required this.professions,
     required this.onTap,
-    this.showAddButton = false,
+    this.showAddButton = false, required TextOverflow overflow,
   });
 
   @override

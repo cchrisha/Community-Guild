@@ -1,10 +1,10 @@
+import 'package:community_guild/bloc/pfp/profilepicture_bloc.dart';
+import 'package:community_guild/bloc/pfp/profilepicture_event.dart';
+import 'package:community_guild/bloc/pfp/profilepicture_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:community_guild/bloc/profile/profile_bloc.dart';
-import 'package:community_guild/bloc/profile/profile_event.dart';
-import 'package:community_guild/bloc/profile/profile_state.dart';
 
 class ProfileHeader extends StatefulWidget {
   final String name;
@@ -91,7 +91,6 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     }
   }
 
-  // Function to show the dialog to save the profile picture
   void _showSaveProfileDialog() {
     if (_tempImage == null) return;
 
@@ -114,9 +113,9 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           actions: [
             TextButton(
               onPressed: () {
-                // Dispatch the event to change the profile picture using Bloc
-                context.read<ProfileBloc>().add(
-                      ChangeProfilePicture(
+                // Dispatch the event to change the profile picture using ProfilePictureBloc
+                context.read<ProfilePictureBloc>().add(
+                      UploadProfilePicture(
                           _tempImage!), // Pass the selected image
                     );
 
@@ -127,7 +126,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
 
                 // Optionally show a snackbar or any other feedback
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Profile picture saved!')),
+                  const SnackBar(content: Text('Profile picture uploaded!')),
                 );
               },
               child: const Text(
@@ -181,11 +180,14 @@ class _ProfileHeaderState extends State<ProfileHeader> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileBloc, ProfileState>(
+    return BlocBuilder<ProfilePictureBloc, ProfilePictureState>(
       builder: (context, state) {
-        if (state is ProfileLoaded) {
-          // If the profile is loaded, use the profile image from the state
-          _profileImage = state.profileImage;
+        if (state is ProfilePictureUploaded) {
+          // Update the profile image URL after successful upload
+          setState(() {
+            _profileImage = File(
+                state.profilePictureUrl); // Use the URL as a local file for now
+          });
         }
 
         return Column(
