@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:community_guild/screens/choose.dart';
 =======
 import 'package:community_guild/screens/login_page.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
->>>>>>> c2e4b3d2e492a625f66aac62c5ef65c6c50c6fc8
 
 class GetStartedPage extends StatefulWidget {
   const GetStartedPage({super.key});

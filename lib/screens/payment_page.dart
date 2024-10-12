@@ -494,56 +494,23 @@ class _PaymentPageState extends State<PaymentPage> {
   void _showAmountDialog(BuildContext context, String scannedAddress) {
     final TextEditingController amountController = TextEditingController();
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Send Crypto'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Recipient Address: $scannedAddress'),
-              TextField(
-                controller: amountController,
-                decoration: const InputDecoration(
-                  hintText: 'Amount to Send',
-                ),
-                keyboardType: TextInputType.number,
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Send Crypto'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Recipient Address: $scannedAddress'),
+            TextField(
+              controller: amountController,
+              decoration: const InputDecoration(
+                hintText: 'Amount to Send',
               ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                // Handle the sending logic here using scannedAddress and amountController.text
-                String recipient = scannedAddress;
-                double amount = double.parse(amountController.text);
-                BigInt bigIntValue = BigInt.from(amount * pow(10, 18));
-                EtherAmount ethAmount =
-                    EtherAmount.fromBigInt(EtherUnit.wei, bigIntValue);
-                Navigator.of(context).pop(); // Close the dialog
-
-                try {
-                  await sendTransaction(recipient, ethAmount);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Transaction successful!')),
-                  );
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error: ${e.toString()}')),
-                  );
-                }
-              },
-              child: const Text('Send'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text('Cancel'),
+              keyboardType: TextInputType.number,
             ),
           ],
-<<<<<<< HEAD
         ),
         actions: [
           TextButton(
@@ -554,11 +521,7 @@ class _PaymentPageState extends State<PaymentPage> {
               BigInt bigIntValue = BigInt.from(amount * pow(10, 18));
               EtherAmount ethAmount = EtherAmount.fromBigInt(EtherUnit.wei, bigIntValue);
               Navigator.of(context).pop(); // Close the dialog
-              setState(() {
-                  isLoading = true;
-                  final Uri metamaskUri = Uri.parse("metamask://");
-                  launchUrl(metamaskUri, mode: LaunchMode.externalApplication);
-                });
+
               try {
                 await sendTransaction(recipient, ethAmount);
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -584,12 +547,6 @@ class _PaymentPageState extends State<PaymentPage> {
   );
 }
 
-=======
-        );
-      },
-    );
-  }
->>>>>>> c2e4b3d2e492a625f66aac62c5ef65c6c50c6fc8
 
   Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
     setState(() {
