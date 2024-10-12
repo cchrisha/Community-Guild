@@ -37,17 +37,15 @@ class PostInputState extends State<PostInput> {
   // Example categories for the dropdown
   final List<String> _categories = [
     'Technology',
-    'Healthcare',
+    'Environment',
     'Education',
-    'Finance',
+    'Labor',
     'Construction',
     'Marketing',
     'Design',
-    'Legal',
     'Retail',
     'Engineering',
     'Sales',
-    'Customer Service',
   ];
 
   final List<String> _professions = [

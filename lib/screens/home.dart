@@ -70,7 +70,7 @@ class HomePage extends StatelessWidget {
                           const SizedBox(height: 20),
                           const SectionTitle(title: 'Recommended'),
                           SizedBox(
-                            height: 210,
+                            height: 240,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: state.recommendedJobs.length,
@@ -82,6 +82,7 @@ class HomePage extends StatelessWidget {
                                     width: MediaQuery.of(context).size.width * 0.9,
                                     child: HomeJobCard(
                                       jobTitle: job.title,
+                                      overflow: TextOverflow.ellipsis,
                                       jobDescription: job.description ?? 'No description available',
                                       workPlace: job.location,
                                       date: DateFormat('MMMM dd, yyyy').format((job.datePosted)),
@@ -104,7 +105,8 @@ class HomePage extends StatelessWidget {
                                               professions: job.professions.join(', '),
                                               contact: '',
                                               category: job.categories?.join(', ') ?? 'No categories available',
-                                              posterName: job.posterName ?? 'Unknown poster',  // Add this line
+                                              posterName: job.posterName ?? 'Unknown poster',
+                                                // Add this line
                                             ),
                                           ),
                                         );
@@ -119,7 +121,7 @@ class HomePage extends StatelessWidget {
                           const SectionTitle(title: 'Most Recent Job'),
                           const SizedBox(height: 10),
                           SizedBox(
-                            height: 230,
+                            height: 240,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: state.recentJobs.length,
@@ -130,6 +132,7 @@ class HomePage extends StatelessWidget {
                                   child: SizedBox(
                                     width: MediaQuery.of(context).size.width * 0.9,
                                     child: HomeJobCard(
+                                      overflow: TextOverflow.ellipsis,
                                       jobTitle: job.title,
                                       jobDescription: job.description ?? 'No description available',
                                       workPlace: job.location,
