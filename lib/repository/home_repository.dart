@@ -8,8 +8,8 @@ class HomeRepository {
 
   HomeRepository({required this.httpClient});
 
-  // Method to retrieve the auth token
-  Future<String?> _getAuthToken() async {
+  // Public method to retrieve the auth token
+  Future<String?> getAuthToken() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
     if (token == null || token.isEmpty) {
@@ -22,18 +22,16 @@ class HomeRepository {
 
   Future<List<Job>> getRecommendedJobs() async {
     try {
-      final token = await _getAuthToken(); // Retrieve the token
+      final token = await getAuthToken(); // Retrieve the token
       if (token == null) {
         throw Exception('No token available.');
       }
 
       final response = await httpClient.get(
-        Uri.parse(
-            'https://api-tau-plum.vercel.app/api/jobs/profession'), // Corrected endpoint
+        Uri.parse('https://api-tau-plum.vercel.app/api/jobs/profession'), // Corrected endpoint
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization':
-              'Bearer $token', // Send token in Authorization header
+          'Authorization': 'Bearer $token', // Send token in Authorization header
         },
       );
 
