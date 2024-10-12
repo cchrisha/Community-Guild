@@ -4,7 +4,6 @@ import 'package:community_guild/screens/post_input.dart';
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/about_job.dart';
 import 'package:community_guild/screens/home.dart';
-import 'package:community_guild/screens/post_page.dart';
 import 'package:community_guild/screens/profile_page.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -17,7 +16,6 @@ import '../widget/payment/balance_card.dart';
 import '../widget/payment/section_title.dart';
 import '../widget/payment/job_card.dart';
 import 'package:http/http.dart' as http;
-
 
 class PaymentPage extends StatefulWidget {
   const PaymentPage({super.key});
@@ -50,7 +48,8 @@ class _PaymentPageState extends State<PaymentPage> {
     initializeAppKitModal();
     loadWalletAddress();
   }
-   Future<void> loadWalletAddress() async {
+
+  Future<void> loadWalletAddress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? savedWalletAddress = prefs.getString('walletAddress');
     setState(() {
@@ -148,7 +147,7 @@ class _PaymentPageState extends State<PaymentPage> {
       });
 
       // Remove the wallet address from SharedPreferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();  
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove('walletAddress');
     }
   }
@@ -304,9 +303,9 @@ class _PaymentPageState extends State<PaymentPage> {
                                   child: const Text('Send'),
                                 ),
                                 const SizedBox(width: 17),
-                                 ElevatedButton(
+                                ElevatedButton(
                                   onPressed: () {
-                                  _showReceiveQRCode(context);      
+                                    _showReceiveQRCode(context);
                                   },
                                   child: const Text('Receive'),
                                 ),
@@ -317,31 +316,31 @@ class _PaymentPageState extends State<PaymentPage> {
                       ),
                       const SizedBox(height: 10),
                       const PaymentSectionTitle(title: 'Transactions'),
-                       Visibility(
-                      visible: appKitModal!.isConnected,
-                      child: isLoading
-                          ? const Center(child: CircularProgressIndicator())
-                          : transactions.isNotEmpty
-                              ? Container(
-                                  height: 350,
-                                  child: ListView.builder(
-                                    itemCount: transactions.length,
-                                    itemBuilder: (context, index) {
-                                      final transaction = transactions[index];
-                                      return PaymentJobCardPage(
-                                        amount: transaction.amount,
-                                        sender: transaction.sender,
-                                        recipient: transaction.recipient,
-                                        hash: transaction.hash,
-                                        date: transaction.date,
-                                        isSent: transaction.isSent,
-                                    );
-                                  },
-                                ),
-                              )
-                              : const Center(
-                           child: Text('No transactions available'),
-                        ),
+                      Visibility(
+                        visible: appKitModal!.isConnected,
+                        child: isLoading
+                            ? const Center(child: CircularProgressIndicator())
+                            : transactions.isNotEmpty
+                                ? Container(
+                                    height: 350,
+                                    child: ListView.builder(
+                                      itemCount: transactions.length,
+                                      itemBuilder: (context, index) {
+                                        final transaction = transactions[index];
+                                        return PaymentJobCardPage(
+                                          amount: transaction.amount,
+                                          sender: transaction.sender,
+                                          recipient: transaction.recipient,
+                                          hash: transaction.hash,
+                                          date: transaction.date,
+                                          isSent: transaction.isSent,
+                                        );
+                                      },
+                                    ),
+                                  )
+                                : const Center(
+                                    child: Text('No transactions available'),
+                                  ),
                       )
                     ],
                   ),
@@ -416,50 +415,51 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   void _showReceiveQRCode(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('Scan QR Code'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min, 
-            children: [
-               QrImageView(
-                data: walletAddress, // The wallet address to encode
-                version: QrVersions.auto, // Automatic version determination
-                size: 200.0, // Size of the QR code
-                gapless: false, // Specify if the QR code should be gapless
-              ),
-              const SizedBox(height: 16),
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Scan QR Code'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                QrImageView(
+                  data: walletAddress, // The wallet address to encode
+                  version: QrVersions.auto, // Automatic version determination
+                  size: 200.0, // Size of the QR code
+                  gapless: false, // Specify if the QR code should be gapless
+                ),
+                const SizedBox(height: 16),
                 ElevatedButton(
-                onPressed: () {
-                  // Copy wallet address to clipboard
-                  Clipboard.setData(ClipboardData(text: walletAddress)).then((_) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Address copied to clipboard!'),
-                      ),
-                    );
-                  });
-                },
-                child: const Text('Copy Address'), // Button to copy address
-              ),
-            ],
+                  onPressed: () {
+                    // Copy wallet address to clipboard
+                    Clipboard.setData(ClipboardData(text: walletAddress))
+                        .then((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Address copied to clipboard!'),
+                        ),
+                      );
+                    });
+                  },
+                  child: const Text('Copy Address'), // Button to copy address
+                ),
+              ],
+            ),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); 
-            },
-            child: const Text('Close'),
-          ),
-        ],
-      );
-    },
-  );
-}
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _showSendDialog(BuildContext context) {
     final TextEditingController addressController = TextEditingController();
@@ -512,7 +512,7 @@ class _PaymentPageState extends State<PaymentPage> {
               },
               child: const Text('Send'),
             ),
-             TextButton(
+            TextButton(
               onPressed: () {
                 _openScanner(context, addressController);
               },
@@ -530,21 +530,23 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  Future<void> _openScanner(BuildContext context, TextEditingController addressController) async {
-  await Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (context) => QRView(
-        key: GlobalKey(debugLabel: 'QR'),
-        onQRViewCreated: (QRViewController controller) {
-          controller.scannedDataStream.listen((scanData) {
-            final String? scannedAddress = scanData.code; // Get the scanned address
+  Future<void> _openScanner(
+      BuildContext context, TextEditingController addressController) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => QRView(
+          key: GlobalKey(debugLabel: 'QR'),
+          onQRViewCreated: (QRViewController controller) {
+            controller.scannedDataStream.listen((scanData) {
+              final String? scannedAddress =
+                  scanData.code; // Get the scanned address
 
-            // Update the address controller with the scanned address
-            addressController.text = scannedAddress!;
+              // Update the address controller with the scanned address
+              addressController.text = scannedAddress!;
 
-            // Show amount dialog after scanning the QR code
-            Navigator.of(context).pop(); // Close the scanner
-            _showAmountDialog(context, scannedAddress);
+              // Show amount dialog after scanning the QR code
+              Navigator.of(context).pop(); // Close the scanner
+              _showAmountDialog(context, scannedAddress);
             });
           },
         ),
@@ -553,61 +555,61 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   void _showAmountDialog(BuildContext context, String scannedAddress) {
-  final TextEditingController amountController = TextEditingController();
+    final TextEditingController amountController = TextEditingController();
 
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('Send Crypto'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Recipient Address: $scannedAddress'),
-            TextField(
-              controller: amountController,
-              decoration: const InputDecoration(
-                hintText: 'Amount to Send',
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Send Crypto'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Recipient Address: $scannedAddress'),
+              TextField(
+                controller: amountController,
+                decoration: const InputDecoration(
+                  hintText: 'Amount to Send',
+                ),
+                keyboardType: TextInputType.number,
               ),
-              keyboardType: TextInputType.number,
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                // Handle the sending logic here using scannedAddress and amountController.text
+                String recipient = scannedAddress;
+                double amount = double.parse(amountController.text);
+                BigInt bigIntValue = BigInt.from(amount * pow(10, 18));
+                EtherAmount ethAmount =
+                    EtherAmount.fromBigInt(EtherUnit.wei, bigIntValue);
+                Navigator.of(context).pop(); // Close the dialog
+
+                try {
+                  await sendTransaction(recipient, ethAmount);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Transaction successful!')),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: ${e.toString()}')),
+                  );
+                }
+              },
+              child: const Text('Send'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Cancel'),
             ),
           ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              // Handle the sending logic here using scannedAddress and amountController.text
-              String recipient = scannedAddress;
-              double amount = double.parse(amountController.text);
-              BigInt bigIntValue = BigInt.from(amount * pow(10, 18));
-              EtherAmount ethAmount = EtherAmount.fromBigInt(EtherUnit.wei, bigIntValue);
-              Navigator.of(context).pop(); // Close the dialog
-
-              try {
-                await sendTransaction(recipient, ethAmount);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Transaction successful!')),
-                );
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error: ${e.toString()}')),
-                );
-              }
-            },
-            child: const Text('Send'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-            },
-            child: const Text('Cancel'),
-          ),
-        ],
-      );
-    },
-  );
-}
-
+        );
+      },
+    );
+  }
 
   Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
     setState(() {

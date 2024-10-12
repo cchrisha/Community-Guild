@@ -1,8 +1,4 @@
-import 'package:community_guild/bloc/pfp/profilepicture_bloc.dart';
-import 'package:community_guild/bloc/pfp/profilepicture_event.dart';
-import 'package:community_guild/bloc/pfp/profilepicture_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -91,6 +87,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     }
   }
 
+  // Function to show the dialog to save the profile picture
   void _showSaveProfileDialog() {
     if (_tempImage == null) return;
 
@@ -113,20 +110,13 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           actions: [
             TextButton(
               onPressed: () {
-                // Dispatch the event to change the profile picture using ProfilePictureBloc
-                context.read<ProfilePictureBloc>().add(
-                      UploadProfilePicture(
-                          _tempImage!), // Pass the selected image
-                    );
-
                 setState(() {
                   _profileImage = _tempImage; // Save the selected image
                 });
                 Navigator.pop(context);
-
-                // Optionally show a snackbar or any other feedback
+                // You can add save logic here if needed
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Profile picture uploaded!')),
+                  const SnackBar(content: Text('Profile picture saved!')),
                 );
               },
               child: const Text(
@@ -180,79 +170,66 @@ class _ProfileHeaderState extends State<ProfileHeader> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfilePictureBloc, ProfilePictureState>(
-      builder: (context, state) {
-        if (state is ProfilePictureUploaded) {
-          // Update the profile image URL after successful upload
-          setState(() {
-            _profileImage = File(
-                state.profilePictureUrl); // Use the URL as a local file for now
-          });
-        }
-
-        return Column(
+    return Column(
+      children: [
+        Stack(
           children: [
-            Stack(
-              children: [
-                GestureDetector(
-                  onTap: _showFullProfilePicture,
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundImage: _profileImage != null
-                        ? FileImage(_profileImage!)
-                        : const AssetImage('assets/images/profile.png')
-                            as ImageProvider,
-                    backgroundColor: Colors.lightBlue,
-                    child: _profileImage == null
-                        ? const Icon(Icons.person,
-                            color: Colors.white, size: 60)
-                        : null,
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.lightBlue,
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.camera_alt,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                      onPressed: _showChangeProfileDialog,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Text(
-              widget.name, // Display the passed name
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
+            GestureDetector(
+              onTap: _showFullProfilePicture,
+              child: CircleAvatar(
+                radius: 60,
+                backgroundImage: _profileImage != null
+                    ? FileImage(_profileImage!)
+                    : const AssetImage('assets/images/profile.png')
+                        as ImageProvider,
+                backgroundColor: Colors.lightBlue,
+                child: _profileImage == null
+                    ? const Icon(Icons.person, color: Colors.white, size: 60)
+                    : null,
               ),
             ),
-            const SizedBox(height: 5),
-            Text(
-              widget.profession, // Display the passed profession
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
-                color: Colors.lightBlue,
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.lightBlue,
+                ),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.camera_alt,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  onPressed: _showChangeProfileDialog,
+                ),
               ),
             ),
-            const SizedBox(height: 10),
           ],
-        );
-      },
+        ),
+        const SizedBox(height: 20),
+        Text(
+          widget.name, // Display the passed name
+          style: const TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          widget.profession, // Display the passed profession
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w400,
+            color: Colors.lightBlue,
+          ),
+        ),
+        const SizedBox(height: 10),
+      ],
     );
   }
 }

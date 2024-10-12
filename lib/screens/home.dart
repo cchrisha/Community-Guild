@@ -11,7 +11,6 @@ import 'package:community_guild/bloc/home/home_state.dart';
 import 'about_job.dart';
 import 'job_detail.dart';
 import 'payment_page.dart';
-import 'post_page.dart';
 import 'profile_page.dart';
 import 'package:http/http.dart' as http; // Required for the repository
 import 'package:intl/intl.dart';
@@ -79,15 +78,20 @@ class HomePage extends StatelessWidget {
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 10),
                                   child: SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.9,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.9,
                                     child: HomeJobCard(
                                       jobTitle: job.title,
                                       overflow: TextOverflow.ellipsis,
-                                      jobDescription: job.description ?? 'No description available',
+                                      jobDescription: job.description ??
+                                          'No description available',
                                       workPlace: job.location,
-                                      date: DateFormat('MMMM dd, yyyy').format((job.datePosted)),
-                                      wageRange: job.wageRange ?? 'No wage range specified',
-                                      category: job.categories?.join(', ') ?? 'No categories available',
+                                      date: DateFormat('MMMM dd, yyyy')
+                                          .format((job.datePosted)),
+                                      wageRange: job.wageRange ??
+                                          'No wage range specified',
+                                      category: job.categories?.join(', ') ??
+                                          'No categories available',
                                       isCrypto: job.isCrypto,
                                       professions: job.professions.join(', '),
                                       onTap: () {
@@ -97,16 +101,23 @@ class HomePage extends StatelessWidget {
                                             builder: (context) => JobDetailPage(
                                               jobId: job.id,
                                               jobTitle: job.title,
-                                              jobDescription: job.description ?? 'No description available',
-                                              date: DateFormat('MMMM dd, yyyy').format((job.datePosted)),
+                                              jobDescription: job.description ??
+                                                  'No description available',
+                                              date: DateFormat('MMMM dd, yyyy')
+                                                  .format((job.datePosted)),
                                               workPlace: job.location,
-                                              wageRange: job.wageRange ?? 'No wage range specified',
+                                              wageRange: job.wageRange ??
+                                                  'No wage range specified',
                                               isCrypto: job.isCrypto,
-                                              professions: job.professions.join(', '),
+                                              professions:
+                                                  job.professions.join(', '),
                                               contact: '',
-                                              category: job.categories?.join(', ') ?? 'No categories available',
-                                              posterName: job.posterName ?? 'Unknown poster',
-                                                // Add this line
+                                              category:
+                                                  job.categories?.join(', ') ??
+                                                      'No categories available',
+                                              posterName: job.posterName ??
+                                                  'Unknown poster',
+                                              // Add this line
                                             ),
                                           ),
                                         );
@@ -130,15 +141,20 @@ class HomePage extends StatelessWidget {
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 10),
                                   child: SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.9,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.9,
                                     child: HomeJobCard(
                                       overflow: TextOverflow.ellipsis,
                                       jobTitle: job.title,
-                                      jobDescription: job.description ?? 'No description available',
+                                      jobDescription: job.description ??
+                                          'No description available',
                                       workPlace: job.location,
-                                      date: DateFormat('MMMM dd, yyyy').format((job.datePosted)),
-                                      wageRange: job.wageRange ?? 'No wage range specified',
-                                      category: job.categories?.join(', ') ?? 'No categories available',
+                                      date: DateFormat('MMMM dd, yyyy')
+                                          .format((job.datePosted)),
+                                      wageRange: job.wageRange ??
+                                          'No wage range specified',
+                                      category: job.categories?.join(', ') ??
+                                          'No categories available',
                                       isCrypto: job.isCrypto,
                                       professions: job.professions.join(', '),
                                       onTap: () {
@@ -148,15 +164,22 @@ class HomePage extends StatelessWidget {
                                             builder: (context) => JobDetailPage(
                                               jobId: job.id,
                                               jobTitle: job.title,
-                                              jobDescription: job.description ?? 'No description available',
-                                              date: DateFormat('MMMM dd, yyyy').format((job.datePosted)),
+                                              jobDescription: job.description ??
+                                                  'No description available',
+                                              date: DateFormat('MMMM dd, yyyy')
+                                                  .format((job.datePosted)),
                                               workPlace: job.location,
-                                              wageRange: job.wageRange ?? 'No wage range specified',
+                                              wageRange: job.wageRange ??
+                                                  'No wage range specified',
                                               isCrypto: job.isCrypto,
-                                              professions: job.professions.join(', '),
+                                              professions:
+                                                  job.professions.join(', '),
                                               contact: '',
-                                              category: job.categories?.join(', ') ?? 'No categories available',
-                                              posterName: job.posterName ?? 'Unknown poster',  // Add this line
+                                              category:
+                                                  job.categories?.join(', ') ??
+                                                      'No categories available',
+                                              posterName: job.posterName ??
+                                                  'Unknown poster', // Add this line
                                             ),
                                           ),
                                         );

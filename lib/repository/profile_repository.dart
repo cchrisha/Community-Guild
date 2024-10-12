@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -66,4 +67,6 @@ class ProfileRepository {
       throw Exception('Failed to update profile: ${response.body}');
     }
   }
+
+  uploadImage(File newProfileImage) {}
 }

@@ -1,4 +1,4 @@
-import'package:community_guild/screens/completed_job.dart';
+import 'package:community_guild/screens/completed_job.dart';
 import 'package:community_guild/screens/own_post_job_detail.dart';
 import 'package:community_guild/screens/pending_job_detail.dart';
 import 'package:community_guild/screens/post_input.dart';
@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:community_guild/screens/current_job_detail.dart';
 import 'package:community_guild/screens/home.dart'; // Update import if necessary
 import 'package:community_guild/screens/payment_page.dart';
-import 'package:community_guild/screens/post_page.dart';
 import 'package:community_guild/screens/profile_page.dart';
 import 'package:community_guild/widget/about_job/completed_job_card2.dart';
 
