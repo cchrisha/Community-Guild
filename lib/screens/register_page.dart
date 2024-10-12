@@ -72,7 +72,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       AuthWidgets.logo(),
                       const SizedBox(height: 5),
                       AuthWidgets.welcomeText(isLogin: false),
-                      const SizedBox(height: 3),
+                      const SizedBox(height: 5 ),
                       AuthWidgets.textField(
                         labelText: 'Name',
                         controller: authBloc.nameController,

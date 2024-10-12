@@ -9,7 +9,8 @@ class JobDescriptionField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      maxLines: 5,
+      minLines: 1,  // Starts with 5 lines
+      maxLines: null,
       decoration: InputDecoration(
         labelText: 'Job Description',
         labelStyle: const TextStyle(color: Color.fromARGB(255, 3, 169, 244)),
@@ -24,6 +25,10 @@ class JobDescriptionField extends StatelessWidget {
         ),
         errorBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.red, width: 2),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.red, width: 2), // Red border when focused with an error
           borderRadius: BorderRadius.circular(16),
         ),
         contentPadding:

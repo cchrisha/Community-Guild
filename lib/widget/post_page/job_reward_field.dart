@@ -10,7 +10,7 @@ class JobRewardField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
-        labelText: 'Reward',
+        labelText: 'Wage Range',
         labelStyle: const TextStyle(color: Color.fromARGB(255, 3, 169, 244)),
         prefixIcon: const Icon(Icons.money, color: Color.fromARGB(255, 3, 169, 244),),
         enabledBorder: OutlineInputBorder(
@@ -23,6 +23,10 @@ class JobRewardField extends StatelessWidget {
         ),
         errorBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.red, width: 2),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.red, width: 2), // Red border when focused with an error
           borderRadius: BorderRadius.circular(16),
         ),
         contentPadding:
