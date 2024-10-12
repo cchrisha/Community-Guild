@@ -3,7 +3,6 @@ import 'package:community_guild/bloc/about_job/about_job_event.dart';
 import 'package:community_guild/bloc/about_job/about_job_state.dart';
 import 'package:community_guild/repository/all_job_detail/about_job_repository.dart';
 import 'package:community_guild/repository/authentication/auth_repository.dart'; // Import AuthRepository
-import 'package:community_guild/repository/authentication/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http; // Import for Http Client
@@ -12,14 +11,10 @@ import 'package:community_guild/screens/current_job_detail.dart';
 import 'package:community_guild/screens/completed_job.dart';
 import 'package:community_guild/screens/pending_job_detail.dart';
 import 'package:community_guild/screens/rejected_job_details.dart';
-import 'package:community_guild/screens/own_post_job_detail.dart';
-import 'package:community_guild/screens/home.dart';
-import 'package:community_guild/screens/payment_page.dart';
-import 'package:community_guild/screens/post_input.dart';
-import 'package:community_guild/screens/profile_page.dart';
 import 'package:community_guild/widget/about_job/job_card.dart';
 import 'package:community_guild/widget/about_job/section_title.dart';
 import 'package:community_guild/widget/about_job/completed_job_card2.dart';
+import 'package:intl/intl.dart';
 
 class JobPage extends StatelessWidget {
   const JobPage({super.key});
@@ -218,15 +213,17 @@ class JobPage extends StatelessWidget {
                             itemBuilder: (context, index) {
                               final job = state.jobs[index];
 
-                               // Improved function to handle date parsing and formatting
+                              // Improved function to handle date parsing and formatting
                               String formatDate(String dateString) {
                                 try {
                                   // Parse the date from the string, ensure it's in ISO format
-                                  DateTime parsedDate = DateTime.parse(dateString);
+                                  DateTime parsedDate =
+                                      DateTime.parse(dateString);
                                   // Format to "Month Day, Year" format (e.g., "January 10, 2024")
-                                  return DateFormat('MMMM dd, yyyy').format(parsedDate);
+                                  return DateFormat('MMMM dd, yyyy')
+                                      .format(parsedDate);
                                 } catch (e) {
-                                  return 'Invalid date';  // Return a fallback if parsing fails
+                                  return 'Invalid date'; // Return a fallback if parsing fails
                                 }
                               }
 
@@ -238,7 +235,8 @@ class JobPage extends StatelessWidget {
                                   child: AboutJobCard(
                                     jobTitle: job.title,
                                     jobDescription: job.description,
-                                    date: formatDate(job.datePosted),  // Apply formatted date
+                                    date: formatDate(
+                                        job.datePosted), // Apply formatted date
                                     workPlace: job.location,
                                     wageRange: job.wageRange,
                                     contact: job.poster.name,
@@ -253,7 +251,8 @@ class JobPage extends StatelessWidget {
                                               PendingJobDetail(
                                             jobTitle: job.title,
                                             jobDescription: job.description,
-                                            date: formatDate(job.datePosted),  // Apply formatted date
+                                            date: formatDate(job
+                                                .datePosted), // Apply formatted date
                                             workPlace: job.location,
                                             wageRange: job.wageRange,
                                             isCrypto: job.isCrypto,
@@ -304,15 +303,17 @@ class JobPage extends StatelessWidget {
                             itemBuilder: (context, index) {
                               final job = state.jobs[index];
 
-                               // Improved function to handle date parsing and formatting
+                              // Improved function to handle date parsing and formatting
                               String formatDate(String dateString) {
                                 try {
                                   // Parse the date from the string, ensure it's in ISO format
-                                  DateTime parsedDate = DateTime.parse(dateString);
+                                  DateTime parsedDate =
+                                      DateTime.parse(dateString);
                                   // Format to "Month Day, Year" format (e.g., "January 10, 2024")
-                                  return DateFormat('MMMM dd, yyyy').format(parsedDate);
+                                  return DateFormat('MMMM dd, yyyy')
+                                      .format(parsedDate);
                                 } catch (e) {
-                                  return 'Invalid date';  // Return a fallback if parsing fails
+                                  return 'Invalid date'; // Return a fallback if parsing fails
                                 }
                               }
 
@@ -324,7 +325,8 @@ class JobPage extends StatelessWidget {
                                   child: AboutJobCard(
                                     jobTitle: job.title,
                                     jobDescription: job.description,
-                                    date: formatDate(job.datePosted),  // Apply formatted date
+                                    date: formatDate(
+                                        job.datePosted), // Apply formatted date
                                     workPlace: job.location,
                                     wageRange: job.wageRange,
                                     contact: job.poster.name,
@@ -339,7 +341,8 @@ class JobPage extends StatelessWidget {
                                               RejectedJobDetail(
                                             jobTitle: job.title,
                                             jobDescription: job.description,
-                                            date: formatDate(job.datePosted),  // Apply formatted date
+                                            date: formatDate(job
+                                                .datePosted), // Apply formatted date
                                             workPlace: job.location,
                                             wageRange: job.wageRange,
                                             isCrypto: job.isCrypto,

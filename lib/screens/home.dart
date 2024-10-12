@@ -106,8 +106,7 @@ class _HomePageState extends State<HomePage> {
                       ).then((_) {
                         // Rebuild the home page state after returning
                         setState(() {
-                          _currentIndex =
-                              0; // or any index you want to go back to
+                          _currentIndex = 0;
                         });
                       });
                     }
