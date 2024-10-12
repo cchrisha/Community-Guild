@@ -49,8 +49,16 @@ class PostInputState extends State<PostInput> {
   ];
 
   final List<String> _professions = [
-  'Programmer', 'Gardener', 'Carpenter', 'Plumber', 'Cleaner',
-  'Cook', 'Driver', 'Electrician', 'Salesperson', 'Crew' 
+    'Programmer',
+    'Gardener',
+    'Carpenter',
+    'Plumber',
+    'Cleaner',
+    'Cook',
+    'Driver',
+    'Electrician',
+    'Salesperson',
+    'Crew'
   ];
 
   @override

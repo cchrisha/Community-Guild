@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class CompletedJobDetail extends StatefulWidget {
   const CompletedJobDetail({
@@ -16,7 +17,7 @@ class CompletedJobDetail extends StatefulWidget {
 
   final String jobTitle;
   final String jobDescription;
-  final String date;
+  final String date; // Assuming this is in ISO8601 format or similar
   final String wageRange;
   final bool isCrypto;
   final String professions;
@@ -29,13 +30,22 @@ class CompletedJobDetail extends StatefulWidget {
 }
 
 class _CompletedJobDetailState extends State<CompletedJobDetail> {
+  String _formatDate(String date) {
+    try {
+      final parsedDate = DateTime.parse(date);
+      return DateFormat('MMMM dd, yyyy').format(parsedDate); // Format date
+    } catch (e) {
+      return date; // Return the original date string if parsing fails
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text( // Remove 'const' because title is dynamic
           'Job Details',
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 20,
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -75,23 +85,22 @@ class _CompletedJobDetailState extends State<CompletedJobDetail> {
                       ),
                       elevation: 3,
                       child: Container(
-                        padding: const EdgeInsets.all(16), // Add padding
-                        child: const Row(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
                           children: [
-                            CircleAvatar(
+                            const CircleAvatar(
                               radius: 30,
                               backgroundColor: Colors.lightBlueAccent,
                               child: Icon(Icons.person,
                                   color: Colors.white, size: 30),
                             ),
-                            SizedBox(
-                                width: 16), // Spacing between avatar and text
+                            const SizedBox(width: 16),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Name',
-                                  style: TextStyle(
+                                  widget.contact, // Use contact for the poster's name
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black87,
@@ -112,7 +121,7 @@ class _CompletedJobDetailState extends State<CompletedJobDetail> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Job Title: ${widget.jobTitle}',
+                    'Job Title: ${widget.jobTitle}', // Dynamic job title
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -120,7 +129,7 @@ class _CompletedJobDetailState extends State<CompletedJobDetail> {
                     ),
                   ),
                   Text(
-                    'Date: ${widget.date}',
+                    'Date: ${_formatDate(widget.date)}', // Formatted date
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
@@ -139,7 +148,7 @@ class _CompletedJobDetailState extends State<CompletedJobDetail> {
               ),
               const SizedBox(height: 5),
               Text(
-                widget.jobDescription,
+                widget.jobDescription, // Dynamic job description
                 style: const TextStyle(fontSize: 16, color: Colors.black87),
               ),
               const SizedBox(height: 5),
@@ -156,7 +165,7 @@ class _CompletedJobDetailState extends State<CompletedJobDetail> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Wage Range: ${widget.wageRange}',
+                    'Wage Range: ${widget.wageRange}', // Dynamic wage range
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
@@ -166,7 +175,7 @@ class _CompletedJobDetailState extends State<CompletedJobDetail> {
                     children: [
                       const Text('Is Crypto: '),
                       Checkbox(
-                        value: widget.isCrypto,
+                        value: widget.isCrypto, // Dynamic crypto status
                         onChanged: (bool? value) {},
                       ),
                     ],
@@ -175,7 +184,7 @@ class _CompletedJobDetailState extends State<CompletedJobDetail> {
               ),
               const SizedBox(height: 5),
               Text(
-                'Wanted Profession: ${widget.professions}',
+                'Wanted Profession: ${widget.professions}', // Dynamic professions
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black87,
@@ -183,7 +192,7 @@ class _CompletedJobDetailState extends State<CompletedJobDetail> {
               ),
               const SizedBox(height: 10),
               Text(
-                'Workplace: ${widget.workPlace}',
+                'Workplace: ${widget.workPlace}', // Dynamic workplace
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black87,
@@ -191,7 +200,7 @@ class _CompletedJobDetailState extends State<CompletedJobDetail> {
               ),
               const SizedBox(height: 10),
               Text(
-                'Contact: ${widget.contact}',
+                'Contact: ${widget.contact}', // Dynamic contact (poster)
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black87,
@@ -199,7 +208,7 @@ class _CompletedJobDetailState extends State<CompletedJobDetail> {
               ),
               const SizedBox(height: 10),
               Text(
-                'Category: ${widget.category}',
+                'Category: ${widget.category}', // Dynamic category
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black87,
