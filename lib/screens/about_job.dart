@@ -217,6 +217,19 @@ class JobPage extends StatelessWidget {
                             itemCount: state.jobs.length,
                             itemBuilder: (context, index) {
                               final job = state.jobs[index];
+
+                               // Improved function to handle date parsing and formatting
+                              String formatDate(String dateString) {
+                                try {
+                                  // Parse the date from the string, ensure it's in ISO format
+                                  DateTime parsedDate = DateTime.parse(dateString);
+                                  // Format to "Month Day, Year" format (e.g., "January 10, 2024")
+                                  return DateFormat('MMMM dd, yyyy').format(parsedDate);
+                                } catch (e) {
+                                  return 'Invalid date';  // Return a fallback if parsing fails
+                                }
+                              }
+
                               return Padding(
                                 padding: const EdgeInsets.only(right: 10),
                                 child: SizedBox(
@@ -225,7 +238,7 @@ class JobPage extends StatelessWidget {
                                   child: AboutJobCard(
                                     jobTitle: job.title,
                                     jobDescription: job.description,
-                                    date: job.datePosted,
+                                    date: formatDate(job.datePosted),  // Apply formatted date
                                     workPlace: job.location,
                                     wageRange: job.wageRange,
                                     contact: job.poster.name,
@@ -240,7 +253,7 @@ class JobPage extends StatelessWidget {
                                               PendingJobDetail(
                                             jobTitle: job.title,
                                             jobDescription: job.description,
-                                            date: job.datePosted,
+                                            date: formatDate(job.datePosted),  // Apply formatted date
                                             workPlace: job.location,
                                             wageRange: job.wageRange,
                                             isCrypto: job.isCrypto,
@@ -290,6 +303,19 @@ class JobPage extends StatelessWidget {
                             itemCount: state.jobs.length,
                             itemBuilder: (context, index) {
                               final job = state.jobs[index];
+
+                               // Improved function to handle date parsing and formatting
+                              String formatDate(String dateString) {
+                                try {
+                                  // Parse the date from the string, ensure it's in ISO format
+                                  DateTime parsedDate = DateTime.parse(dateString);
+                                  // Format to "Month Day, Year" format (e.g., "January 10, 2024")
+                                  return DateFormat('MMMM dd, yyyy').format(parsedDate);
+                                } catch (e) {
+                                  return 'Invalid date';  // Return a fallback if parsing fails
+                                }
+                              }
+
                               return Padding(
                                 padding: const EdgeInsets.only(right: 10),
                                 child: SizedBox(
@@ -298,7 +324,7 @@ class JobPage extends StatelessWidget {
                                   child: AboutJobCard(
                                     jobTitle: job.title,
                                     jobDescription: job.description,
-                                    date: job.datePosted,
+                                    date: formatDate(job.datePosted),  // Apply formatted date
                                     workPlace: job.location,
                                     wageRange: job.wageRange,
                                     contact: job.poster.name,
@@ -313,7 +339,7 @@ class JobPage extends StatelessWidget {
                                               RejectedJobDetail(
                                             jobTitle: job.title,
                                             jobDescription: job.description,
-                                            date: job.datePosted,
+                                            date: formatDate(job.datePosted),  // Apply formatted date
                                             workPlace: job.location,
                                             wageRange: job.wageRange,
                                             isCrypto: job.isCrypto,

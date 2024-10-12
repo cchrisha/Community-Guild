@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class RejectedJobDetail extends StatefulWidget {
   const RejectedJobDetail({
@@ -28,14 +29,24 @@ class RejectedJobDetail extends StatefulWidget {
   State<RejectedJobDetail> createState() => _RejectedJobDetailState();
 }
 
+// Moved outside the class to avoid conflict
 class _RejectedJobDetailState extends State<RejectedJobDetail> {
+  String _formatDate(String date) {
+    try {
+      final parsedDate = DateTime.parse(date);
+      return DateFormat('MMMM dd, yyyy').format(parsedDate); // Format date
+    } catch (e) {
+      return date; // Return original date string if parsing fails
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Job Details',
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 20,
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -76,22 +87,22 @@ class _RejectedJobDetailState extends State<RejectedJobDetail> {
                       elevation: 3,
                       child: Container(
                         padding: const EdgeInsets.all(16), // Add padding
-                        child: const Row(
+                        child: Row(
                           children: [
-                            CircleAvatar(
+                            const CircleAvatar(
                               radius: 30,
                               backgroundColor: Colors.lightBlueAccent,
                               child: Icon(Icons.person,
                                   color: Colors.white, size: 30),
                             ),
-                            SizedBox(
+                            const SizedBox(
                                 width: 16), // Spacing between avatar and text
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Name',
-                                  style: TextStyle(
+                                  widget.contact,
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black87,
@@ -120,7 +131,7 @@ class _RejectedJobDetailState extends State<RejectedJobDetail> {
                     ),
                   ),
                   Text(
-                    'Date: ${widget.date}',
+                    'Date: ${_formatDate(widget.date)}', // Using _formatDate
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
