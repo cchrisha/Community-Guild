@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'package:community_guild/screens/choose.dart';
-=======
 import 'package:community_guild/screens/login_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GetStartedPage extends StatefulWidget {
   const GetStartedPage({super.key});
