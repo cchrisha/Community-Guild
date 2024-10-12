@@ -88,19 +88,19 @@ class _JobDetailPageState extends State<JobDetailPage> {
                         padding: const EdgeInsets.all(16),
                         child: Row(
                           children: [
-                            CircleAvatar(
+                            const CircleAvatar(
                               radius: 30,
                               backgroundColor: Colors.lightBlueAccent,
                               child: Icon(Icons.person,
                                   color: Colors.white, size: 30),
                             ),
-                            SizedBox(width: 16),
+                            const SizedBox(width: 16),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   widget.posterName, // Display the poster's name here
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black87,

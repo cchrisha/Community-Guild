@@ -21,7 +21,7 @@ class ProfileLoaded extends ProfileState {
   final String profession;
   final File? profileImage;
 
-  ProfileLoaded({
+  const ProfileLoaded({
     required this.name,
     required this.location,
     required this.contact,

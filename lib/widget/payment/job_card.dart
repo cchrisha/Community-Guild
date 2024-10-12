@@ -10,14 +10,14 @@ class PaymentJobCardPage extends StatefulWidget {
   final bool isSent;
 
   const PaymentJobCardPage({
-    Key? key,
+    super.key,
     required this.amount,
     required this.sender,
     required this.recipient,
     required this.hash,
     required this.date,
     required this.isSent,
-  }) : super(key: key);
+  });
 
   @override
   _PaymentJobCardPageState createState() => _PaymentJobCardPageState();

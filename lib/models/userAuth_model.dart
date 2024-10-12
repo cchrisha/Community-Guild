@@ -10,7 +10,7 @@ class Userauth extends Equatable {
   final String contact;
   final String profession;
 
-  Userauth({
+  const Userauth({
     required this.id,
     required this.name,
     required this.email,
