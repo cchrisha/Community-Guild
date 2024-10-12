@@ -1,10 +1,9 @@
+import 'package:community_guild/bloc/about_job/about_job_bloc.dart';
+import 'package:community_guild/bloc/about_job/about_job_event.dart';
+import 'package:community_guild/bloc/about_job/about_job_state.dart';
+import 'package:community_guild/repository/all_job_detail/about_job_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'about_job_bloc.dart';
-import 'about_job_event.dart';
-import 'about_job_state.dart';
-import 'about_job_repository.dart';
-import 'about_job_model.dart'; // Ensure all these are imported correctly
 
 import 'package:community_guild/screens/current_job_detail.dart';
 import 'package:community_guild/screens/completed_job.dart';
