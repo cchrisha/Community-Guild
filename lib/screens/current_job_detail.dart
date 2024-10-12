@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class CurrentJobDetail extends StatefulWidget {
   const CurrentJobDetail({
@@ -29,6 +30,15 @@ class CurrentJobDetail extends StatefulWidget {
 }
 
 class _CurrentJobDetailState extends State<CurrentJobDetail> {
+  String getFormattedDate(String date) {
+    try {
+      final DateTime parsedDate = DateTime.parse(date);
+      return DateFormat('MMMM dd, yyyy').format(parsedDate);
+    } catch (e) {
+      return 'Invalid date';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,22 +86,22 @@ class _CurrentJobDetailState extends State<CurrentJobDetail> {
                       elevation: 3,
                       child: Container(
                         padding: const EdgeInsets.all(16), // Add padding
-                        child: const Row(
+                        child: Row(
                           children: [
-                            CircleAvatar(
+                            const CircleAvatar(
                               radius: 30,
                               backgroundColor: Colors.lightBlueAccent,
                               child: Icon(Icons.person,
                                   color: Colors.white, size: 30),
                             ),
-                            SizedBox(
+                            const SizedBox(
                                 width: 16), // Spacing between avatar and text
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Name',
-                                  style: TextStyle(
+                                  widget.contact,
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black87,
@@ -120,7 +130,7 @@ class _CurrentJobDetailState extends State<CurrentJobDetail> {
                     ),
                   ),
                   Text(
-                    'Date: ${widget.date}',
+                    'Date: ${getFormattedDate(widget.date)}',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
