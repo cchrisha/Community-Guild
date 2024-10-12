@@ -1,3 +1,4 @@
+import 'package:community_guild/screens/post_input.dart';
 import 'package:community_guild/widget/home/job_card.dart';
 import 'package:community_guild/widget/home/search_and_filter.dart';
 import 'package:community_guild/widget/home/section_title.dart';
@@ -242,7 +243,7 @@ class HomePage extends StatelessWidget {
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const PostPage()),
+                  MaterialPageRoute(builder: (context) => const PostInput()),
                 );
                 break;
               case 3:

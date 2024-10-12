@@ -1,5 +1,6 @@
 import 'package:community_guild/screens/job_detail.dart';
 import 'package:community_guild/screens/pending_job_detail.dart';
+import 'package:community_guild/screens/post_input.dart';
 import 'package:community_guild/widget/about_job/job_card.dart';
 import 'package:community_guild/widget/about_job/section_title.dart';
 import 'package:community_guild/widget/profile/completed_job_card.dart';
@@ -352,7 +353,7 @@ class JobPage extends StatelessWidget {
             case 2:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const PostPage()),
+                MaterialPageRoute(builder: (context) => const PostInput()),
               );
               break;
             case 3:
