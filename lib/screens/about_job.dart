@@ -256,6 +256,74 @@ class JobPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
+
+                // Rejected Jobs Section
+                const SectionTitleAboutJob(title: 'Rejected Jobs'),
+                const SizedBox(height: 10),
+                BlocProvider(
+                  create: (context) => AboutJobBloc(AboutJobRepository(authRepository: authRepository))
+                    ..add(FetchAboutJobsByStatus('rejected')), // Fetch "rejected" jobs
+                  child: BlocBuilder<AboutJobBloc, AboutJobState>(
+                    builder: (context, state) {
+                      if (state is AboutJobLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is AboutJobLoaded) {
+                        return SizedBox(
+                          height: 240,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: state.jobs.length,
+                            itemBuilder: (context, index) {
+                              final job = state.jobs[index];
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.8,
+                                  child: AboutJobCard(
+                                    jobTitle: job.title,
+                                    jobDescription: job.description,
+                                    date: job.datePosted,
+                                    workPlace: job.location,
+                                    wageRange: job.wageRange,
+                                    contact: job.poster.name,
+                                    category: job.categories.join(', '),
+                                    isCrypto: job.isCrypto,
+                                    professions: job.professions.join(', '),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => RejectedJobDetail(
+                                            jobTitle: job.title,
+                                            jobDescription: job.description,
+                                            date: job.datePosted,
+                                            workPlace: job.location,
+                                            wageRange: job.wageRange,
+                                            isCrypto: job.isCrypto,
+                                            professions: job.professions.join(', '),
+                                            contact: job.poster.name,
+                                            category: job.categories.join(', '),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } else if (state is AboutJobError) {
+                        return Center(
+                          child: Text('Error: ${state.message}'),
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
