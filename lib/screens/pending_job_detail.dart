@@ -117,19 +117,20 @@ class _PendingJobDetailState extends State<PendingJobDetail> {
                 ],
               ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Job Title: ${widget.jobTitle}', // Dynamic job title
+                    widget.jobTitle,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                   ),
+                  const SizedBox(height: 5), // Add some space between the job title and date
                   Text(
-                    'Date: ${_formatDate(widget.date)}', // Formatted date
+                    'Date: ${widget.date}',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
@@ -139,7 +140,7 @@ class _PendingJobDetailState extends State<PendingJobDetail> {
               ),
               const SizedBox(height: 10),
               const Text(
-                'Job Description:',
+                'Description:',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -153,7 +154,7 @@ class _PendingJobDetailState extends State<PendingJobDetail> {
               ),
               const SizedBox(height: 5),
               const Text(
-                'More Info',
+                'Details',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -173,7 +174,7 @@ class _PendingJobDetailState extends State<PendingJobDetail> {
                   ),
                   Row(
                     children: [
-                      const Text('Is Crypto: '),
+                      const Text('Crypto: '),
                       Checkbox(
                         value: widget.isCrypto, // Dynamic crypto status
                         onChanged: (bool? value) {},
