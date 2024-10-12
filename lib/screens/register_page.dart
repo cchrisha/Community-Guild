@@ -6,12 +6,24 @@ import 'package:community_guild/repository/authentication/auth_repository.dart';
 import 'package:community_guild/screens/login_page.dart';
 import 'package:community_guild/widget/login_and_register/login_register_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-class RegisterPage extends StatelessWidget {
+// ... (rest of your imports)
+
+class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
+
+  @override
+  _RegisterPageState createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  String _passwordStrength = '';
+  Color _strengthColor = Colors.grey;
+  String _passwordError = ''; // Variable to track password match error
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +62,10 @@ class RegisterPage extends StatelessWidget {
                   if (state is AuthLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
+
+                  bool isKeyboardVisible =
+                      MediaQuery.of(context).viewInsets.bottom < 50;
+
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -73,6 +89,7 @@ class RegisterPage extends StatelessWidget {
                         labelText: 'Password',
                         controller: authBloc.passwordController,
                         obscureText: authBloc.obscureText,
+                        onChanged: _checkPasswordStrength,
                         suffixIcon: IconButton(
                           icon: Icon(
                             authBloc.obscureText
@@ -85,6 +102,20 @@ class RegisterPage extends StatelessWidget {
                           },
                         ),
                       ),
+                      const SizedBox(height: 10),
+                      // Display password strength only if the keyboard is visible
+                      if (isKeyboardVisible) ...[
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Password Strength: $_passwordStrength',
+                            style: TextStyle(
+                              color: _strengthColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
                         labelText: 'Confirm Password',
@@ -102,6 +133,19 @@ class RegisterPage extends StatelessWidget {
                           },
                         ),
                       ),
+                      // Display password match error aligned to the left
+                      if (_passwordError.isNotEmpty)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              _passwordError,
+                              style: const TextStyle(
+                                  color: Colors.red, fontSize: 12),
+                            ),
+                          ),
+                        ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
                         labelText: 'Location',
@@ -110,9 +154,13 @@ class RegisterPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
-                        labelText: 'Contact',
+                        labelText: 'Contact Number',
                         controller: authBloc.contactController,
                         obscureText: false,
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
@@ -124,11 +172,21 @@ class RegisterPage extends StatelessWidget {
                       AuthWidgets.primaryButton(
                         text: 'Sign Up',
                         onPressed: () {
-                          if (authBloc.passwordController.text ==
-                                  authBloc.confirmPasswordController.text &&
-                              authBloc.locationController.text.isNotEmpty &&
-                              authBloc.contactController.text.isNotEmpty &&
-                              authBloc.professionController.text.isNotEmpty) {
+                          if (authBloc.passwordController.text.isEmpty ||
+                              authBloc.confirmPasswordController.text.isEmpty) {
+                            setState(() {
+                              _passwordError =
+                                  'Please fill all required fields';
+                            });
+                          } else if (authBloc.passwordController.text !=
+                              authBloc.confirmPasswordController.text) {
+                            setState(() {
+                              _passwordError = 'Passwords do not match';
+                            });
+                          } else {
+                            setState(() {
+                              _passwordError = '';
+                            });
                             authBloc.add(RegisterRequested(
                               context: context,
                               userauth: Userauth(
@@ -141,14 +199,6 @@ class RegisterPage extends StatelessWidget {
                                 profession: authBloc.professionController.text,
                               ),
                             ));
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content:
-                                    Text('Please fill all required fields'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
                           }
                         },
                       ),
@@ -169,5 +219,57 @@ class RegisterPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _checkPasswordStrength(String password) {
+    if (password.isEmpty) {
+      setState(() {
+        _passwordStrength = '';
+        _strengthColor = Colors.grey;
+      });
+      return;
+    }
+
+    int strength = 0;
+
+    if (password.length >= 8) strength++;
+    if (RegExp(r'[A-Z]').hasMatch(password)) strength++;
+    if (RegExp(r'[a-z]').hasMatch(password)) strength++;
+    if (RegExp(r'[0-9]').hasMatch(password)) strength++;
+    if (RegExp(r'[!@#\$%\^&\*]').hasMatch(password)) strength++;
+
+    switch (strength) {
+      case 0:
+      case 1:
+        setState(() {
+          _passwordStrength = 'Very Weak';
+          _strengthColor = Colors.red;
+        });
+        break;
+      case 2:
+        setState(() {
+          _passwordStrength = 'Weak';
+          _strengthColor = Colors.orange;
+        });
+        break;
+      case 3:
+        setState(() {
+          _passwordStrength = 'Moderate';
+          _strengthColor = Colors.yellow;
+        });
+        break;
+      case 4:
+        setState(() {
+          _passwordStrength = 'Strong';
+          _strengthColor = Colors.lightGreen;
+        });
+        break;
+      case 5:
+        setState(() {
+          _passwordStrength = 'Very Strong';
+          _strengthColor = Colors.green;
+        });
+        break;
+    }
   }
 }

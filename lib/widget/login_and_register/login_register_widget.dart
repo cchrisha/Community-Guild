@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Import for TextInputFormatter
 import 'package:google_fonts/google_fonts.dart';
 
 class AuthWidgets {
@@ -34,6 +35,10 @@ class AuthWidgets {
     required TextEditingController controller,
     required bool obscureText,
     Widget? suffixIcon,
+    TextInputType? keyboardType,
+    List<TextInputFormatter>? inputFormatters,
+    Function(String)? onChanged,
+    FocusNode? focusNode, // Add FocusNode parameter
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -55,13 +60,18 @@ class AuthWidgets {
       child: TextField(
         controller: controller,
         obscureText: obscureText,
+        keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
+        onChanged: onChanged,
+        focusNode: focusNode, // Pass FocusNode to TextField
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide.none,
           ),
           labelText: labelText,
-          labelStyle: GoogleFonts.poppins(color: const Color.fromARGB(255, 0, 0, 0)),
+          labelStyle:
+              GoogleFonts.poppins(color: const Color.fromARGB(255, 0, 0, 0)),
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           suffixIcon: suffixIcon,

@@ -28,6 +28,7 @@ class ProfilePage extends StatelessWidget {
       )..add(LoadProfile()),
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: const Text(
             'Profile',
             style: TextStyle(
@@ -39,13 +40,6 @@ class ProfilePage extends StatelessWidget {
           backgroundColor: Colors.lightBlue,
           elevation: 0,
           centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              Navigator.pop(
-                  context, true); // Pop and go back to the previous page
-            },
-          ),
           actions: [
             PopupMenuTheme(
               data: const PopupMenuThemeData(color: Colors.white),
