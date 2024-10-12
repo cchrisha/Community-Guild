@@ -64,7 +64,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   }
 
                   bool isKeyboardVisible =
-                      MediaQuery.of(context).viewInsets.bottom > 0;
+                      MediaQuery.of(context).viewInsets.bottom < 50;
 
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -184,7 +184,6 @@ class _RegisterPageState extends State<RegisterPage> {
                               _passwordError = 'Passwords do not match';
                             });
                           } else {
-                            // Clear error message if passwords match
                             setState(() {
                               _passwordError = '';
                             });
