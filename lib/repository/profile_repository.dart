@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,13 +14,16 @@ class ProfileRepository {
   Future<Map<String, dynamic>> fetchProfile() async {
     final token = await getToken();
     final response = await http.get(
-      Uri.parse('$baseUrl/user'),
+      Uri.parse(
+          '$baseUrl/user'), // Ensure your endpoint provides the profile picture
       headers: {
         'Authorization': 'Bearer $token',
       },
     );
+
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      return jsonDecode(
+          response.body); // Ensure this JSON includes the profile picture
     } else {
       throw Exception('Failed to load profile');
     }
@@ -64,6 +68,24 @@ class ProfileRepository {
 
     if (response.statusCode != 200) {
       throw Exception('Failed to update profile: ${response.body}');
+    }
+  }
+
+  Future<String> uploadImage(File image) async {
+    final token = await getToken();
+    final request =
+        http.MultipartRequest('POST', Uri.parse('$baseUrl/uploadImage'));
+
+    request.headers['Authorization'] = 'Bearer $token';
+    request.files.add(await http.MultipartFile.fromPath('image', image.path));
+
+    final response = await request.send();
+    if (response.statusCode == 200) {
+      final responseData = await http.Response.fromStream(response);
+      final data = jsonDecode(responseData.body);
+      return data['imageUrl'];
+    } else {
+      throw Exception('Failed to upload image');
     }
   }
 }

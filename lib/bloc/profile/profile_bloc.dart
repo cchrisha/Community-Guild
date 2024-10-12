@@ -18,12 +18,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(ProfileLoading());
     try {
       final data = await profileRepository.fetchProfile();
+      // Include profilePictureUrl in the emitted ProfileLoaded state
       emit(ProfileLoaded(
         name: data['name'] ?? 'N/A',
         location: data['location'] ?? 'N/A',
         contact: data['contact'] ?? 'N/A',
         email: data['email'] ?? 'N/A',
         profession: data['profession'] ?? 'N/A',
+        profilePictureUrl: data['profilePicture'] ?? '', // Update this line
       ));
     } catch (e) {
       emit(ProfileError('Failed to load profile: $e'));
@@ -34,19 +36,29 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     // Implement account verification logic here
   }
 
-  // Add the new event handler for changing the profile picture
   void _onChangeProfilePicture(
-      ChangeProfilePicture event, Emitter<ProfileState> emit) {
+      ChangeProfilePicture event, Emitter<ProfileState> emit) async {
     final currentState = state;
     if (currentState is ProfileLoaded) {
-      emit(ProfileLoaded(
-        name: currentState.name,
-        location: currentState.location,
-        contact: currentState.contact,
-        email: currentState.email,
-        profession: currentState.profession,
-        profileImage: event.newProfileImage, // Update profile image
-      ));
+      emit(ProfileLoading()); // Show loading state
+
+      try {
+        // Call your repository to upload the image
+        final imageUrl =
+            await profileRepository.uploadImage(event.newProfileImage);
+
+        // Emit a new state with the updated profile picture URL
+        emit(ProfileLoaded(
+          name: currentState.name,
+          location: currentState.location,
+          contact: currentState.contact,
+          email: currentState.email,
+          profession: currentState.profession,
+          profilePictureUrl: imageUrl, // Update the profile picture URL
+        ));
+      } catch (e) {
+        emit(ProfileError('Failed to update profile picture: $e'));
+      }
     }
   }
 }

@@ -17,6 +17,10 @@ import 'edit_profile_page.dart';
 import 'home.dart';
 import 'setting.dart';
 
+// Add the imports at the beginning of your file
+import 'dart:io'; // Import this for using File
+import 'package:image_picker/image_picker.dart'; // Import for ImagePicker
+
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
@@ -100,6 +104,14 @@ class ProfilePage extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    GestureDetector(
+                      // Wrap CircleAvatar in GestureDetector
+                      onTap: () => _changeProfilePicture(context),
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(state.profilePictureUrl),
+                      ),
+                    ),
                     ProfileHeader(
                       name: state.name,
                       profession: state.profession,
@@ -195,6 +207,19 @@ class ProfilePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _changeProfilePicture(BuildContext context) async {
+    // Use an image picker to select an image
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      // Dispatch the event to change the profile picture
+      context
+          .read<ProfileBloc>()
+          .add(ChangeProfilePicture(File(pickedFile.path)));
+    }
   }
 
   Widget _buildCompletedJobList(BuildContext context) {
