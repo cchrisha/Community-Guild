@@ -9,7 +9,7 @@ class AuthRepository {
   AuthRepository({required this.httpClient});
 
   Future<void> registerUser({
-    required BuildContext context, 
+    required BuildContext context,
     required String name,
     required String email,
     required String password,
@@ -17,7 +17,6 @@ class AuthRepository {
     required String location,
     required String contact,
     required String profession,
-    //required String addinfo,
   }) async {
     final response = await httpClient.post(
       Uri.parse('https://api-tau-plum.vercel.app/api/userSignup'),
@@ -30,16 +29,13 @@ class AuthRepository {
         'location': location,
         'contact': contact,
         'profession': profession,
-        //'addinfo': addinfo,
       }),
     );
 
     if (response.statusCode == 409) {
-      // 409 Conflict is typically used for duplicate entries like an email
-      _showSnackBar(context, 'Email already exists. Please use a different email.');
+      throw Exception('Email already exists');
     } else if (response.statusCode != 201) {
-      // Other error codes
-      _showSnackBar(context, 'Registration failed. Please try again.');
+      throw Exception('Registration failed');
     }
   }
 
@@ -60,7 +56,8 @@ class AuthRepository {
 
     if (response.statusCode == 200) {
       final token = json.decode(response.body)['token'];
-      if (token == null || token.isEmpty) {  //CHRISHA add ko to
+      if (token == null || token.isEmpty) {
+        //CHRISHA add ko to
         throw Exception('Login failed: Token is null or empty.');
       }
       await saveToken(token);
