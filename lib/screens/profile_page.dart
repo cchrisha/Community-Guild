@@ -134,65 +134,6 @@ class ProfilePage extends StatelessWidget {
             },
           ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-          currentIndex: 4, // Set to 4 for 'Profile' to be selected by default
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.info_outline),
-              label: 'About Job',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.post_add),
-              label: 'Post',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.payment_outlined),
-              label: 'Payment',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_2_outlined),
-              label: 'Profile',
-            ),
-          ],
-          selectedItemColor: Colors.lightBlue,
-          unselectedItemColor: Colors.black,
-          onTap: (index) {
-            switch (index) {
-              case 0:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
-                break;
-              case 1:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const JobPage()),
-                );
-                break;
-              case 2:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PostInput()),
-                );
-                break;
-              case 3:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PaymentPage()),
-                );
-                break;
-              case 4:
-                break; // Already on Profile page, no need to do anything
-            }
-          },
-        ),
       ),
     );
   }
