@@ -17,7 +17,7 @@ class ProfileLoaded extends ProfileState {
   final String contact;
   final String email;
   final String profession;
-  final String profilePictureUrl;
+  final String profilePictureUrl; // Added field for profile picture URL
 
   ProfileLoaded({
     required this.name,
@@ -25,7 +25,7 @@ class ProfileLoaded extends ProfileState {
     required this.contact,
     required this.email,
     required this.profession,
-    required this.profilePictureUrl,
+    required this.profilePictureUrl, // Required parameter for profile picture
   });
 
   @override
@@ -40,4 +40,18 @@ class ProfileError extends ProfileState {
 
   @override
   List<Object> get props => [error];
+}
+
+class ProfilePictureUploading extends ProfileState {}
+
+class ProfilePictureUploaded extends ProfileState {
+  final String profilePictureUrl;
+
+  const ProfilePictureUploaded(this.profilePictureUrl);
+}
+
+class ProfilePictureError extends ProfileState {
+  final String message;
+
+  const ProfilePictureError(this.message);
 }
