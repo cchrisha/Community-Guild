@@ -22,20 +22,20 @@ class _RegisterPageState extends State<RegisterPage> {
   String _passwordStrength = '';
   Color _strengthColor = Colors.grey;
   String _passwordError = ''; // Variable to track password match error
-  String? _selectedProfession; // Variable to hold the selected profession
+  // String? _selectedProfession; // Variable to hold the selected profession
 
-  final List<String> professions = [
-    'Programmer',
-    'Gardener',
-    'Carpenter',
-    'Plumber',
-    'Cleaner',
-    'Cook',
-    'Driver',
-    'Electrician',
-    'Salesperson',
-    'Crew',
-  ];
+  // final List<String> professions = [
+  //   'Programmer',
+  //   'Gardener',
+  //   'Carpenter',
+  //   'Plumber',
+  //   'Cleaner',
+  //   'Cook',
+  //   'Driver',
+  //   'Electrician',
+  //   'Salesperson',
+  //   'Crew',
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -159,30 +159,36 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       const SizedBox(height: 15),
                       // Profession Dropdown
-                      DropdownButtonFormField<String>(
-                        value: _selectedProfession, // Bind this to the selected profession
-                        hint: const Text('Select Profession'),
-                        items: professions.map((profession) {
-                          return DropdownMenuItem(
-                            value: profession,
-                            child: Text(profession),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              _selectedProfession = value; // Update the selected profession
-                            });
-                            authBloc.professionController.text = value; // Update the controller too
-                          }
-                        },
-                        validator: (value) =>
-                            value == null ? 'Please select a profession' : null,
-                      ),
+                      // DropdownButtonFormField<String>(
+                      //   value: _selectedProfession, // Bind this to the selected profession
+                      //   hint: const Text('Select Profession'),
+                      //   items: professions.map((profession) {
+                      //     return DropdownMenuItem(
+                      //       value: profession,
+                      //       child: Text(profession),
+                      //     );
+                      //   }).toList(),
+                      //   onChanged: (value) {
+                      //     if (value != null) {
+                      //       setState(() {
+                      //         _selectedProfession = value; // Update the selected profession
+                      //       });
+                      //       authBloc.professionController.text = value; // Update the controller too
+                      //     }
+                      //   },
+                      //   validator: (value) =>
+                      //       value == null ? 'Please select a profession' : null,
+                      // ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
                         labelText: 'Location',
                         controller: authBloc.locationController,
+                        obscureText: false,
+                      ),
+                      const SizedBox(height: 15),
+                      AuthWidgets.textField(
+                        labelText: 'Profession',
+                        controller: authBloc.professionController,
                         obscureText: false,
                       ),
                       const SizedBox(height: 15),
@@ -200,10 +206,12 @@ class _RegisterPageState extends State<RegisterPage> {
                         text: 'Sign Up',
                         onPressed: () {
                           if (authBloc.passwordController.text.isEmpty ||
-                              authBloc.confirmPasswordController.text.isEmpty ||
-                              _selectedProfession == null) { // Check for profession selection
+                              authBloc.confirmPasswordController.text.isEmpty)
+                              // _selectedProfession == null 
+                              { // Check for profession selection
                             setState(() {
-                              _passwordError = 'Please fill all required fields';
+                              _passwordError =
+                                  'Please fill all required fields';;
                             });
                           } else if (authBloc.passwordController.text !=
                               authBloc.confirmPasswordController.text) {
@@ -223,7 +231,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 password: authBloc.passwordController.text,
                                 location: authBloc.locationController.text,
                                 contact: authBloc.contactController.text,
-                                profession: _selectedProfession!, // Use selected profession
+                                profession: authBloc.professionController.text,
+                                // profession: _selectedProfession!, // Use selected profession
                               ),
                             ));
                           }
