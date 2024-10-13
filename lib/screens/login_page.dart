@@ -87,6 +87,7 @@ class LoginPage extends StatelessWidget {
                             labelText: 'Email',
                             controller: authBloc.emailController,
                             obscureText: false,
+                            icon: Icons.email, 
                           ),
                           const SizedBox(height: 20),
                           AuthWidgets.textField(
@@ -104,6 +105,7 @@ class LoginPage extends StatelessWidget {
                                 authBloc.add(TogglePasswordVisibility());
                               },
                             ),
+                            icon: Icons.lock,
                           ),
                           const SizedBox(height: 20),
                           AuthWidgets.primaryButton(
