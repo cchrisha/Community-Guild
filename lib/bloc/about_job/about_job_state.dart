@@ -55,4 +55,22 @@ class AboutJobApplicantsError extends AboutJobState {
   List<Object?> get props => [message];
 }
 
-  
+class AboutJobWorkersLoading extends AboutJobState {}
+
+class AboutJobWorkersLoaded extends AboutJobState {
+  final List<String> workers;
+
+  AboutJobWorkersLoaded(this.workers);
+
+  @override
+  List<Object?> get props => [workers];
+}
+
+class AboutJobWorkersError extends AboutJobState {
+  final String message;
+
+  AboutJobWorkersError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
