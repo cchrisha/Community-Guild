@@ -1,9 +1,10 @@
 import 'package:community_guild/screens/admin/adminHome.dart';
 import 'package:community_guild/screens/login_page.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminPage extends StatefulWidget {
   const AdminPage({Key? key}) : super(key: key);
@@ -59,14 +60,7 @@ class _AdminPageState extends State<AdminPage> {
               MaterialPageRoute(builder: (context) => const AdminHomePage()),
             );
           });
-        } else {
-          // If the user is not an admin, show an error message
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text("You're not an admin."),
-                backgroundColor: Colors.red),
-          );
-        }
+        } 
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Login failed. Please check your credentials.")),
@@ -74,7 +68,7 @@ class _AdminPageState extends State<AdminPage> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: ${response.reasonPhrase}")),
+        SnackBar(content: Text("Error: You are not an admin")),
       );
     }
   }

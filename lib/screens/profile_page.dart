@@ -1,12 +1,9 @@
 import 'package:community_guild/repository/profile_repository.dart';
-import 'package:community_guild/screens/completed_job.dart'; // Ensure this is the correct import
-import 'package:community_guild/screens/own_post_job_detail.dart'; // Ensure this is the correct import// Ensure this is the correct import
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/profile/profile_bloc.dart';
 import '../bloc/profile/profile_event.dart';
 import '../bloc/profile/profile_state.dart';
-import '../widget/profile/completed_job_card.dart';
 import '../widget/profile/profile_header.dart';
 import '../widget/profile/verify_account_card.dart';
 import '../widget/profile/profile_info_card.dart';
