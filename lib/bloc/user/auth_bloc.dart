@@ -37,7 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthFailure('Contact is required.'));
           return;
         }
-        if (professionController.text.isEmpty) {
+        if (event.userauth.profession.isEmpty) {
           emit(AuthFailure('Profession is required.'));
           return;
         }
@@ -63,7 +63,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           password: event.userauth.password,
           location: event.userauth.location,
           contact: event.userauth.contact,
-          profession: professionController.text, 
+          profession: event.userauth.profession,
+          // profession: professionController.text, 
         );
 
         emit(AuthSuccess());

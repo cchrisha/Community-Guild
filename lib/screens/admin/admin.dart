@@ -1,9 +1,12 @@
 import 'package:community_guild/screens/admin/adminHome.dart';
+import 'package:community_guild/screens/choose.dart';
 import 'package:community_guild/screens/login_page.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminPage extends StatefulWidget {
   const AdminPage({Key? key}) : super(key: key);
@@ -11,7 +14,7 @@ class AdminPage extends StatefulWidget {
   @override
   _AdminPageState createState() => _AdminPageState();
 }
-
+ 
 class _AdminPageState extends State<AdminPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -24,7 +27,7 @@ class _AdminPageState extends State<AdminPage> {
     // Make your API call for admin login
     final response = await http.post(
       Uri.parse('https://api-tau-plum.vercel.app/api/adminLogin'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json'}, 
       body: json.encode({'email': email, 'password': password}),
     );
 
@@ -59,14 +62,7 @@ class _AdminPageState extends State<AdminPage> {
               MaterialPageRoute(builder: (context) => const AdminHomePage()),
             );
           });
-        } else {
-          // If the user is not an admin, show an error message
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text("You're not an admin."),
-                backgroundColor: Colors.red),
-          );
-        }
+        } 
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Login failed. Please check your credentials.")),
@@ -88,6 +84,7 @@ class _AdminPageState extends State<AdminPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: Center(
@@ -100,31 +97,106 @@ class _AdminPageState extends State<AdminPage> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                 ),
                 const SizedBox(height: 30),
-                TextField(
-                  controller: emailController,
-                  decoration: const InputDecoration(labelText: 'Admin Email'),
+                
+                // Email TextField with padding and focus border transition 
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  height: 55,
+                  width: double.infinity,
+                  child: TextField(
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Admin Email',
+                      labelStyle: GoogleFonts.poppins(color: Colors.black),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Color.fromARGB(255, 190, 190, 190), width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 1), // Focused border
+                      ),
+                    ),
+                  ),
                 ),
+                
                 const SizedBox(height: 20),
-                TextField(
-                  controller: passwordController,
-                  obscureText: obscureText,
-                  decoration: InputDecoration(
-                    labelText: 'Admin Password',
-                    suffixIcon: IconButton(
-                      icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          obscureText = !obscureText;
-                        });
-                      },
+                
+                // Password TextField with padding and focus border transition
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  height: 55,
+                  width: double.infinity,
+                  child: TextField(
+                    controller: passwordController,
+                    obscureText: obscureText,
+                    decoration: InputDecoration(
+                      labelText: 'Admin Password',
+                      labelStyle: GoogleFonts.poppins(color: const Color.fromARGB(255, 0, 0, 0)),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      suffixIcon: IconButton(
+                        icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility),
+                        onPressed: () {
+                          setState(() {
+                            obscureText = !obscureText;
+                          });
+                        },
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Color.fromARGB(255, 190, 190, 190), width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 1),
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _login,
-                  child: const Text('Admin Login'),
+                
+                // Login button
+                Container(
+                  height: 55,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _login,
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      backgroundColor: Colors.lightBlue,
+                    ),
+                    child: const Text(
+                      'Admin Login', 
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
                 ),
+                
                 const SizedBox(height: 10),
                 TextButton(
                   onPressed: () {

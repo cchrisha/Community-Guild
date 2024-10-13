@@ -29,6 +29,7 @@ class LoginPage extends StatelessWidget {
     final authRepository = AuthRepository(httpClient: http.Client());
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: Center(

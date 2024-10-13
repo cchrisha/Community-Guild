@@ -85,7 +85,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       AuthWidgets.welcomeText(isLogin: false),
                       const SizedBox(height: 5),
                       AuthWidgets.textField(
-                        labelText: 'Name',
+                        labelText: 'Full Name',
                         controller: authBloc.nameController,
                         obscureText: false,
                       ),
@@ -208,7 +208,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           if (authBloc.passwordController.text.isEmpty ||
                               authBloc.confirmPasswordController.text.isEmpty)
                               // _selectedProfession == null 
-                              { // Check for profession selection
+                              { 
                             setState(() {
                               _passwordError =
                                   'Please fill all required fields';;

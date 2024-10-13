@@ -154,46 +154,41 @@ class _AdminUserPageState extends State<AdminUserPage> {
                         var user = entry.value;
                         bool isVerified = user['isVerify'] == 1;
 
-                        return DataRow(
-                          cells: [
-                            DataCell(
-                                Text((index + 1).toString())), // Row number
-                            DataCell(Text(user['_id'])),
-                            DataCell(Text(user['name'])),
-                            DataCell(Text(user['email'])),
-                            DataCell(Text(user['location'])),
-                            DataCell(Text(user['profession'])),
-                            DataCell(
-                              user['profilePicture'] != null
-                                  ? Image.network(user['profilePicture'],
-                                      width: 50, height: 50)
-                                  : const Icon(Icons.image_not_supported,
-                                      size: 50),
-                            ),
-                            DataCell(Text(user['isAdmin'] == 1 ? 'Yes' : 'No')),
-                            DataCell(
-                              Switch(
-                                value: isVerified,
-                                onChanged: (bool newValue) {
-                                  setState(() {
-                                    _updateVerifyStatus(user['_id'], newValue);
-                                    user['isVerify'] = newValue ? 1 : 0;
-                                  });
-                                },
+                       return DataRow(
+                            cells: [
+                              DataCell(Text((index + 1).toString())), // Row number
+                              DataCell(Text(user['_id'] ?? 'N/A')),
+                              DataCell(Text(user['name'] ?? 'N/A')),
+                              DataCell(Text(user['email'] ?? 'N/A')),
+                              DataCell(Text(user['location'] ?? 'N/A')),
+                              DataCell(Text(user['profession'] ?? 'N/A')),
+                              DataCell(
+                                user['profilePicture'] != null && user['profilePicture']!.isNotEmpty
+                                    ? Image.network(user['profilePicture'], width: 50, height: 50)
+                                    : const Icon(Icons.image_not_supported, size: 50),
                               ),
-                            ),
-                            DataCell(
-                              IconButton(
-                                icon:
-                                    const Icon(Icons.delete, color: Colors.red),
-                                onPressed: () {
-                                  _showDeleteConfirmationDialog(
-                                      user['_id']); // Delete user
-                                },
+                              DataCell(Text(user['isAdmin'] == 1 ? 'Yes' : 'No')),
+                              DataCell(
+                                Switch(
+                                  value: isVerified,
+                                  onChanged: (bool newValue) {
+                                    setState(() {
+                                      _updateVerifyStatus(user['_id'], newValue);
+                                      user['isVerify'] = newValue ? 1 : 0;
+                                    });
+                                  },
+                                ),
                               ),
-                            ),
-                          ],
-                        );
+                              DataCell(
+                                IconButton(
+                                  icon: const Icon(Icons.delete, color: Colors.red),
+                                  onPressed: () {
+                                    _showDeleteConfirmationDialog(user['_id']); // Delete user
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
                       }).toList(),
                     ),
                   ),
