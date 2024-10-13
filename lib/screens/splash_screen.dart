@@ -62,32 +62,32 @@ class _SplashScreenState extends State<SplashScreen>
     });
   }
 
-  // Future<void> _checkLoginStatus() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<void> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  //   String? token = prefs.getString('auth_token');
-  //   int? isAdmin = prefs.getInt('isAdmin');
+    String? token = prefs.getString('auth_token');
+    int? isAdmin = prefs.getInt('isAdmin');
 
-  //   if (token != null && isAdmin == 1) {
-  //     // If user is logged in and is an admin
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const AdminHomePage()),
-  //     );
-  //   } else if (token != null && isAdmin == 0) {
-  //     // If user is logged in and is a regular user
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const HomePage()),
-  //     );
-  //   } else {
-  //     // If no token found, redirect to Get Started page
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const GetStartedPage()),
-  //     );
-  //   }
-  // }
+    if (token != null && isAdmin == 1) {
+      // If user is logged in and is an admin
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const AdminHomePage()),
+      );
+    } else if (token != null && isAdmin == 0) {
+      // If user is logged in and is a regular user
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    } else {
+      // If no token found, redirect to Get Started page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const GetStartedPage()),
+      );
+    }
+  }
 
   @override
   void dispose() {
