@@ -63,7 +63,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           password: event.userauth.password,
           location: event.userauth.location,
           contact: event.userauth.contact,
-          profession: professionController.text, 
+          profession: event.userauth.profession,
+          // profession: professionController.text, 
         );
 
         emit(AuthSuccess());
