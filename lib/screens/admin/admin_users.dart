@@ -22,7 +22,8 @@ class _AdminUserPageState extends State<AdminUserPage> {
 
   Future<void> _fetchUsers() async {
     try {
-      final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/api/users'));
+      final response = await http
+          .get(Uri.parse('https://api-tau-plum.vercel.app/api/users'));
 
       if (response.statusCode == 200) {
         setState(() {
@@ -44,7 +45,8 @@ class _AdminUserPageState extends State<AdminUserPage> {
   }
 
   Future<void> _updateVerifyStatus(String userId, bool isVerified) async {
-    final url = 'https://api-tau-plum.vercel.app/api/users/verify/$userId'; // Adjust as needed
+    final url =
+        'https://api-tau-plum.vercel.app/api/users/verify/$userId'; // Adjust as needed
 
     try {
       final response = await http.patch(
@@ -63,25 +65,31 @@ class _AdminUserPageState extends State<AdminUserPage> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
   Future<void> _deleteUser(String userId) async {
-    final url = 'https://api-tau-plum.vercel.app/api/users/$userId'; // Delete endpoint
+    final url =
+        'https://api-tau-plum.vercel.app/api/users/$userId'; // Delete endpoint
 
     try {
       final response = await http.delete(Uri.parse(url));
       if (response.statusCode == 200) {
         setState(() {
-          _users.removeWhere((user) => user['_id'] == userId); // Remove user locally
+          _users.removeWhere(
+              (user) => user['_id'] == userId); // Remove user locally
         });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('User deleted successfully')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('User deleted successfully')));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to delete user')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to delete user')));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
@@ -125,7 +133,8 @@ class _AdminUserPageState extends State<AdminUserPage> {
           : _errorMessage != null
               ? Center(child: Text(_errorMessage!))
               : SingleChildScrollView(
-                  scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                  scrollDirection:
+                      Axis.horizontal, // Enable horizontal scrolling
                   child: SingleChildScrollView(
                     child: DataTable(
                       columns: const [
@@ -138,7 +147,7 @@ class _AdminUserPageState extends State<AdminUserPage> {
                         DataColumn(label: Text('Profile Picture')),
                         DataColumn(label: Text('Is Admin')),
                         DataColumn(label: Text('Is Verify')), // Editable
-                        DataColumn(label: Text('Actions')),  // For Delete
+                        DataColumn(label: Text('Actions')), // For Delete
                       ],
                       rows: _users.asMap().entries.map<DataRow>((entry) {
                         int index = entry.key;
@@ -147,7 +156,8 @@ class _AdminUserPageState extends State<AdminUserPage> {
 
                         return DataRow(
                           cells: [
-                            DataCell(Text((index + 1).toString())), // Row number
+                            DataCell(
+                                Text((index + 1).toString())), // Row number
                             DataCell(Text(user['_id'])),
                             DataCell(Text(user['name'])),
                             DataCell(Text(user['email'])),
@@ -155,8 +165,10 @@ class _AdminUserPageState extends State<AdminUserPage> {
                             DataCell(Text(user['profession'])),
                             DataCell(
                               user['profilePicture'] != null
-                                  ? Image.network(user['profilePicture'], width: 50, height: 50)
-                                  : const Icon(Icons.image_not_supported, size: 50),
+                                  ? Image.network(user['profilePicture'],
+                                      width: 50, height: 50)
+                                  : const Icon(Icons.image_not_supported,
+                                      size: 50),
                             ),
                             DataCell(Text(user['isAdmin'] == 1 ? 'Yes' : 'No')),
                             DataCell(
@@ -170,20 +182,22 @@ class _AdminUserPageState extends State<AdminUserPage> {
                                 },
                               ),
                             ),
-                        DataCell(
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              _showDeleteConfirmationDialog(user['_id']); // Delete user
-                      },
+                            DataCell(
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () {
+                                  _showDeleteConfirmationDialog(
+                                      user['_id']); // Delete user
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
                     ),
                   ),
-                ],
-              );
-            }).toList(),
-          ),
-        ),
-      ),
+                ),
     );
   }
 }

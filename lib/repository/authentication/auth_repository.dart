@@ -56,16 +56,25 @@ class AuthRepository {
     );
 
     if (response.statusCode == 200) {
-      final token = json.decode(response.body)['token'];
-      if (token == null || token.isEmpty) {
-        //CHRISHA add ko to
-        throw Exception('Login failed: Token is null or empty.');
+      final responseData = json.decode(response.body);
+      final token = responseData['token'];
+
+      if (responseData['success'] == true) {
+        if (token == null || token.isEmpty) {
+          throw Exception('Login failed: Token is null or empty.');
+        }
+        await saveToken(token); // Function to save token locally
+        print('Token saved: $token');
+        return token;
+      } else {
+        // Handle case when API response indicates failure despite 200 status
+        throw Exception('Login failed: ${responseData['message']}');
       }
-      await saveToken(token);
-      print('Token saved: $token');
-      return token;
     } else {
-      throw Exception('Login failed.');
+      // Decode error response and throw with message
+      final errorData = json.decode(response.body);
+      final errorMessage = errorData['message'] ?? 'Login failed: Unknown error.';
+      throw Exception(errorMessage);
     }
   }
 
