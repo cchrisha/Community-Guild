@@ -29,6 +29,7 @@ class LoginPage extends StatelessWidget {
     final authRepository = AuthRepository(httpClient: http.Client());
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: Center(
@@ -121,9 +122,13 @@ class LoginPage extends StatelessWidget {
                             },
                             text: 'Create new account? Signup',
                           ),
+<<<<<<< Updated upstream
                           const SizedBox(
                             height: 20,
                           ),
+=======
+                          const SizedBox(height: 5),
+>>>>>>> Stashed changes
                           AuthWidgets.forgotPasswordButton(onPressed: () {
                             Get.to(() => const ForgetPasswordPage());
                           }),

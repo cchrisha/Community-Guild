@@ -30,6 +30,27 @@ class AboutJobBloc extends Bloc<AboutJobEvent, AboutJobState> {
       }
     });
 
+    on<FetchJobApplicants>((event, emit) async {
+      emit(AboutJobApplicantsLoading());
+      try {
+        final applicants = await aboutJobRepository.fetchJobApplicants(event.jobId);
+        emit(AboutJobApplicantsLoaded(applicants));
+      } catch (error) {
+        emit(AboutJobApplicantsError(error.toString()));
+      }
+    });
+
+    on<FetchJobWorkers>((event, emit) async {
+  emit(AboutJobLoading());
+  try {
+    final workers = await aboutJobRepository.fetchJobWorkers(event.jobId);
+    emit(AboutJobWorkersLoaded(workers));
+  } catch (error) {
+    emit(AboutJobError(error.toString()));
+  }
+});
+
+
   }
 }
 

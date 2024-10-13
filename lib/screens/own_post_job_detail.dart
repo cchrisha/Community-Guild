@@ -1,8 +1,16 @@
+import 'package:community_guild/bloc/about_job/about_job_bloc.dart';
+import 'package:community_guild/bloc/about_job/about_job_event.dart';
+import 'package:community_guild/bloc/about_job/about_job_state.dart';
+import 'package:community_guild/repository/all_job_detail/about_job_repository.dart';
+import 'package:community_guild/repository/authentication/auth_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http; // Required for the repository
 
 class OwnJobDetailPage extends StatefulWidget {
   const OwnJobDetailPage({
     super.key,
+    required this.jobId, // Add jobId parameter here
     required this.jobTitle,
     required this.jobDescription,
     required this.date,
@@ -14,6 +22,7 @@ class OwnJobDetailPage extends StatefulWidget {
     required this.category,
   });
 
+  final String jobId; // Add jobId parameter here
   final String jobTitle;
   final String jobDescription;
   final String date;
@@ -32,134 +41,142 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
   // Mock data for Request and Workers dialogs
   final List<String> users = ['User 1', 'User 2', 'User 3', 'User 4', 'User 5', 'User 6', 'User 7']; // Sample larger list
 
-//ito yung workerssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
-  void _showApplicantsDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Applicants'),
-          content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.9, // Adjust width
-            child: SingleChildScrollView( // Scrollable content for large lists
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: users.map((user) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical:3.0), // Adjust vertical space
-                    child: Row(
-                      children: [
-                        const CircleAvatar(
-                          backgroundColor: Colors.lightBlueAccent,
-                          child: Icon(Icons.person, color: Colors.white),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded( // Ensure name takes available space
-                          child: Text(user),
-                        ),
-                        const Spacer(), // Space between name and buttons
-                        ElevatedButton(
-                          onPressed: () {
-                            // Add logic
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Decrease padding
-                            minimumSize: const Size(50, 30), // Set minimum size
-                            textStyle: const TextStyle(fontSize: 12), // Decrease font size
-                          ),
-                          child: const Text('Add'),
-                        ),
-                        const SizedBox(width: 5), // Space between buttons
-                        ElevatedButton(
-                          onPressed: () {
-                            // Remove logic
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.redAccent,
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Decrease padding
-                            minimumSize: const Size(50, 30), // Set minimum size
-                            textStyle: const TextStyle(fontSize: 12), // Decrease font size
-                          ),
-                          child: const Text('Remove'),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
-          actionsPadding: const EdgeInsets.all(10), // Adjust padding for actions
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Decrease padding
-                minimumSize: const Size(50, 30), // Set minimum size
-                textStyle: const TextStyle(fontSize: 12), // Decrease font size
-              ),
-              child: const Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+//ito yung requssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+  void _showApplicantsDialog(String jobId) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return BlocProvider(
+        create: (context) => AboutJobBloc(
+          AboutJobRepository(authRepository: AuthRepository(httpClient: http.Client()))
+        )..add(FetchJobApplicants(jobId)),
+        child: BlocBuilder<AboutJobBloc, AboutJobState>(
+          builder: (context, state) {
+            if (state is AboutJobApplicantsLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is AboutJobApplicantsLoaded) {
+              return _buildApplicantsDialog(state.applicants);
+            } else if (state is AboutJobApplicantsError) {
+              return _buildErrorDialog(state.message);
+            }
+            return const SizedBox.shrink(); // Placeholder for initial state
+          },
+        ),
+      );
+    },
+  );
+}
 
-//ito yung requestsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
-
-  void _showWorkersDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Workers'),
-          content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.9, // Adjust width
-            child: SingleChildScrollView( // Scrollable content for large lists
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: users.map((user) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0), // Adjust vertical space
-                    child: Row(
-                      children: [
-                        const CircleAvatar(
-                          backgroundColor: Colors.lightBlueAccent,
-                          child: Icon(Icons.person, color: Colors.white),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(user),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
+Widget _buildApplicantsDialog(List<String> applicants) {
+  return AlertDialog(
+    title: const Text('Applicants'),
+    content: SizedBox(
+      width: MediaQuery.of(context).size.width * 0.9,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: applicants.map((applicant) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 3.0),
+              child: Row(
+                children: [
+                  const CircleAvatar(
+                    backgroundColor: Colors.lightBlueAccent,
+                    child: Icon(Icons.person, color: Colors.white),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(child: Text(applicant)), // Display the applicant name
+                ],
               ),
-            ),
-          ),
-          actionsPadding: const EdgeInsets.all(10), // Adjust padding for actions
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Decrease padding
-                minimumSize: const Size(50, 30), // Set minimum size
-                textStyle: const TextStyle(fontSize: 12), // Decrease font size
-              ),
-              child: const Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+            );
+          }).toList(),
+        ),
+      ),
+    ),
+    actions: [
+      ElevatedButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: const Text('Close'),
+      ),
+    ],
+  );
+}
 
+Widget _buildErrorDialog(String message) {
+  return AlertDialog(
+    title: const Text('Error'),
+    content: Text(message),
+    actions: [
+      ElevatedButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: const Text('Close'),
+      ),
+    ],
+  );
+}
+
+
+//ito yung workerssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+
+  void _showWorkersDialog(String jobId) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return BlocProvider(
+        create: (context) => AboutJobBloc(
+          AboutJobRepository(authRepository: AuthRepository(httpClient: http.Client())),
+        )..add(FetchJobWorkers(jobId)),
+        child: BlocBuilder<AboutJobBloc, AboutJobState>(
+          builder: (context, state) {
+            if (state is AboutJobWorkersLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is AboutJobWorkersLoaded) {
+              return _buildWorkersDialog(state.workers);
+            } else if (state is AboutJobWorkersError) {
+              return _buildErrorDialog(state.message);
+            }
+            return const SizedBox.shrink(); // Placeholder for initial state
+          },
+        ),
+      );
+    },
+  );
+}
+
+Widget _buildWorkersDialog(List<String> workers) {
+  return AlertDialog(
+    title: const Text('Workers'),
+    content: SizedBox(
+      width: MediaQuery.of(context).size.width * 0.9,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: workers.map((worker) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 3.0),
+              child: Row(
+                children: [
+                  const CircleAvatar(
+                    backgroundColor: Colors.lightBlueAccent,
+                    child: Icon(Icons.person, color: Colors.white),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(child: Text(worker)),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    ),
+    actions: [
+      ElevatedButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: const Text('Close'),
+      ),
+    ],
+  );
+}
 
 //anditoooooooooooooooooooooooooooo yung name title description emeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
   @override
@@ -378,7 +395,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                   SizedBox(
                     width: 120, // Same width as the View Applicants button
                     child: ElevatedButton(
-                      onPressed: _showApplicantsDialog,
+                      onPressed: () => _showApplicantsDialog(widget.jobId), // Pass jobId from the widget
                       child: const Center(
                         child: Text('View Applicants'),
                       ),
@@ -386,9 +403,9 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                   ),
                   const SizedBox(height: 20),
                   SizedBox(
-                    width: 120, // Same width as the View Applicants button
+                    width: 120, // Set button width
                     child: ElevatedButton(
-                      onPressed: _showWorkersDialog,
+                      onPressed: () => _showWorkersDialog(widget.jobId), // Pass jobId from the widget
                       child: const Center(
                         child: Text('View Workers'),
                       ),
