@@ -75,6 +75,36 @@ class AboutJobRepository {
   }
 }
 
+  // New method for fetching applicants for a specific job
+  Future<List<String>> fetchJobApplicants(String jobId) async {
+    try {
+      String? token = await authRepository.getToken();
+
+      if (token == null || token.isEmpty) {
+        throw Exception('No valid token found. Please login again.');
+      }
+
+      final response = await http.get(
+        Uri.parse('https://api-tau-plum.vercel.app/api/jobs/$jobId/requests'), // Replace with your API endpoint
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> jsonData = json.decode(response.body);
+        // Assuming the response contains a list of requests, each with a user object containing a name
+        return jsonData.map((request) => request['user']['name'] as String).toList();
+      } else {
+        throw Exception('Failed to load applicants. Status Code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error in fetchJobApplicants: $e');
+      throw Exception('Error: $e');
+    }
+  }
+
 }
 
 
