@@ -1,9 +1,10 @@
+import 'package:community_guild/screens/users_details.dart';
 import 'package:flutter/material.dart';
 
 class JobDetailPage extends StatefulWidget {
   const JobDetailPage({
     super.key,
-    required this.jobId, // Add jobId as a required parameter
+    required this.jobId, 
     required this.jobTitle,
     required this.jobDescription,
     required this.date,
@@ -13,10 +14,10 @@ class JobDetailPage extends StatefulWidget {
     required this.workPlace,
     required this.contact,
     required this.category,
-    required this.posterName, // Add posterName as a required parameter
+    required this.posterName,
   });
 
-  final String jobId; // Define jobId as an integer
+  final String jobId;
   final String jobTitle;
   final String jobDescription;
   final String date;
@@ -26,7 +27,7 @@ class JobDetailPage extends StatefulWidget {
   final String workPlace;
   final String contact;
   final String category;
-  final String posterName; // Add this for the poster's name
+  final String posterName;
 
   @override
   State<JobDetailPage> createState() => _JobDetailPageState();
@@ -79,37 +80,47 @@ class _JobDetailPageState extends State<JobDetailPage> {
                     top: 28,
                     left: 16,
                     right: 16,
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      elevation: 3,
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            const CircleAvatar(
-                              radius: 30,
-                              backgroundColor: Colors.lightBlueAccent,
-                              child: Icon(Icons.person,
-                                  color: Colors.white, size: 30),
-                            ),
-                            const SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.posterName, // Display the poster's name here
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black87,
+                    child: GestureDetector( // Wrap the Card with GestureDetector
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserDetails(posterName: widget.posterName),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        elevation: 3,
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              const CircleAvatar(
+                                radius: 30,
+                                backgroundColor: Colors.lightBlueAccent,
+                                child: Icon(Icons.person,
+                                    color: Colors.white, size: 30),
+                              ),
+                              const SizedBox(width: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.posterName, 
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -180,13 +191,13 @@ class _JobDetailPageState extends State<JobDetailPage> {
                 ],
               ),
               Text(
-                    'Date: ${widget.date}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
+                'Date: ${widget.date}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
               const SizedBox(height: 5),
               Text(
                 'Wanted Profession: ${widget.professions}',
@@ -227,25 +238,6 @@ class _JobDetailPageState extends State<JobDetailPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.pop(context);
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     backgroundColor: const Color.fromARGB(255, 245, 238, 238),
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(12),
-                  //     ),
-                  //     padding: const EdgeInsets.symmetric(
-                  //       vertical: 12,
-                  //       horizontal: 20,
-                  //     ),
-                  //   ),
-                  //   child: const Text(
-                  //     'Cancel request',
-                  //     style: TextStyle(fontSize: 16),
-                  //   ),
-                  // ),
                   ElevatedButton(
                     onPressed: () {
                       // Implement Complete action here
