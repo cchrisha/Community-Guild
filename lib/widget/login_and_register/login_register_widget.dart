@@ -44,10 +44,6 @@ class AuthWidgets {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: const Color.fromARGB(255, 203, 228, 240), // Stroke color
-          width: 1,
-        ),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.2),
@@ -65,41 +61,52 @@ class AuthWidgets {
         onChanged: onChanged,
         focusNode: focusNode, // Pass FocusNode to TextField
         decoration: InputDecoration(
+          labelText: labelText,
+          labelStyle: GoogleFonts.poppins(color: const Color.fromARGB(255, 0, 0, 0)),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20), // Added padding here
+          suffixIcon: suffixIcon,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide.none,
           ),
-          labelText: labelText,
-          labelStyle:
-              GoogleFonts.poppins(color: const Color.fromARGB(255, 0, 0, 0)),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          suffixIcon: suffixIcon,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Color.fromARGB(255, 190, 190, 190), width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 1), // Focused border color
+          ),
         ),
         style: GoogleFonts.poppins(),
       ),
     );
   }
 
+
   static Widget primaryButton({
     required String text,
     required VoidCallback onPressed,
   }) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.lightBlue,
-        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50.0),
+    return SizedBox(
+      width: double.infinity, // Ensure the button takes up full width like text fields
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 20), // Adjust vertical padding if needed
+          backgroundColor: Colors.lightBlue,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
-      ),
-      onPressed: onPressed,
-      child: Text(
-        text,
-        style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
+        onPressed: onPressed,
+        child: Text(
+          text,
+          style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
+        ),
       ),
     );
   }
+
 
   static Widget navigationLink({
     required String text,
