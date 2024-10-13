@@ -18,5 +18,19 @@ class AboutJobBloc extends Bloc<AboutJobEvent, AboutJobState> {
         emit(AboutJobError(error.toString()));
       }
     });
+
+    // Handle the new event for fetching jobs posted by the user
+    on<FetchJobsPostedByUser>((event, emit) async {
+      emit(AboutJobLoading());
+      try {
+        final jobs = await aboutJobRepository.fetchJobsPostedByUser(event.userId);
+        emit(AboutJobLoaded(jobs));
+      } catch (error) {
+        emit(AboutJobError(error.toString()));
+      }
+    });
+
   }
 }
+
+

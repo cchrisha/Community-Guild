@@ -1,9 +1,11 @@
+import 'package:community_guild/screens/admin/admin_dashboard.dart';
 import 'package:community_guild/screens/admin/admin_usersTrans.dart';
+import 'package:community_guild/screens/admin/admin_settings.dart'; // Import the new settings page
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'admin_users.dart'; // Make sure this path is correct
+import 'admin_users.dart'; // Ensure this path is correct
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
@@ -13,6 +15,7 @@ class AdminHomePage extends StatefulWidget {
 }
 
 class _AdminHomePageState extends State<AdminHomePage> {
+  int _currentIndex = 0;
   int _totalUsers = 0;
   bool _isLoading = true;
   String? _errorMessage;
@@ -25,7 +28,8 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
   Future<void> _fetchUserCount() async {
     try {
-      final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/api/users'));
+      final response = await http
+          .get(Uri.parse('https://api-tau-plum.vercel.app/api/users'));
 
       if (response.statusCode == 200) {
         final List<dynamic> users = json.decode(response.body);
@@ -47,6 +51,14 @@ class _AdminHomePageState extends State<AdminHomePage> {
     }
   }
 
+  // Pages for each section
+  final List<Widget> _pages = [
+    // AdminDashboard(), // Dashboard page
+    AdminUserPage(), // Users page
+    UserTransactionPage(), // User transactions page
+    AdminSettingsPage(), // Settings page
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,92 +66,32 @@ class _AdminHomePageState extends State<AdminHomePage> {
         title: const Text('Admin Dashboard'),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: GridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16.0,
-          mainAxisSpacing: 16.0,
-          children: [
-            Card(
-              elevation: 4,
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AdminUserPage()), // Navigate to AdminUserPage
-                  );
-                },
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.group, size: 60, color: Colors.blue),
-                      const SizedBox(height: 10),
-                      _isLoading
-                      ? const CircularProgressIndicator() // Loading indicator while fetching user count
-                      : Text(
-                          'Users (${_totalUsers})', // Display total user count
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              elevation: 4,
-              child: InkWell(
-                onTap: () {
-                   Navigator.push(
-                   context,
-                   MaterialPageRoute(builder: (context) => const UserTransactionPage()), // Navigate to Transaction Management page
-                 );
-                },
-                child: const Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.attach_money, size: 60, color: Colors.green),
-                      SizedBox(height: 10),
-                      Text(
-                        'Users Transactions',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              elevation: 4,
-              child: InkWell(
-                onTap: () {
-                  // Navigator.push(
-                 //   context,
-                  //  MaterialPageRoute(builder: (context) => UserTransactionPage()), // Navigate to Transaction Management page
-                 //);
-                },
-                child: const Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.attach_money, size: 60, color: Colors.green),
-                      SizedBox(height: 10),
-                      Text(
-                        'Settings',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+      body: _pages[_currentIndex], // Display the current page based on index
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index; // Update the selected index
+          });
+        },
+        items: const [
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.dashboard),
+          //   label: 'Dashboard',
+          // ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.group),
+            label: 'Users',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.attach_money),
+            label: 'Transactions',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
       ),
     );
   }

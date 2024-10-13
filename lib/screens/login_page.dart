@@ -13,6 +13,9 @@ import 'package:community_guild/screens/register_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'admin/admin.dart';
+import 'admin/adminHome.dart';
+
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
@@ -58,7 +61,10 @@ class LoginPage extends StatelessWidget {
                         });
                       } else if (state is AuthFailure) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(state.error),backgroundColor: Colors.red,),
+                          SnackBar(
+                            content: Text(state.error),
+                            backgroundColor: Colors.red,
+                          ),
                         );
                       }
                     },
@@ -108,7 +114,6 @@ class LoginPage extends StatelessWidget {
                               ));
                             },
                           ),
-                          const SizedBox(height: 10),
                           AuthWidgets.navigationLink(
                             isLogin: true,
                             onPressed: () {
@@ -116,7 +121,9 @@ class LoginPage extends StatelessWidget {
                             },
                             text: 'Create new account? Signup',
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(
+                            height: 20,
+                          ),
                           AuthWidgets.forgotPasswordButton(onPressed: () {
                             Get.to(() => const ForgetPasswordPage());
                           }),

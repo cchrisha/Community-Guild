@@ -23,7 +23,7 @@ class _ChoosePreferenceState extends State<ChoosePreference> {
               const SizedBox(height: 40), // Adjusted space at the top
               Expanded(
                 child: _buildPageContent(
-                  image: 'assets/images/job_hunt.png', // Replace with your admin image
+                  image: 'assets/images/dashboard.png', // Replace with your admin image
                   title: 'Admin Dashboard',
                   description: 'Manage the platform, review users, and handle tasks efficiently.',
                 ),

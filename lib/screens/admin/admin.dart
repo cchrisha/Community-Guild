@@ -31,7 +31,8 @@ class _AdminPageState extends State<AdminPage> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       //final token = data['token'];
-      final isAdmin = data['isAdmin']; // Make sure to include isAdmin in the API response
+      final isAdmin =
+          data['isAdmin']; // Make sure to include isAdmin in the API response
 
       // Store token and admin status in SharedPreferences
       //SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -39,27 +40,33 @@ class _AdminPageState extends State<AdminPage> {
       //await prefs.setInt('isAdmin', isAdmin);
 
       // Navigate to HomePage if admin
-          if (isAdmin == 1) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Admin login successful!"), backgroundColor: Colors.green),
+      if (isAdmin == 1) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text("Admin login successful!"),
+              backgroundColor: Colors.green),
+        );
+        // Navigate to Admin Home Page after a short delay
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    const AdminHomePage()), // Replace with your actual Admin Home page widget
           );
-          // Navigate to Admin Home Page after a short delay
-          Future.delayed(const Duration(seconds: 1), () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const AdminHomePage()), // Replace with your actual Admin Home page widget
-            );
-          });
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("You're not an admin."), backgroundColor: Colors.red),
-          );
-        }
+        });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Login failed. Please check your credentials.")),
+          const SnackBar(
+              content: Text("You're not an admin."),
+              backgroundColor: Colors.red),
         );
       }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Login failed. Please check your credentials.")),
+      );
+    }
   }
 
   @override
@@ -72,7 +79,9 @@ class _AdminPageState extends State<AdminPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Welcome Admin!", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+                const Text("Welcome Admin!",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
                 const SizedBox(height: 30),
                 TextField(
                   controller: emailController,
@@ -85,7 +94,9 @@ class _AdminPageState extends State<AdminPage> {
                   decoration: InputDecoration(
                     labelText: 'Admin Password',
                     suffixIcon: IconButton(
-                      icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility),
+                      icon: Icon(obscureText
+                          ? Icons.visibility_off
+                          : Icons.visibility),
                       onPressed: () {
                         setState(() {
                           obscureText = !obscureText;
@@ -104,7 +115,9 @@ class _AdminPageState extends State<AdminPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()), // Replace with your user login page
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const LoginPage()), // Replace with your user login page
                     );
                   },
                   child: const Text('Go to User Login'),
