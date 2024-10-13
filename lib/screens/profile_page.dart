@@ -1,7 +1,6 @@
 import 'package:community_guild/repository/profile_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../bloc/profile/profile_bloc.dart';
 import '../bloc/profile/profile_event.dart';
 import '../bloc/profile/profile_state.dart';
@@ -12,14 +11,14 @@ import 'edit_profile_page.dart';
 import 'setting.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ProfileBloc(
         profileRepository: ProfileRepository(),
-      )..add(LoadProfile()), // Load initial profile data
+      )..add(LoadProfile()),
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -35,49 +34,49 @@ class ProfilePage extends StatelessWidget {
           elevation: 0,
           centerTitle: true,
           actions: [
-            PopupMenuButton<String>(
-              onSelected: (value) async {
-                if (value == 'Edit Info') {
-                  // Navigate to EditProfilePage and await result
-                  final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const EditProfilePage(),
-                    ),
-                  );
-                  // If the result is true, reload profile
-                  if (result == true) {
-                    context.read<ProfileBloc>().add(LoadProfile());
+            PopupMenuTheme(
+              data: const PopupMenuThemeData(color: Colors.white),
+              child: PopupMenuButton<String>(
+                onSelected: (value) async {
+                  if (value == 'Edit Info') {
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EditProfilePage(),
+                      ),
+                    );
+
+                    if (result == true) {
+                      context.read<ProfileBloc>().add(LoadProfile());
+                    }
+                  } else if (value == 'Settings') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SettingsPage()),
+                    );
                   }
-                } else if (value == 'Settings') {
-                  // Navigate to SettingsPage
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsPage(),
+                },
+                itemBuilder: (BuildContext context) {
+                  return [
+                    const PopupMenuItem<String>(
+                      value: 'Edit Info',
+                      child: Text(
+                        'Edit Info',
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
-                  );
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                return [
-                  const PopupMenuItem<String>(
-                    value: 'Edit Info',
-                    child: Text(
-                      'Edit Info',
-                      style: TextStyle(color: Colors.black),
+                    const PopupMenuItem<String>(
+                      value: 'Settings',
+                      child: Text(
+                        'Settings',
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'Settings',
-                    child: Text(
-                      'Settings',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                ];
-              },
-              icon: const Icon(Icons.menu, color: Colors.white),
+                  ];
+                },
+                icon: const Icon(Icons.menu, color: Colors.white),
+              ),
             ),
           ],
         ),
@@ -95,6 +94,8 @@ class ProfilePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ProfileHeader(
+                      profilePicture: state
+                          .profilePictureUrl, // Use the profile picture from the state
                       name: state.name,
                       profession: state.profession,
                     ),

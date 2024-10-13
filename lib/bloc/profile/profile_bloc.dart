@@ -9,8 +9,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc({required this.profileRepository}) : super(ProfileInitial()) {
     on<LoadProfile>(_onLoadProfile);
     on<VerifyAccount>(_onVerifyAccount);
-    on<ChangeProfilePicture>(
-        _onChangeProfilePicture); // Add the event handler here
+    on<UploadProfilePicture>(_onUploadProfilePicture); // Added event handler for uploading profile picture
   }
 
   Future<void> _onLoadProfile(
@@ -18,14 +17,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(ProfileLoading());
     try {
       final data = await profileRepository.fetchProfile();
-      // Include profilePictureUrl in the emitted ProfileLoaded state
       emit(ProfileLoaded(
         name: data['name'] ?? 'N/A',
         location: data['location'] ?? 'N/A',
         contact: data['contact'] ?? 'N/A',
         email: data['email'] ?? 'N/A',
         profession: data['profession'] ?? 'N/A',
-        profilePictureUrl: data['profilePicture'] ?? '', // Update this line
+        profilePictureUrl: data['profilePictureUrl'] ?? 'N/A', // Added profile picture URL
       ));
     } catch (e) {
       emit(ProfileError('Failed to load profile: $e'));
@@ -36,29 +34,16 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     // Implement account verification logic here
   }
 
-  void _onChangeProfilePicture(
-      ChangeProfilePicture event, Emitter<ProfileState> emit) async {
-    final currentState = state;
-    if (currentState is ProfileLoaded) {
-      emit(ProfileLoading()); // Show loading state
-
-      try {
-        // Call your repository to upload the image
-        final imageUrl =
-            await profileRepository.uploadImage(event.newProfileImage);
-
-        // Emit a new state with the updated profile picture URL
-        emit(ProfileLoaded(
-          name: currentState.name,
-          location: currentState.location,
-          contact: currentState.contact,
-          email: currentState.email,
-          profession: currentState.profession,
-          profilePictureUrl: imageUrl, // Update the profile picture URL
-        ));
-      } catch (e) {
-        emit(ProfileError('Failed to update profile picture: $e'));
-      }
+  Future<void> _onUploadProfilePicture(
+      UploadProfilePicture event, Emitter<ProfileState> emit) async {
+    emit(ProfilePictureUploading());
+    try {
+      final url = await profileRepository.uploadProfilePicture(event.profileImage);
+      emit(ProfilePictureUploaded(url));
+      // Optionally, you can also refresh the profile after uploading
+      add(LoadProfile()); // Reload profile after picture upload
+    } catch (e) {
+      emit(ProfilePictureError(e.toString()));
     }
   }
 }

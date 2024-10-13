@@ -67,7 +67,7 @@ class _AdminPageState extends State<AdminPage> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: ${response.reasonPhrase}")),
+        SnackBar(content: Text("Error: You are not an admin")),
       );
     }
   }

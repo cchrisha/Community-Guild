@@ -1,4 +1,3 @@
-import 'package:community_guild/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -57,18 +56,17 @@ class _AdminUserPageState extends State<AdminUserPage> {
       );
 
       if (response.statusCode == 200) {
-        // Show the Snackbar in the main UI
-        MyApp.scaffoldMessengerKey.currentState?.showSnackBar(
-          const SnackBar(content: Text('Your profile is now verified')),
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Verify status updated successfully')),
         );
       } else {
-        MyApp.scaffoldMessengerKey.currentState?.showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to update verify status')),
         );
       }
     } catch (e) {
-      MyApp.scaffoldMessengerKey.currentState?.showSnackBar(
-          SnackBar(content: Text('Error: $e')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
@@ -135,7 +133,8 @@ class _AdminUserPageState extends State<AdminUserPage> {
           : _errorMessage != null
               ? Center(child: Text(_errorMessage!))
               : SingleChildScrollView(
-                  scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                  scrollDirection:
+                      Axis.horizontal, // Enable horizontal scrolling
                   child: SingleChildScrollView(
                     child: DataTable(
                       columns: const [
@@ -157,16 +156,19 @@ class _AdminUserPageState extends State<AdminUserPage> {
 
                         return DataRow(
                           cells: [
-                            DataCell(Text((index + 1).toString())), // Row number
-                            DataCell(Text(user['_id'] ?? 'N/A')),
-                            DataCell(Text(user['name'] ?? 'N/A')),
-                            DataCell(Text(user['email'] ?? 'N/A')),
-                            DataCell(Text(user['location'] ?? 'N/A')),
-                            DataCell(Text(user['profession'] ?? 'N/A')),
                             DataCell(
-                              user['profilePicture'] != null && user['profilePicture']!.isNotEmpty
-                                  ? Image.network(user['profilePicture'], width: 50, height: 50)
-                                  : const Icon(Icons.image_not_supported, size: 50),
+                                Text((index + 1).toString())), // Row number
+                            DataCell(Text(user['_id'])),
+                            DataCell(Text(user['name'])),
+                            DataCell(Text(user['email'])),
+                            DataCell(Text(user['location'])),
+                            DataCell(Text(user['profession'])),
+                            DataCell(
+                              user['profilePicture'] != null
+                                  ? Image.network(user['profilePicture'],
+                                      width: 50, height: 50)
+                                  : const Icon(Icons.image_not_supported,
+                                      size: 50),
                             ),
                             DataCell(Text(user['isAdmin'] == 1 ? 'Yes' : 'No')),
                             DataCell(
@@ -182,9 +184,11 @@ class _AdminUserPageState extends State<AdminUserPage> {
                             ),
                             DataCell(
                               IconButton(
-                                icon: const Icon(Icons.delete, color: Colors.red),
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
-                                  _showDeleteConfirmationDialog(user['_id']); // Delete user
+                                  _showDeleteConfirmationDialog(
+                                      user['_id']); // Delete user
                                 },
                               ),
                             ),
