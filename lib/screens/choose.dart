@@ -1,4 +1,4 @@
-import 'package:community_guild/screens/admin.dart';
+import 'package:community_guild/screens/admin/admin.dart';
 import 'package:flutter/material.dart';
 import 'package:community_guild/screens/login_page.dart';
 
