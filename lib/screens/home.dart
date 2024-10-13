@@ -133,34 +133,35 @@ class _HomePageState extends State<HomePage> {
                           _currentIndex = 0; // Reset to Home after posting
                         });
                       });
-                    } else {
-                      // Show dialog if user is not verified
-                      showDialog(
-                        context: context,
-                        barrierDismissible:
-                            false, // Prevent closing by tapping outside
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Account Verification Required'),
-                            content: const Text(
-                                'Please verify your account before posting.'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text('Close'),
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(); // Close the dialog
-                                  setState(() {
-                                    _currentIndex =
-                                        4; // Redirect to Profile tab
-                                  });
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
+                    } 
+                    // else {
+                    //   // Show dialog if user is not verified
+                    //   showDialog(
+                    //     context: context,
+                    //     barrierDismissible:
+                    //         false, // Prevent closing by tapping outside
+                    //     builder: (BuildContext context) {
+                    //       return AlertDialog(
+                    //         title: const Text('Account Verification Required'),
+                    //         content: const Text(
+                    //             'Please verify your account before posting.'),
+                    //         actions: <Widget>[
+                    //           TextButton(
+                    //             child: const Text('Close'),
+                    //             onPressed: () {
+                    //               Navigator.of(context)
+                    //                   .pop(); // Close the dialog
+                    //               setState(() {
+                    //                 _currentIndex =
+                    //                     4; // Redirect to Profile tab
+                    //               });
+                    //             },
+                    //           ),
+                    //         ],
+                    //       );
+                    //     },
+                    //   );
+                    // }
                   }
                 },
               ),
