@@ -40,4 +40,43 @@ class AboutJobRepository {
       throw Exception('Error: $e');
     }
   }
+
+  // New method for fetching jobs posted by the user
+  Future<List<AboutJobModel>> fetchJobsPostedByUser(String userId) async {
+  try {
+    String? token = await authRepository.getToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('No valid token found. Please login again.');
+    }
+
+    // Correctly construct the URL with userId
+    final response = await http.get(
+      Uri.parse('https://api-tau-plum.vercel.app/api/user/$userId/jobs'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = json.decode(response.body);
+      return jsonData.map((json) => AboutJobModel.fromJson(json)).toList();
+    } else if (response.statusCode == 404) {
+      print('Failed to load jobs: ${response.body}');
+      throw Exception('No jobs found for this user.');
+    } else {
+      throw Exception(
+          'Failed to load posted jobs. Status Code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error in fetchJobsPostedByUser: $e');
+    throw Exception('Error: $e');
+  }
 }
+
+}
+
+
+
+
