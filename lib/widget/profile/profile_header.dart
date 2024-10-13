@@ -29,9 +29,10 @@ class _ProfileHeaderState extends State<ProfileHeader> {
   @override
   void initState() {
     super.initState();
-    _profileImage = widget.profilePicture.isNotEmpty 
-        ? File(widget.profilePicture) 
-        : null;
+    // Set the initial profile image based on the provided profile picture URL
+    if (widget.profilePicture.isNotEmpty) {
+      _profileImage = File(widget.profilePicture);
+    }
   }
 
   void _showChangeProfileDialog() {
@@ -99,7 +100,6 @@ class _ProfileHeaderState extends State<ProfileHeader> {
   }
 
   void _uploadProfilePicture(File image) {
-    // Dispatch an event to upload the selected profile picture
     final bloc = BlocProvider.of<ProfileBloc>(context);
     bloc.add(UploadProfilePicture(image));
   }
@@ -114,22 +114,27 @@ class _ProfileHeaderState extends State<ProfileHeader> {
               onTap: _showChangeProfileDialog,
               child: BlocBuilder<ProfileBloc, ProfileState>(
                 builder: (context, state) {
-                  String profilePictureUrl = widget.profilePicture;
-                  
-                  // If the profile picture is updated, load it
+                  // Update the profile image based on the current state
                   if (state is ProfilePictureUploaded) {
-                    profilePictureUrl = state.profilePictureUrl;
+                    _profileImage = File(state.profilePictureUrl); // Update profile image
+                  } else if (state is ProfilePictureError) {
+                    // Optionally handle error (e.g., show snackbar)
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error uploading image: ${state.message}')),
+                    );
                   }
 
                   return CircleAvatar(
                     radius: 60,
-                    backgroundImage: _profileImage != null
-                        ? FileImage(_profileImage!)
-                        : (profilePictureUrl.isNotEmpty
-                            ? NetworkImage(profilePictureUrl) // Load from URL
-                            : const AssetImage('assets/images/profile.png') as ImageProvider),
+                    backgroundImage: _tempImage != null
+                        ? FileImage(_tempImage!) // Use temporary image if selected
+                        : (_profileImage != null
+                            ? FileImage(_profileImage!) // Use the current profile image
+                            : (widget.profilePicture.isNotEmpty
+                                ? NetworkImage(widget.profilePicture) // Load from URL
+                                : const AssetImage('assets/images/profile.png') as ImageProvider)),
                     backgroundColor: Colors.lightBlue,
-                    child: _profileImage == null && profilePictureUrl.isEmpty
+                    child: _tempImage == null && _profileImage == null && widget.profilePicture.isEmpty
                         ? const Icon(Icons.person, color: Colors.white, size: 60)
                         : null,
                   );
