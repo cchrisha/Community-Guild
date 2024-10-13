@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-   // _checkLoginStatus();
+   //_checkLoginStatus();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
     _animationController = AnimationController(
