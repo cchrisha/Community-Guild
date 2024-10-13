@@ -84,6 +84,8 @@ flutter:
       - assets/images/posting.png
       - assets/images/job_hunt.png
       - assets/images/bit.png
+      - assets/images/dashboard.png
+
 
 
   # The following line ensures that the Material Icons font is
