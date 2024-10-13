@@ -118,56 +118,65 @@ Widget _buildErrorDialog(String message) {
 
 //ito yung workerssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 
-  void _showWorkersDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Workers'),
-          content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.9, // Adjust width
-            child: SingleChildScrollView( // Scrollable content for large lists
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: users.map((user) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0), // Adjust vertical space
-                    child: Row(
-                      children: [
-                        const CircleAvatar(
-                          backgroundColor: Colors.lightBlueAccent,
-                          child: Icon(Icons.person, color: Colors.white),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(user),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
-          actionsPadding: const EdgeInsets.all(10), // Adjust padding for actions
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Decrease padding
-                minimumSize: const Size(50, 30), // Set minimum size
-                textStyle: const TextStyle(fontSize: 12), // Decrease font size
-              ),
-              child: const Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  void _showWorkersDialog(String jobId) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return BlocProvider(
+        create: (context) => AboutJobBloc(
+          AboutJobRepository(authRepository: AuthRepository(httpClient: http.Client())),
+        )..add(FetchJobWorkers(jobId)),
+        child: BlocBuilder<AboutJobBloc, AboutJobState>(
+          builder: (context, state) {
+            if (state is AboutJobWorkersLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is AboutJobWorkersLoaded) {
+              return _buildWorkersDialog(state.workers);
+            } else if (state is AboutJobWorkersError) {
+              return _buildErrorDialog(state.message);
+            }
+            return const SizedBox.shrink(); // Placeholder for initial state
+          },
+        ),
+      );
+    },
+  );
+}
 
+Widget _buildWorkersDialog(List<String> workers) {
+  return AlertDialog(
+    title: const Text('Workers'),
+    content: SizedBox(
+      width: MediaQuery.of(context).size.width * 0.9,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: workers.map((worker) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 3.0),
+              child: Row(
+                children: [
+                  const CircleAvatar(
+                    backgroundColor: Colors.lightBlueAccent,
+                    child: Icon(Icons.person, color: Colors.white),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(child: Text(worker)),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    ),
+    actions: [
+      ElevatedButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: const Text('Close'),
+      ),
+    ],
+  );
+}
 
 //anditoooooooooooooooooooooooooooo yung name title description emeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
   @override
@@ -394,9 +403,9 @@ Widget _buildErrorDialog(String message) {
                   ),
                   const SizedBox(height: 20),
                   SizedBox(
-                    width: 120, // Same width as the View Applicants button
+                    width: 120, // Set button width
                     child: ElevatedButton(
-                      onPressed: _showWorkersDialog,
+                      onPressed: () => _showWorkersDialog(widget.jobId), // Pass jobId from the widget
                       child: const Center(
                         child: Text('View Workers'),
                       ),

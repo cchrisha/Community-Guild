@@ -31,4 +31,14 @@ class FetchJobApplicants extends AboutJobEvent {
   List<Object?> get props => [jobId];
 }
 
+class FetchJobWorkers extends AboutJobEvent {
+  final String jobId;
+
+  FetchJobWorkers(this.jobId);
+
+  @override
+  List<Object?> get props => [jobId];
+}
+
+
 
