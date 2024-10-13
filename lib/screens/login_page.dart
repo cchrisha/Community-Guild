@@ -122,13 +122,9 @@ class LoginPage extends StatelessWidget {
                             },
                             text: 'Create new account? Signup',
                           ),
-<<<<<<< Updated upstream
                           const SizedBox(
                             height: 20,
                           ),
-=======
-                          const SizedBox(height: 5),
->>>>>>> Stashed changes
                           AuthWidgets.forgotPasswordButton(onPressed: () {
                             Get.to(() => const ForgetPasswordPage());
                           }),

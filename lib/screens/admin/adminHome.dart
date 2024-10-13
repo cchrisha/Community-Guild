@@ -54,8 +54,8 @@ class _AdminHomePageState extends State<AdminHomePage> {
   // Pages for each section
   final List<Widget> _pages = [
     // AdminDashboard(), // Dashboard page
-    AdminUserPage(), // Users page
-    UserTransactionPage(), // User transactions page
+    const AdminUserPage(), // Users page
+    const UserTransactionPage(), // User transactions page
     AdminSettingsPage(), // Settings page
   ];
 

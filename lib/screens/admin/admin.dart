@@ -1,8 +1,12 @@
 import 'package:community_guild/screens/admin/adminHome.dart';
 import 'package:community_guild/screens/choose.dart';
+import 'package:community_guild/screens/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminPage extends StatefulWidget {
   const AdminPage({Key? key}) : super(key: key);
@@ -29,7 +33,6 @@ class _AdminPageState extends State<AdminPage> {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-<<<<<<< Updated upstream
       final token = data['token'];
       final isAdmin = data['isAdmin']; // Assuming isAdmin is included in the API response
 
@@ -63,28 +66,10 @@ class _AdminPageState extends State<AdminPage> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Login failed. Please check your credentials.")),
-=======
-      final isAdmin = data['isAdmin'];
-
-      if (isAdmin == 1) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Admin login successful!"), backgroundColor: Colors.green),
-        );
-        Future.delayed(const Duration(seconds: 1), () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const AdminHomePage()),
-          );
-        });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("You're not an admin."), backgroundColor: Colors.red),
->>>>>>> Stashed changes
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-<<<<<<< Updated upstream
         SnackBar(content: Text("Error: ${response.reasonPhrase}")),
       );
     }
@@ -94,11 +79,6 @@ class _AdminPageState extends State<AdminPage> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token); // Store token under 'auth_token'
     print('Token saved to SharedPreferences.'); // Debug message
-=======
-        const SnackBar(content: Text("Login failed. Please check your credentials.")),
-      );
-    }
->>>>>>> Stashed changes
   }
 
   @override
@@ -112,15 +92,10 @@ class _AdminPageState extends State<AdminPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-<<<<<<< Updated upstream
                 const Text(
                   "Welcome Admin!",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                 ),
-=======
-                AuthWidgets.logo(),const SizedBox(height: 5),
-                const Text("Welcome Admin!", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
->>>>>>> Stashed changes
                 const SizedBox(height: 30),
                 
                 // Email TextField with padding and focus border transition 
@@ -223,7 +198,6 @@ class _AdminPageState extends State<AdminPage> {
                 ),
                 
                 const SizedBox(height: 10),
-<<<<<<< Updated upstream
                 TextButton(
                   onPressed: () {
                     Navigator.push(
@@ -232,31 +206,6 @@ class _AdminPageState extends State<AdminPage> {
                     );
                   },
                   child: const Text('Go to User Login'),
-=======
-                
-                // Go 
-                Container(
-                  height: 55,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const ChoosePreference()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      backgroundColor: Colors.grey[200],
-                    ),
-                    child: const Text(
-                      'Back',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
-                    ),
-                  ),
->>>>>>> Stashed changes
                 ),
               ],
             ),
