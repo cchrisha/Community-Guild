@@ -18,7 +18,7 @@ import 'package:http/http.dart' as http; // Required for the repository
 import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -27,13 +27,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   bool isUserVerified = false;
-
-  final List<Widget> _pages = const [
-    HomePageBody(), // The existing body of your HomePage
-    JobPage(), // About Job Page
-    PostInput(), // Post Input Page
-    PaymentPage(), // Payment Page
-    ProfilePage(), // Profile Page
+  final List<Widget> _pages = [
+    const HomePageBody(), // The existing body of your HomePage
+    const JobPage(), // Add About Job Page here
+    const PostInput(), // Post Input Page
+    const PaymentPage(), // Payment Page
+    const ProfilePage(), // Profile Page
   ];
 
   Future<bool> _isUserVerified() async {
@@ -42,45 +41,36 @@ class _HomePageState extends State<HomePage> {
     return isVerify == 1; // Return true if verified, otherwise false
   }
 
-  Future<void> _refreshHomePage() async {
-    // Add your logic to refresh the Home Page data here
-    // For example, you might call a method to fetch new jobs
-    context.read<HomeBloc>().add(const LoadJobs('developer'));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // Load jobs initially when the page is created
-    _refreshHomePage();
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => HomeBloc(
         homeRepository: HomeRepository(httpClient: http.Client()),
-      ),
+      )..add(const LoadJobs('developer')),
       child: Scaffold(
         appBar: _currentIndex == 0
             ? AppBar(
-                title: const Text(
-                  'Home',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                title: const Row(
+                  children: [
+                    SizedBox(width: 16),
+                    Text(
+                      'Home',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
                 backgroundColor: const Color.fromARGB(255, 3, 169, 244),
                 automaticallyImplyLeading: false,
               )
             : null,
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        body: AnimatedSwitcher(
-          duration:
-              const Duration(milliseconds: 300), // Duration of the animation
-          child: _pages[_currentIndex], // Set the current page
+        body: IndexedStack(
+          index: _currentIndex,
+          children: _pages,
         ),
         bottomNavigationBar: _currentIndex == 2 // When on PostInput page
             ? null // Hide bottom navigation bar
@@ -88,8 +78,6 @@ class _HomePageState extends State<HomePage> {
                 type: BottomNavigationBarType.fixed,
                 backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                 currentIndex: _currentIndex,
-                showUnselectedLabels: false, // Hide unselected labels
-                showSelectedLabels: true, // Show selected label
                 items: const [
                   BottomNavigationBarItem(
                     icon: Icon(Icons.home_outlined),
@@ -115,7 +103,11 @@ class _HomePageState extends State<HomePage> {
                 selectedItemColor: Colors.lightBlue,
                 unselectedItemColor: Colors.black,
                 onTap: (index) async {
-                  if (index == 2) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+
+                  if (_currentIndex == 2) {
                     // When Post is selected
                     isUserVerified =
                         await _isUserVerified(); // Await the verification check
@@ -136,49 +128,42 @@ class _HomePageState extends State<HomePage> {
                         MaterialPageRoute(
                             builder: (context) => const PostInput()),
                       ).then((_) {
-                        // Refresh the home page after coming back from PostInput
-                        _refreshHomePage();
+                        setState(() {
+                          _currentIndex = 0; // Reset to Home after posting
+                        });
                       });
                     } else {
                       // Show dialog if user is not verified
-                      _showVerificationDialog();
-                    }
-                  } else {
-                    setState(() {
-                      _currentIndex = index; // Update the current index
-                    });
-                    // Refresh the home page when navigating back to the home tab
-                    if (index == 0) {
-                      _refreshHomePage();
+                      showDialog(
+                        context: context,
+                        barrierDismissible:
+                            false, // Prevent closing by tapping outside
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Account Verification Required'),
+                            content: const Text(
+                                'Please verify your account before posting.'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('Close'),
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(); // Close the dialog
+                                  setState(() {
+                                    _currentIndex =
+                                        4; // Redirect to Profile tab
+                                  });
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     }
                   }
                 },
               ),
       ),
-    );
-  }
-
-  void _showVerificationDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false, // Prevent closing by tapping outside
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Account Verification Required'),
-          content: const Text('Please verify your account before posting.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                setState(() {
-                  _currentIndex = 4; // Redirect to Profile tab
-                });
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }
