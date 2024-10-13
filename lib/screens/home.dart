@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:community_guild/bloc/home/home_bloc.dart';
 import 'package:community_guild/bloc/home/home_event.dart';
 import 'package:community_guild/bloc/home/home_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'about_job.dart';
 import 'job_detail.dart';
 import 'payment_page.dart';
@@ -37,21 +38,10 @@ class _HomePageState extends State<HomePage> {
   ];
 
   Future<bool> _isUserVerified() async {
-  try {
-    // Assuming you have the user's ID or a token to identify them
-    final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/api/isUserVerify'));
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      return data['isVerified'] == 1; // Assuming the response has isVerified field
-    } else {
-      throw Exception('Failed to check user verification');
-    }
-  } catch (e) {
-    print('Error: $e');
-    return false; // Assume not verified on error
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int? isVerify = prefs.getInt('isVerify');
+  return isVerify == 1; // Return true if verified, otherwise false
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -114,63 +104,63 @@ class _HomePageState extends State<HomePage> {
                 ],
                 selectedItemColor: Colors.lightBlue,
                 unselectedItemColor: Colors.black,
-               onTap: (index) async {
-                    setState(() {
-                      _currentIndex = index;
+                onTap: (index) async {
+                  setState(() {
+                    _currentIndex = index;
+                  });
 
-                      if (_currentIndex == 2) { // When Post is selected
-                        _isUserVerified().then((_) {
-                          if (isUserVerified) {
-                            // Show SnackBar if user is verified
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Your account is verified'),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
+                  if (_currentIndex == 2) { // When Post is selected
+                    isUserVerified = await _isUserVerified(); // Await the verification check
 
-                            // Redirect to the Post Input page
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const PostInput()),
-                            ).then((_) {
-                              setState(() {
-                                _currentIndex = 0; // Reset to Home
-                              });
-                            });
-                          } else {
-                            // Show dialog if user is not verified
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false, // Prevent closing by tapping outside
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Account Verification Required'),
-                                  content: const Text('Please verify your account before posting.'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text('Close'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop(); // Close the dialog
-                                        setState(() {
-                                          _currentIndex = 4; // Redirect to Profile tab
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }
+                    if (isUserVerified) {
+                      // Show SnackBar if user is verified
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Your account is verified. You can now post.'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+
+                      // Redirect to the Post Input page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const PostInput()),
+                      ).then((_) {
+                        setState(() {
+                          _currentIndex = 0; // Reset to Home after posting
                         });
-                      }
-                    });
+                      });
+                    } else {
+                      // Show dialog if user is not verified
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false, // Prevent closing by tapping outside
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Account Verification Required'),
+                            content: const Text('Please verify your account before posting.'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('Close'),
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // Close the dialog
+                                  setState(() {
+                                    _currentIndex = 4; // Redirect to Profile tab
+                                  });
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
                   }
+},
               ),
-      ),
-    );
-  }
-}
+          ),
+        );
+      }
+    }
 
 class HomePageBody extends StatelessWidget {
   const HomePageBody({super.key});

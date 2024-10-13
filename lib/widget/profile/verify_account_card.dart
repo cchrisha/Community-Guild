@@ -23,6 +23,14 @@ class _VerifyAccountCardState extends State<VerifyAccountCard> {
         isLoading = false;
         isVerified = true; // Mark as verified
       });
+
+      // Show the Snackbar after loading is complete
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Your profile is under review. Please wait for the verification.'),
+          duration: Duration(seconds: 3), // Set duration for the Snackbar
+        ),
+      );
     });
   }
 
@@ -62,10 +70,8 @@ class _VerifyAccountCardState extends State<VerifyAccountCard> {
                         width: 24, // Set a specific width
                         height: 24, // Set a specific height
                         child: CircularProgressIndicator(
-                          strokeWidth:
-                              2.0, // Adjust the stroke width to make it smaller
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          strokeWidth: 2.0, // Adjust the stroke width to make it smaller
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
                     : ElevatedButton(
