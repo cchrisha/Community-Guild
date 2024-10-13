@@ -170,7 +170,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
                   ),
                   Row(
                     children: [
-                      const Text('Is Crypto: '),
+                      const Text('Crypto: '),
                       Checkbox(
                         value: widget.isCrypto,
                         onChanged: (bool? value) {},
@@ -227,25 +227,25 @@ class _JobDetailPageState extends State<JobDetailPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 245, 238, 238),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 20,
-                      ),
-                    ),
-                    child: const Text(
-                      'Cancel request',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.pop(context);
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     backgroundColor: const Color.fromARGB(255, 245, 238, 238),
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(12),
+                  //     ),
+                  //     padding: const EdgeInsets.symmetric(
+                  //       vertical: 12,
+                  //       horizontal: 20,
+                  //     ),
+                  //   ),
+                  //   child: const Text(
+                  //     'Cancel request',
+                  //     style: TextStyle(fontSize: 16),
+                  //   ),
+                  // ),
                   ElevatedButton(
                     onPressed: () {
                       // Implement Complete action here
@@ -261,7 +261,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
                       ),
                     ),
                     child: const Text(
-                      'Request',
+                      'Apply',
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),

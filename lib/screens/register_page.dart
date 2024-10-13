@@ -22,20 +22,6 @@ class _RegisterPageState extends State<RegisterPage> {
   String _passwordStrength = '';
   Color _strengthColor = Colors.grey;
   String _passwordError = ''; // Variable to track password match error
-  // String? _selectedProfession; // Variable to hold the selected profession
-
-  // final List<String> professions = [
-  //   'Programmer',
-  //   'Gardener',
-  //   'Carpenter',
-  //   'Plumber',
-  //   'Cleaner',
-  //   'Cook',
-  //   'Driver',
-  //   'Electrician',
-  //   'Salesperson',
-  //   'Crew',
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -81,22 +67,24 @@ class _RegisterPageState extends State<RegisterPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AuthWidgets.logo(),
-                      const SizedBox(height: 5),
                       AuthWidgets.welcomeText(isLogin: false),
                       const SizedBox(height: 5),
                       AuthWidgets.textField(
+                        icon: Icons.person,
                         labelText: 'Full Name',
                         controller: authBloc.nameController,
                         obscureText: false,
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
+                        icon: Icons.email,
                         labelText: 'Email',
                         controller: authBloc.emailController,
                         obscureText: false,
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
+                        icon: Icons.lock_outline,
                         labelText: 'Password',
                         controller: authBloc.passwordController,
                         obscureText: authBloc.obscureText,
@@ -114,7 +102,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      // Display password strength only if the keyboard is visible
                       if (isKeyboardVisible) ...[
                         Align(
                           alignment: Alignment.centerLeft,
@@ -129,6 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ],
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
+                        icon: Icons.lock,
                         labelText: 'Confirm Password',
                         controller: authBloc.confirmPasswordController,
                         obscureText: authBloc.obscureConfirmPassword,
@@ -144,7 +132,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           },
                         ),
                       ),
-                      // Display password match error aligned to the left
                       if (_passwordError.isNotEmpty)
                         Align(
                           alignment: Alignment.centerLeft,
@@ -158,60 +145,38 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                       const SizedBox(height: 15),
-                      // Profession Dropdown
-                      // DropdownButtonFormField<String>(
-                      //   value: _selectedProfession, // Bind this to the selected profession
-                      //   hint: const Text('Select Profession'),
-                      //   items: professions.map((profession) {
-                      //     return DropdownMenuItem(
-                      //       value: profession,
-                      //       child: Text(profession),
-                      //     );
-                      //   }).toList(),
-                      //   onChanged: (value) {
-                      //     if (value != null) {
-                      //       setState(() {
-                      //         _selectedProfession = value; // Update the selected profession
-                      //       });
-                      //       authBloc.professionController.text = value; // Update the controller too
-                      //     }
-                      //   },
-                      //   validator: (value) =>
-                      //       value == null ? 'Please select a profession' : null,
-                      // ),
-                      const SizedBox(height: 15),
                       AuthWidgets.textField(
+                        icon: Icons.location_on,
                         labelText: 'Location',
                         controller: authBloc.locationController,
                         obscureText: false,
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
+                        icon: Icons.work,
                         labelText: 'Profession',
                         controller: authBloc.professionController,
                         obscureText: false,
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
+                        icon: Icons.phone,
                         labelText: 'Contact Number',
                         controller: authBloc.contactController,
                         obscureText: false,
                         keyboardType: TextInputType.phone,
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly,
-                        ],
-                      ),
+                        ],                      ),
                       const SizedBox(height: 20),
                       AuthWidgets.primaryButton(
                         text: 'Sign Up',
                         onPressed: () {
                           if (authBloc.passwordController.text.isEmpty ||
-                              authBloc.confirmPasswordController.text.isEmpty)
-                              // _selectedProfession == null 
-                              { 
+                              authBloc.confirmPasswordController.text.isEmpty) {
                             setState(() {
                               _passwordError =
-                                  'Please fill all required fields';;
+                                  'Please fill all required fields';
                             });
                           } else if (authBloc.passwordController.text !=
                               authBloc.confirmPasswordController.text) {
@@ -232,7 +197,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                 location: authBloc.locationController.text,
                                 contact: authBloc.contactController.text,
                                 profession: authBloc.professionController.text,
-                                // profession: _selectedProfession!, // Use selected profession
                               ),
                             ));
                           }

@@ -39,6 +39,7 @@ class AuthWidgets {
     List<TextInputFormatter>? inputFormatters,
     Function(String)? onChanged,
     FocusNode? focusNode, // Add FocusNode parameter
+    IconData? icon, // Add Icon parameter
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -65,6 +66,7 @@ class AuthWidgets {
           labelStyle: GoogleFonts.poppins(color: const Color.fromARGB(255, 0, 0, 0)),
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20), // Added padding here
           suffixIcon: suffixIcon,
+          prefixIcon: icon != null ? Icon(icon, color: Colors.grey) : null, // Add icon before label text
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide.none,
@@ -82,7 +84,6 @@ class AuthWidgets {
       ),
     );
   }
-
 
   static Widget primaryButton({
     required String text,
@@ -106,7 +107,6 @@ class AuthWidgets {
       ),
     );
   }
-
 
   static Widget navigationLink({
     required String text,

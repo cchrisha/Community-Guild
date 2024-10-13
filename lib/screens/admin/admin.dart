@@ -1,11 +1,10 @@
 import 'package:community_guild/screens/admin/adminHome.dart';
-import 'package:community_guild/screens/choose.dart';
 import 'package:community_guild/screens/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'package:community_guild/widget/login_and_register/login_register_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminPage extends StatefulWidget {
@@ -14,7 +13,7 @@ class AdminPage extends StatefulWidget {
   @override
   _AdminPageState createState() => _AdminPageState();
 }
- 
+
 class _AdminPageState extends State<AdminPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -24,7 +23,6 @@ class _AdminPageState extends State<AdminPage> {
     final email = emailController.text;
     final password = passwordController.text;
 
-    // Make your API call for admin login
     final response = await http.post(
       Uri.parse('https://api-tau-plum.vercel.app/api/adminLogin'),
       headers: {'Content-Type': 'application/json'},
@@ -34,7 +32,7 @@ class _AdminPageState extends State<AdminPage> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final token = data['token'];
-      final isAdmin = data['isAdmin']; // Assuming isAdmin is included in the API response
+      final isAdmin = data['isAdmin'];
 
       if (data['success'] == true) {
         if (token == null || token.isEmpty) {
@@ -44,25 +42,24 @@ class _AdminPageState extends State<AdminPage> {
           return;
         }
 
-        await saveToken(token); // Save token locally
+        await saveToken(token);
         print('Token saved: $token');
 
-        // Verify if the user is indeed an admin
         if (isAdmin == 1) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text("Admin login successful!"),
-                backgroundColor: Colors.green),
+              content: Text("Admin login successful!"),
+              backgroundColor: Colors.green,
+            ),
           );
 
-          // Navigate to Admin Home Page after a short delay
           Future.delayed(const Duration(seconds: 1), () {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const AdminHomePage()),
             );
           });
-        } 
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Login failed. Please check your credentials.")),
@@ -77,8 +74,8 @@ class _AdminPageState extends State<AdminPage> {
 
   Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('auth_token', token); // Store token under 'auth_token'
-    print('Token saved to SharedPreferences.'); // Debug message
+    await prefs.setString('auth_token', token);
+    print('Token saved to SharedPreferences.');
   }
 
   @override
@@ -92,13 +89,14 @@ class _AdminPageState extends State<AdminPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                AuthWidgets.logo(),
                 const Text(
                   "Welcome Admin!",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                 ),
                 const SizedBox(height: 30),
-                
-                // Email TextField with padding and focus border transition 
+
+                // Email TextField with icon
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -117,6 +115,7 @@ class _AdminPageState extends State<AdminPage> {
                   child: TextField(
                     controller: emailController,
                     decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.email, color: Colors.grey), // Email icon with grey color
                       labelText: 'Admin Email',
                       labelStyle: GoogleFonts.poppins(color: Colors.black),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -126,15 +125,15 @@ class _AdminPageState extends State<AdminPage> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 1), // Focused border
+                        borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 1),
                       ),
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 20),
-                
-                // Password TextField with padding and focus border transition
+
+                // Password TextField with icon
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -154,11 +153,12 @@ class _AdminPageState extends State<AdminPage> {
                     controller: passwordController,
                     obscureText: obscureText,
                     decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.lock, color: Colors.grey), // Lock icon with grey color
                       labelText: 'Admin Password',
                       labelStyle: GoogleFonts.poppins(color: const Color.fromARGB(255, 0, 0, 0)),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                       suffixIcon: IconButton(
-                        icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility),
+                        icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility, color: Colors.grey),
                         onPressed: () {
                           setState(() {
                             obscureText = !obscureText;
@@ -176,10 +176,11 @@ class _AdminPageState extends State<AdminPage> {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 20),
-                
-                // Login button
-                Container(
+
+                // Admin Login button
+                SizedBox(
                   height: 55,
                   width: double.infinity,
                   child: ElevatedButton(
@@ -191,21 +192,36 @@ class _AdminPageState extends State<AdminPage> {
                       backgroundColor: Colors.lightBlue,
                     ),
                     child: const Text(
-                      'Admin Login', 
+                      'Admin Login',
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
-                    );
-                  },
-                  child: const Text('Go to User Login'),
+
+                // Go to User Login button
+                SizedBox(
+                  height: 55,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginPage()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      backgroundColor: const Color.fromARGB(255, 220, 220, 220),
+                    ),
+                    child: const Text(
+                      'Go to User Login',
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                    ),
+                  ),
                 ),
               ],
             ),
