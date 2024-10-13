@@ -96,6 +96,7 @@ class ProfilePage extends StatelessWidget {
                     ProfileHeader(
                       name: state.name,
                       profession: state.profession,
+                      isVerified: state.isVerified, // Pass the verification status
                     ),
                     const SizedBox(height: 15),
                     VerifyAccountCard(
@@ -111,13 +112,6 @@ class ProfilePage extends StatelessWidget {
                       email: state.email,
                       profession: state.profession,
                     ),
-                    // const SizedBox(height: 30),
-                    // _buildSection(context, 'Completed Jobs',
-                    //     _buildCompletedJobList(context)),
-                    // const SizedBox(height: 30),
-                    // _buildSection(
-                    //     context, 'Posted Jobs', _PostedJobList(context)),
-                    // const SizedBox(height: 30),
                   ],
                 );
               } else if (state is ProfileError) {
@@ -130,117 +124,4 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _buildCompletedJobList(BuildContext context) {
-  //   return SizedBox(
-  //     height: 240,
-  //     child: ListView.builder(
-  //       scrollDirection: Axis.horizontal,
-  //       itemCount: 3, // Change this to your actual data length
-  //       itemBuilder: (context, index) {
-  //         return Padding(
-  //           padding: const EdgeInsets.only(right: 10),
-  //           child: SizedBox(
-  //             width: MediaQuery.of(context).size.width * 0.9,
-  //             child: CompletedJobCard(
-  //               jobTitle: 'Job Title $index', // Replace with actual data
-  //               jobDescription:
-  //                   'Description of job $index', // Replace with actual data
-  //               workPlace: 'Workplace $index', // Replace with actual data
-  //               date: 'Date $index', // Replace with actual data
-  //               wageRange: 'Wage Range $index', // Replace with actual data
-  //               contact: 'Contact $index', // Replace with actual data
-  //               category: 'Category $index', // Replace with actual data
-  //               isCrypto: index % 2 == 0, // Replace with actual data
-  //               professions: 'Profession $index', // Replace with actual data
-  //               onTap: () {
-  //                 Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder: (context) => const CompletedJobDetail(
-  //                       jobTitle: '', // Replace with actual data
-  //                       jobDescription: '', // Replace with actual data
-  //                       date: '', // Replace with actual data
-  //                       workPlace: '', // Replace with actual data
-  //                       wageRange: '', // Replace with actual data
-  //                       isCrypto: true, // Replace with actual data
-  //                       professions: '', // Replace with actual data
-  //                       contact: '', // Replace with actual data
-  //                       category: '', // Replace with actual data
-  //                     ),
-  //                   ),
-  //                 );
-  //               },
-  //             ),
-  //           ),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildSection(BuildContext context, String title, Widget content) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Text(
-  //         title,
-  //         style: const TextStyle(
-  //           fontSize: 16,
-  //           fontWeight: FontWeight.bold,
-  //         ),
-  //       ),
-  //       const SizedBox(height: 10),
-  //       content,
-  //     ],
-  //   );
-  // }
-
-  // Widget _PostedJobList(BuildContext context) {
-  //   return SizedBox(
-  //     height: 240,
-  //     child: ListView.builder(
-  //       scrollDirection: Axis.horizontal,
-  //       itemCount: 3, // Change this to your actual data length
-  //       itemBuilder: (context, index) {
-  //         return Padding(
-  //           padding: const EdgeInsets.only(right: 10),
-  //           child: SizedBox(
-  //             width: MediaQuery.of(context).size.width * 0.9,
-  //             child: CompletedJobCard(
-  //               jobTitle: 'Job Title $index', // Replace with actual data
-  //               jobDescription:
-  //                   'Description of job $index', // Replace with actual data
-  //               workPlace: 'Workplace $index', // Replace with actual data
-  //               date: 'Date $index', // Replace with actual data
-  //               wageRange: 'Wage Range $index', // Replace with actual data
-  //               contact: 'Contact $index', // Replace with actual data
-  //               category: 'Category $index', // Replace with actual data
-  //               isCrypto: index % 2 == 0, // Replace with actual data
-  //               professions: 'Profession $index', // Replace with actual data
-  //               onTap: () {
-  //                 Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder: (context) => const OwnJobDetailPage(
-  //                       jobTitle: '', // Replace with actual data
-  //                       jobDescription: '', // Replace with actual data
-  //                       date: '', // Replace with actual data
-  //                       workPlace: '', // Replace with actual data
-  //                       wageRange: '', // Replace with actual data
-  //                       isCrypto: true, // Replace with actual data
-  //                       professions: '', // Replace with actual data
-  //                       contact: '', // Replace with actual data
-  //                       category: '', // Replace with actual data
-  //                     ),
-  //                   ),
-  //                 );
-  //               },
-  //             ),
-  //           ),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
 }

@@ -18,6 +18,7 @@ class ProfileLoaded extends ProfileState {
   final String email;
   final String profession;
   final String profilePictureUrl;
+  final bool isVerified;
 
   ProfileLoaded({
     required this.name,
@@ -26,11 +27,12 @@ class ProfileLoaded extends ProfileState {
     required this.email,
     required this.profession,
     required this.profilePictureUrl,
+    required this.isVerified,
   });
 
   @override
   List<Object> get props =>
-      [name, location, contact, email, profession, profilePictureUrl];
+      [name, location, contact, email, profession, profilePictureUrl, isVerified];
 }
 
 class ProfileError extends ProfileState {

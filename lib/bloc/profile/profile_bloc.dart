@@ -25,7 +25,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         contact: data['contact'] ?? 'N/A',
         email: data['email'] ?? 'N/A',
         profession: data['profession'] ?? 'N/A',
-        profilePictureUrl: data['profilePicture'] ?? '', // Update this line
+        profilePictureUrl: data['profilePicture'] ?? '',
+        isVerified: data['isVerified'] ?? false, // Update this line
       ));
     } catch (e) {
       emit(ProfileError('Failed to load profile: $e'));
@@ -54,7 +55,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           contact: currentState.contact,
           email: currentState.email,
           profession: currentState.profession,
-          profilePictureUrl: imageUrl, // Update the profile picture URL
+          profilePictureUrl: imageUrl,
+          isVerified: currentState.isVerified, // Update the profile picture URL
         ));
       } catch (e) {
         emit(ProfileError('Failed to update profile picture: $e'));

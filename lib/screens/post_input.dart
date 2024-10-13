@@ -1,4 +1,5 @@
 import 'package:community_guild/repository/all_job_detail/job_repository.dart';
+import 'package:community_guild/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/post/post_bloc.dart';
@@ -34,6 +35,7 @@ class PostInputState extends State<PostInput> {
   bool _isCrypto = false;
   String? _selectedProfession;
   String? _selectedCategory;
+  int? _isVerify;
 
   final List<String> _categories = [
     'Technology',
@@ -160,9 +162,12 @@ class PostInputState extends State<PostInput> {
                       const SizedBox(height: 20),
                       Center(
                         child: PostButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              if (_selectedProfession != null && _selectedCategory != null) {
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            if (_selectedProfession != null && _selectedCategory != null) {
+                              // Check if the user is verified
+                              if (_isVerify == 1) {
+                                // User is verified, allow them to submit the job
                                 context.read<PostBloc>().add(
                                   SubmitJob(
                                     title: _titleController.text,
@@ -176,10 +181,14 @@ class PostInputState extends State<PostInput> {
                                   ),
                                 );
                               } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Please select a profession and category.'),
-                                  ),
+                                // User is not verified, show verification dialog
+                                _showVerifyDialog(context);
+                              }
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Please select a profession and category.'),
+                                ),
                                 );
                               }
                             }
@@ -196,6 +205,37 @@ class PostInputState extends State<PostInput> {
       ),
     );
   }
+
+  void _showVerifyDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Account Verification Required'),
+        content: const Text(
+            'Your account is not verified. Please verify your account from the profile page before posting a job.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
+            },
+            child: const Text('Go to Profile'),
+          ),
+        ],
+      );
+    },
+  );
+}
 
   @override
   void dispose() {

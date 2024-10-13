@@ -26,7 +26,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  bool isUserVerified = false;
   final List<Widget> _pages = [
     const HomePageBody(), // The existing body of your HomePage
     const JobPage(), // Add About Job Page here
@@ -35,23 +34,6 @@ class _HomePageState extends State<HomePage> {
     const ProfilePage(), // Profile Page
     
   ];
-
-  Future<bool> _isUserVerified() async {
-  try {
-    // Assuming you have the user's ID or a token to identify them
-    final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/api/isUserVerify'));
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      return data['isVerified'] == 1; // Assuming the response has isVerified field
-    } else {
-      throw Exception('Failed to check user verification');
-    }
-  } catch (e) {
-    print('Error: $e');
-    return false; // Assume not verified on error
-  }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -114,58 +96,24 @@ class _HomePageState extends State<HomePage> {
                 ],
                 selectedItemColor: Colors.lightBlue,
                 unselectedItemColor: Colors.black,
-               onTap: (index) async {
-                    setState(() {
-                      _currentIndex = index;
-
-                      if (_currentIndex == 2) { // When Post is selected
-                        _isUserVerified().then((_) {
-                          if (isUserVerified) {
-                            // Show SnackBar if user is verified
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Your account is verified'),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-
-                            // Redirect to the Post Input page
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const PostInput()),
-                            ).then((_) {
-                              setState(() {
-                                _currentIndex = 0; // Reset to Home
-                              });
+               onTap: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                    if (_currentIndex == 2) {
+                      // When the PostInput is selected, clear the stack or perform any specific actions
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const PostInput()),
+                      ).then((_) {
+                        // Rebuild the home page state after returning
+                        setState(() {
+                          _currentIndex = 0;
                             });
-                          } else {
-                            // Show dialog if user is not verified
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false, // Prevent closing by tapping outside
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Account Verification Required'),
-                                  content: const Text('Please verify your account before posting.'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text('Close'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop(); // Close the dialog
-                                        setState(() {
-                                          _currentIndex = 4; // Redirect to Profile tab
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-                        });
-                      }
-                    });
-                  }
+                      });
+                    }
+                  });
+                },
               ),
       ),
     );

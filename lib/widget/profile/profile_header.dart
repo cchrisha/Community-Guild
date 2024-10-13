@@ -5,11 +5,13 @@ import 'dart:io';
 class ProfileHeader extends StatefulWidget {
   final String name;
   final String profession;
+  final bool isVerified; // Add this parameter
 
   const ProfileHeader({
     super.key,
     required this.name,
     required this.profession,
+    this.isVerified = false, // Default to false
   });
 
   @override
@@ -87,7 +89,6 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     }
   }
 
-  // Function to show the dialog to save the profile picture
   void _showSaveProfileDialog() {
     if (_tempImage == null) return;
 
@@ -153,8 +154,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Colors.black
-                    .withOpacity(0.0), // Semi-transparent black background
+                color: Colors.black.withOpacity(0.0), // Semi-transparent black background
               ),
               padding: const EdgeInsets.all(16),
               child: Image.file(
@@ -180,8 +180,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 radius: 60,
                 backgroundImage: _profileImage != null
                     ? FileImage(_profileImage!)
-                    : const AssetImage('assets/images/profile.png')
-                        as ImageProvider,
+                    : const AssetImage('assets/images/profile.png') as ImageProvider,
                 backgroundColor: Colors.lightBlue,
                 child: _profileImage == null
                     ? const Icon(Icons.person, color: Colors.white, size: 60)
@@ -229,6 +228,16 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           ),
         ),
         const SizedBox(height: 10),
+        // Display verified status
+        if (widget.isVerified) // Conditionally show the verified text
+          const Text(
+            'Verified',
+            style: TextStyle(
+              color: Colors.green,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
       ],
     );
   }
