@@ -21,13 +21,26 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     });
 
     try {
+      // Get the saved token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token'); // Retrieve the token
+
+      // Check if token is null or empty
+      if (token == null || token.isEmpty) {
+        setState(() {
+          _isLoading = false; // Set loading to false if token is not found
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No valid session found. Please log in again.')),
+        );
+        return;
+      }
+
       final response = await http.post(
-        Uri.parse(
-            'https://your-api-url.com/api/adminLogout'), // Update with your API URL
+        Uri.parse('https://api-tau-plum.vercel.app/api/adminLogout'), // Your API URL
         headers: {
           'Content-Type': 'application/json',
-          'Authorization':
-              'Bearer your_token_here', // Replace with actual token if needed
+          'Authorization': 'Bearer $token', // Use the retrieved token
         },
       );
 
@@ -42,8 +55,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
         );
 
         // Remove the token from SharedPreferences
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.remove('token'); // Use the key you used to store the token
+        await prefs.remove('auth_token'); // Use the key you used to store the token
 
         // Navigate to ChoosePreference after logout
         Navigator.of(context).pushAndRemoveUntil(
@@ -104,10 +116,12 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
           ListTile(
             title: const Text('Logout'),
             leading: const Icon(Icons.logout),
-            onTap: () => _logout(context), // Call logout function on tap
+            onTap: () {
+              _logout(context); // Call logout function on tap
+            },
           ),
           if (_isLoading) // Show loading indicator when logging out
-            Center(child: CircularProgressIndicator()),
+            const Center(child: CircularProgressIndicator()),
         ],
       ),
     );

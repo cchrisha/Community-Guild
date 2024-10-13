@@ -30,43 +30,59 @@ class _AdminPageState extends State<AdminPage> {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      //final token = data['token'];
-      final isAdmin =
-          data['isAdmin']; // Make sure to include isAdmin in the API response
+      final token = data['token'];
+      final isAdmin = data['isAdmin']; // Assuming isAdmin is included in the API response
 
-      // Store token and admin status in SharedPreferences
-      //SharedPreferences prefs = await SharedPreferences.getInstance();
-      //await prefs.setString('auth_token', token);
-      //await prefs.setInt('isAdmin', isAdmin);
-
-      // Navigate to HomePage if admin
-      if (isAdmin == 1) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text("Admin login successful!"),
-              backgroundColor: Colors.green),
-        );
-        // Navigate to Admin Home Page after a short delay
-        Future.delayed(const Duration(seconds: 1), () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    const AdminHomePage()), // Replace with your actual Admin Home page widget
+      if (data['success'] == true) {
+        if (token == null || token.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Login failed: Token is null or empty.')),
           );
-        });
+          return;
+        }
+
+        await saveToken(token); // Save token locally
+        print('Token saved: $token');
+
+        // Verify if the user is indeed an admin
+        if (isAdmin == 1) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text("Admin login successful!"),
+                backgroundColor: Colors.green),
+          );
+
+          // Navigate to Admin Home Page after a short delay
+          Future.delayed(const Duration(seconds: 1), () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const AdminHomePage()),
+            );
+          });
+        } else {
+          // If the user is not an admin, show an error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text("You're not an admin."),
+                backgroundColor: Colors.red),
+          );
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text("You're not an admin."),
-              backgroundColor: Colors.red),
+          const SnackBar(content: Text("Login failed. Please check your credentials.")),
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Login failed. Please check your credentials.")),
+        SnackBar(content: Text("Error: ${response.reasonPhrase}")),
       );
     }
+  }
+
+  Future<void> saveToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_token', token); // Store token under 'auth_token'
+    print('Token saved to SharedPreferences.'); // Debug message
   }
 
   @override
@@ -79,9 +95,10 @@ class _AdminPageState extends State<AdminPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Welcome Admin!",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+                const Text(
+                  "Welcome Admin!",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                ),
                 const SizedBox(height: 30),
                 TextField(
                   controller: emailController,
@@ -94,9 +111,7 @@ class _AdminPageState extends State<AdminPage> {
                   decoration: InputDecoration(
                     labelText: 'Admin Password',
                     suffixIcon: IconButton(
-                      icon: Icon(obscureText
-                          ? Icons.visibility_off
-                          : Icons.visibility),
+                      icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility),
                       onPressed: () {
                         setState(() {
                           obscureText = !obscureText;
@@ -115,9 +130,7 @@ class _AdminPageState extends State<AdminPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const LoginPage()), // Replace with your user login page
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
                     );
                   },
                   child: const Text('Go to User Login'),
