@@ -31,13 +31,15 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
           _isLoading = false; // Set loading to false if token is not found
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No valid session found. Please log in again.')),
+          const SnackBar(
+              content: Text('No valid session found. Please log in again.')),
         );
         return;
       }
 
       final response = await http.post(
-        Uri.parse('https://api-tau-plum.vercel.app/api/adminLogout'), // Your API URL
+        Uri.parse(
+            'https://api-tau-plum.vercel.app/api/adminLogout'), // Your API URL
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token', // Use the retrieved token
@@ -55,7 +57,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
         );
 
         // Remove the token from SharedPreferences
-        await prefs.remove('auth_token'); // Use the key you used to store the token
+        await prefs
+            .remove('auth_token'); // Use the key you used to store the token
 
         // Navigate to ChoosePreference after logout
         Navigator.of(context).pushAndRemoveUntil(
@@ -81,48 +84,53 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Admin Settings',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 20),
-          ListTile(
-            title: const Text('Change Password'),
-            leading: const Icon(Icons.lock),
-            onTap: () {
-              // Add navigation or functionality for changing password
-            },
-          ),
-          ListTile(
-            title: const Text('Manage Users'),
-            leading: const Icon(Icons.group),
-            onTap: () {
-              // Add navigation or functionality for managing users
-            },
-          ),
-          ListTile(
-            title: const Text('App Settings'),
-            leading: const Icon(Icons.settings),
-            onTap: () {
-              // Add navigation or functionality for app settings
-            },
-          ),
-          const Divider(),
-          ListTile(
-            title: const Text('Logout'),
-            leading: const Icon(Icons.logout),
-            onTap: () {
-              _logout(context); // Call logout function on tap
-            },
-          ),
-          if (_isLoading) // Show loading indicator when logging out
-            const Center(child: CircularProgressIndicator()),
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Admin Settings'), // Set the title of the AppBar
+        centerTitle: true, // Center the title in the AppBar
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              title: const Text('Change Password'),
+              leading: const Icon(Icons.lock,
+                  color: Colors.lightBlue), // Added color to the icon
+              onTap: () {
+                // Add navigation or functionality for changing password
+              },
+            ),
+            ListTile(
+              title: const Text('Manage Users'),
+              leading: const Icon(Icons.group,
+                  color: Colors.lightBlue), // Added color to the icon
+              onTap: () {
+                // Add navigation or functionality for managing users
+              },
+            ),
+            ListTile(
+              title: const Text('App Settings'),
+              leading: const Icon(Icons.settings,
+                  color: Colors.lightBlue), // Added color to the icon
+              onTap: () {
+                // Add navigation or functionality for app settings
+              },
+            ),
+            const Divider(),
+            ListTile(
+              title: const Text('Logout'),
+              leading: const Icon(Icons.logout,
+                  color: Colors.lightBlue), // Added color to the icon
+              onTap: () {
+                _logout(context); // Call logout function on tap
+              },
+            ),
+            if (_isLoading) // Show loading indicator when logging out
+              const Center(child: CircularProgressIndicator()),
+          ],
+        ),
       ),
     );
   }

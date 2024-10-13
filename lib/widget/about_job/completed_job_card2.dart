@@ -44,15 +44,22 @@ class CompletedJobCard2 extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(jobTitle,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Expanded(
+                    child: Text(
+                      jobTitle,
+                      maxLines: 1, // Limit to 1 line
+                      overflow: TextOverflow.ellipsis, // Handle overflow
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(width: 8), // Add spacing between title and date
                   Text(date, style: const TextStyle(color: Colors.grey)),
                 ],
               ),
               const SizedBox(height: 8),
               Text(
                 jobDescription,
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(color: Colors.black54),
               ),

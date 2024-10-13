@@ -366,29 +366,29 @@ Widget _buildWorkersDialog(List<String> workers) {
 //ito yung mga butoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooons
 
               // Buttons section below all elements
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(
-                    width: 120, // Set a specific width for consistency
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Add your edit logic here
-                      },
-                      child: const Text('Edit'),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 120, // Same width as the Edit button
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Add your delete logic here
-                      },
-                      child: const Text('Delete'),
-                    ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //   children: [
+              //     SizedBox(
+              //       width: 120, // Set a specific width for consistency
+              //       child: ElevatedButton(
+              //         onPressed: () {
+              //           // Add your edit logic here
+              //         },
+              //         child: const Text('Edit'),
+              //       ),
+              //     ),
+              //     SizedBox(
+              //       width: 120, // Same width as the Edit button
+              //       child: ElevatedButton(
+              //         onPressed: () {
+              //           // Add your delete logic here
+              //         },
+              //         child: const Text('Delete'),
+              //       ),
+              //     ),
+              //   ],
+              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -397,7 +397,7 @@ Widget _buildWorkersDialog(List<String> workers) {
                     child: ElevatedButton(
                       onPressed: () => _showApplicantsDialog(widget.jobId), // Pass jobId from the widget
                       child: const Center(
-                        child: Text('View Applicants'),
+                        child: Text('Applicants'),
                       ),
                     ),
                   ),
@@ -407,7 +407,7 @@ Widget _buildWorkersDialog(List<String> workers) {
                     child: ElevatedButton(
                       onPressed: () => _showWorkersDialog(widget.jobId), // Pass jobId from the widget
                       child: const Center(
-                        child: Text('View Workers'),
+                        child: Text('Workers'),
                       ),
                     ),
                   ),

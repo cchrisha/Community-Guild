@@ -88,7 +88,8 @@ class PostInputState extends State<PostInput> {
               showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (context) => const Center(child: CircularProgressIndicator()),
+                builder: (context) =>
+                    const Center(child: CircularProgressIndicator()),
               );
             } else if (state is PostSuccess) {
               Navigator.pop(context); // Dismiss loading indicator
@@ -105,88 +106,97 @@ class PostInputState extends State<PostInput> {
           },
           child: BlocBuilder<PostBloc, PostState>(
             builder: (context, state) {
-              return SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const JobDetailsHeader(title: 'Job Details'),
-                      const SizedBox(height: 20),
-                      JobDetailsCard(
-                        child: Column(
-                          children: [
-                            JobTitleField(controller: _titleController),
-                            const SizedBox(height: 16),
-                            JobLocationField(controller: _locationController),
-                            const SizedBox(height: 16),
-                            JobCategoryDropdown(
-                              selectedCategory: _selectedCategory,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedCategory = value;
-                                });
-                              },
-                              categories: _categories,
-                            ),
-                            const SizedBox(height: 16),
-                            JobProfessionDropdown(
-                              selectedProfession: _selectedProfession,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedProfession = value;
-                                });
-                              },
-                              professions: _professions,
-                            ),
-                            const SizedBox(height: 16),
-                            JobRewardField(controller: _rewardController),
-                            const SizedBox(height: 10),
-                            CryptoPaymentCheckbox(
-                              isCrypto: _isCrypto,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  _isCrypto = value ?? false;
-                                });
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            JobContactField(controller: _contactController),
-                            const SizedBox(height: 16),
-                            JobDescriptionField(controller: _descriptionController),
-                          ],
+              return Padding(
+                // Add padding to create a gap
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 20.0),
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const JobDetailsHeader(title: 'Job Details'),
+                        const SizedBox(height: 20),
+                        JobDetailsCard(
+                          child: Column(
+                            children: [
+                              JobTitleField(controller: _titleController),
+                              const SizedBox(height: 16),
+                              JobLocationField(controller: _locationController),
+                              const SizedBox(height: 16),
+                              JobCategoryDropdown(
+                                selectedCategory: _selectedCategory,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedCategory = value;
+                                  });
+                                },
+                                categories: _categories,
+                              ),
+                              const SizedBox(height: 16),
+                              JobProfessionDropdown(
+                                selectedProfession: _selectedProfession,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedProfession = value;
+                                  });
+                                },
+                                professions: _professions,
+                              ),
+                              const SizedBox(height: 16),
+                              JobRewardField(controller: _rewardController),
+                              const SizedBox(height: 10),
+                              CryptoPaymentCheckbox(
+                                isCrypto: _isCrypto,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    _isCrypto = value ?? false;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              JobContactField(controller: _contactController),
+                              const SizedBox(height: 16),
+                              JobDescriptionField(
+                                  controller: _descriptionController),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      Center(
-                        child: PostButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              if (_selectedProfession != null && _selectedCategory != null) {
-                                context.read<PostBloc>().add(
-                                  SubmitJob(
-                                    title: _titleController.text,
-                                    location: _locationController.text,
-                                    profession: _selectedProfession!,
-                                    category: _selectedCategory!,
-                                    wageRange: _rewardController.text,
-                                    contact: _contactController.text,
-                                    description: _descriptionController.text,
-                                    isCrypto: _isCrypto,
-                                  ),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Please select a profession and category.'),
-                                  ),
-                                );
+                        const SizedBox(height: 20),
+                        Center(
+                          child: PostButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                if (_selectedProfession != null &&
+                                    _selectedCategory != null) {
+                                  context.read<PostBloc>().add(
+                                        SubmitJob(
+                                          title: _titleController.text,
+                                          location: _locationController.text,
+                                          profession: _selectedProfession!,
+                                          category: _selectedCategory!,
+                                          wageRange: _rewardController.text,
+                                          contact: _contactController.text,
+                                          description:
+                                              _descriptionController.text,
+                                          isCrypto: _isCrypto,
+                                        ),
+                                      );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Please select a profession and category.'),
+                                    ),
+                                  );
+                                }
                               }
-                            }
-                          },
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );

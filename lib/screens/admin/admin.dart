@@ -27,7 +27,7 @@ class _AdminPageState extends State<AdminPage> {
     // Make your API call for admin login
     final response = await http.post(
       Uri.parse('https://api-tau-plum.vercel.app/api/adminLogin'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json'}, 
       body: json.encode({'email': email, 'password': password}),
     );
 
