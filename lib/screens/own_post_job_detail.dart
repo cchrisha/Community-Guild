@@ -32,6 +32,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
   // Mock data for Request and Workers dialogs
   final List<String> users = ['User 1', 'User 2', 'User 3', 'User 4', 'User 5', 'User 6', 'User 7']; // Sample larger list
 
+//ito yung workerssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
   void _showApplicantsDialog() {
     showDialog(
       context: context,
@@ -107,6 +108,8 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
     );
   }
 
+//ito yung requestsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+
   void _showWorkersDialog() {
     showDialog(
       context: context,
@@ -158,7 +161,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
   }
 
 
-
+//anditoooooooooooooooooooooooooooo yung name title description emeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -343,6 +346,8 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
               ),
               const SizedBox(height: 20),
               
+//ito yung mga butoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooons
+
               // Buttons section below all elements
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,

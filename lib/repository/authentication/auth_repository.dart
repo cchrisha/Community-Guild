@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository {
@@ -84,6 +85,17 @@ class AuthRepository {
       print('Token retrieved from SharedPreferences: $token');
     }
     return token;
+  }
+
+  // NEW: Method to retrieve userId from the token
+  Future<String?> getUserId() async {
+    String? token = await getToken();
+    if (token != null) {
+      // Decode the token to get the userId (assuming it's a JWT)
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+      return decodedToken['userId'] as String?; // Ensure 'userId' is the correct field
+    }
+    return null; // Return null if token is not found or decoding fails
   }
 
   Future<void> clearToken() async {
