@@ -215,7 +215,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                       elevation: 3,
                       child: Container(
                         padding: const EdgeInsets.all(16), // Add padding
-                        child: const Row(
+                        child: Row(
                           children: [
                             CircleAvatar(
                               radius: 30,
@@ -229,7 +229,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Name',
+                                  widget.contact,
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
@@ -247,11 +247,11 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Job Title: ${widget.jobTitle}',
+                    'Title: ${widget.jobTitle}',
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -269,7 +269,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
               ),
               const SizedBox(height: 10),
               const Text(
-                'Job Description:',
+                'Description:',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -283,7 +283,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
               ),
               const SizedBox(height: 5),
               const Text(
-                'More Info',
+                'Details',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -303,7 +303,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                   ),
                   Row(
                     children: [
-                      const Text('Is Crypto: '),
+                      const Text('Crypto: '),
                       Checkbox(
                         value: widget.isCrypto,
                         onChanged: (bool? value) {},
