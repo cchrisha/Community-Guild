@@ -470,6 +470,7 @@ class JobPage extends StatelessWidget {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) => OwnJobDetailPage(
+                                                  jobId: job.id,
                                                   jobTitle: job.title,
                                                   jobDescription: job.description,
                                                   date: formatDate(job.datePosted),
