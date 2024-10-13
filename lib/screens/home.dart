@@ -114,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                 ],
                 selectedItemColor: Colors.lightBlue,
                 unselectedItemColor: Colors.black,
-               onTap: (index) async {
+                onTap: (index) async {
                     setState(() {
                       _currentIndex = index;
 
