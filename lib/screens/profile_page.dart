@@ -19,7 +19,7 @@ class ProfilePage extends StatelessWidget {
     return BlocProvider(
       create: (context) => ProfileBloc(
         profileRepository: ProfileRepository(),
-      )..add(LoadProfile()),
+      )..add(LoadProfile()), // Load initial profile data
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -35,49 +35,49 @@ class ProfilePage extends StatelessWidget {
           elevation: 0,
           centerTitle: true,
           actions: [
-            PopupMenuTheme(
-              data: const PopupMenuThemeData(color: Colors.white),
-              child: PopupMenuButton<String>(
-                onSelected: (value) async {
-                  if (value == 'Edit Info') {
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const EditProfilePage(),
-                      ),
-                    );
-
-                    if (result == true) {
-                      context.read<ProfileBloc>().add(LoadProfile());
-                    }
-                  } else if (value == 'Settings') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SettingsPage()),
-                    );
+            PopupMenuButton<String>(
+              onSelected: (value) async {
+                if (value == 'Edit Info') {
+                  // Navigate to EditProfilePage and await result
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EditProfilePage(),
+                    ),
+                  );
+                  // If the result is true, reload profile
+                  if (result == true) {
+                    context.read<ProfileBloc>().add(LoadProfile());
                   }
-                },
-                itemBuilder: (BuildContext context) {
-                  return [
-                    const PopupMenuItem<String>(
-                      value: 'Edit Info',
-                      child: Text(
-                        'Edit Info',
-                        style: TextStyle(color: Colors.black),
-                      ),
+                } else if (value == 'Settings') {
+                  // Navigate to SettingsPage
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsPage(),
                     ),
-                    const PopupMenuItem<String>(
-                      value: 'Settings',
-                      child: Text(
-                        'Settings',
-                        style: TextStyle(color: Colors.black),
-                      ),
+                  );
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return [
+                  const PopupMenuItem<String>(
+                    value: 'Edit Info',
+                    child: Text(
+                      'Edit Info',
+                      style: TextStyle(color: Colors.black),
                     ),
-                  ];
-                },
-                icon: const Icon(Icons.menu, color: Colors.white),
-              ),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'Settings',
+                    child: Text(
+                      'Settings',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ];
+              },
+              icon: const Icon(Icons.menu, color: Colors.white),
             ),
           ],
         ),
@@ -103,8 +103,7 @@ class ProfilePage extends StatelessWidget {
                       onPressed: () {
                         BlocProvider.of<ProfileBloc>(context)
                             .add(VerifyAccount());
-                    
-                      },  
+                      },
                     ),
                     const SizedBox(height: 30),
                     ProfileInfoCard(
@@ -125,5 +124,4 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
-
 }

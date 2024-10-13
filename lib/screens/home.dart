@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:community_guild/repository/home_repository.dart';
 import 'package:community_guild/screens/post_input.dart';
 import 'package:community_guild/widget/home/job_card.dart';
@@ -19,7 +18,7 @@ import 'package:http/http.dart' as http; // Required for the repository
 import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -28,19 +27,32 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   bool isUserVerified = false;
-  final List<Widget> _pages = [
-    const HomePageBody(), // The existing body of your HomePage
-    const JobPage(), // Add About Job Page here
-    const PostInput(), // Post Input Page
-    const PaymentPage(), // Payment Page
-    const ProfilePage(), // Profile Page
-    
+
+  final List<Widget> _pages = const [
+    HomePageBody(), // The existing body of your HomePage
+    JobPage(), // About Job Page
+    PostInput(), // Post Input Page
+    PaymentPage(), // Payment Page
+    ProfilePage(), // Profile Page
   ];
 
   Future<bool> _isUserVerified() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  int? isVerify = prefs.getInt('isVerify');
-  return isVerify == 1; // Return true if verified, otherwise false
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? isVerify = prefs.getInt('isVerify');
+    return isVerify == 1; // Return true if verified, otherwise false
+  }
+
+  Future<void> _refreshHomePage() async {
+    // Add your logic to refresh the Home Page data here
+    // For example, you might call a method to fetch new jobs
+    context.read<HomeBloc>().add(const LoadJobs('developer'));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Load jobs initially when the page is created
+    _refreshHomePage();
   }
 
   @override
@@ -48,31 +60,27 @@ class _HomePageState extends State<HomePage> {
     return BlocProvider(
       create: (context) => HomeBloc(
         homeRepository: HomeRepository(httpClient: http.Client()),
-      )..add(const LoadJobs('developer')),
+      ),
       child: Scaffold(
         appBar: _currentIndex == 0
             ? AppBar(
-                title: const Row(
-                  children: [
-                    SizedBox(width: 16),
-                    Text(
-                      'Home',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+                title: const Text(
+                  'Home',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
                 backgroundColor: const Color.fromARGB(255, 3, 169, 244),
                 automaticallyImplyLeading: false,
               )
             : null,
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        body: IndexedStack(
-          index: _currentIndex,
-          children: _pages,
+        body: AnimatedSwitcher(
+          duration:
+              const Duration(milliseconds: 300), // Duration of the animation
+          child: _pages[_currentIndex], // Set the current page
         ),
         bottomNavigationBar: _currentIndex == 2 // When on PostInput page
             ? null // Hide bottom navigation bar
@@ -80,6 +88,8 @@ class _HomePageState extends State<HomePage> {
                 type: BottomNavigationBarType.fixed,
                 backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                 currentIndex: _currentIndex,
+                showUnselectedLabels: false, // Hide unselected labels
+                showSelectedLabels: true, // Show selected label
                 items: const [
                   BottomNavigationBarItem(
                     icon: Icon(Icons.home_outlined),
@@ -105,18 +115,17 @@ class _HomePageState extends State<HomePage> {
                 selectedItemColor: Colors.lightBlue,
                 unselectedItemColor: Colors.black,
                 onTap: (index) async {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-
-                  if (_currentIndex == 2) { // When Post is selected
-                    isUserVerified = await _isUserVerified(); // Await the verification check
+                  if (index == 2) {
+                    // When Post is selected
+                    isUserVerified =
+                        await _isUserVerified(); // Await the verification check
 
                     if (isUserVerified) {
                       // Show SnackBar if user is verified
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Your account is verified. You can now post.'),
+                          content: Text(
+                              'Your account is verified. You can now post.'),
                           backgroundColor: Colors.green,
                         ),
                       );
@@ -124,43 +133,55 @@ class _HomePageState extends State<HomePage> {
                       // Redirect to the Post Input page
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const PostInput()),
+                        MaterialPageRoute(
+                            builder: (context) => const PostInput()),
                       ).then((_) {
-                        setState(() {
-                          _currentIndex = 0; // Reset to Home after posting
-                        });
+                        // Refresh the home page after coming back from PostInput
+                        _refreshHomePage();
                       });
                     } else {
                       // Show dialog if user is not verified
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false, // Prevent closing by tapping outside
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Account Verification Required'),
-                            content: const Text('Please verify your account before posting.'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text('Close'),
-                                onPressed: () {
-                                  Navigator.of(context).pop(); // Close the dialog
-                                  setState(() {
-                                    _currentIndex = 4; // Redirect to Profile tab
-                                  });
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                      _showVerificationDialog();
+                    }
+                  } else {
+                    setState(() {
+                      _currentIndex = index; // Update the current index
+                    });
+                    // Refresh the home page when navigating back to the home tab
+                    if (index == 0) {
+                      _refreshHomePage();
                     }
                   }
-},
+                },
               ),
-          ),
+      ),
+    );
+  }
+
+  void _showVerificationDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent closing by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Account Verification Required'),
+          content: const Text('Please verify your account before posting.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                setState(() {
+                  _currentIndex = 4; // Redirect to Profile tab
+                });
+              },
+            ),
+          ],
         );
-      }
-    }
+      },
+    );
+  }
+}
 
 class HomePageBody extends StatelessWidget {
   const HomePageBody({super.key});
@@ -255,55 +276,49 @@ class HomePageBody extends StatelessWidget {
                       SizedBox(
                         height: 250,
                         child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
                           itemCount: state.recentJobs.length,
                           itemBuilder: (context, index) {
                             final job = state.recentJobs[index];
                             return Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                child: HomeJobCard(
-                                  jobTitle: job.title,
-                                  jobDescription: job.description ??
-                                      'No description available',
-                                  workPlace: job.location,
-                                  date: DateFormat('MMMM dd, yyyy')
-                                      .format(job.datePosted),
-                                  wageRange: job.wageRange ??
-                                      'No wage range specified',
-                                  category: job.categories?.join(', ') ??
-                                      'No categories available',
-                                  isCrypto: job.isCrypto,
-                                  professions: job.professions.join(', '),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => JobDetailPage(
-                                          jobId: job.id,
-                                          jobTitle: job.title,
-                                          jobDescription: job.description ??
-                                              'No description available',
-                                          date: DateFormat('MMMM dd, yyyy')
-                                              .format(job.datePosted),
-                                          workPlace: job.location,
-                                          wageRange: job.wageRange ??
-                                              'No wage range specified',
-                                          isCrypto: job.isCrypto,
-                                          professions:
-                                              job.professions.join(', '),
-                                          contact: '',
-                                          category:
-                                              job.categories?.join(', ') ??
-                                                  'No categories available',
-                                          posterName: job.posterName ??
-                                              'Unknown poster',
-                                        ),
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: HomeJobCard(
+                                jobTitle: job.title,
+                                jobDescription: job.description ??
+                                    'No description available',
+                                workPlace: job.location,
+                                date: DateFormat('MMMM dd, yyyy')
+                                    .format(job.datePosted),
+                                wageRange:
+                                    job.wageRange ?? 'No wage range specified',
+                                category: job.categories?.join(', ') ??
+                                    'No categories available',
+                                isCrypto: job.isCrypto,
+                                professions: job.professions.join(', '),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => JobDetailPage(
+                                        jobId: job.id,
+                                        jobTitle: job.title,
+                                        jobDescription: job.description ??
+                                            'No description available',
+                                        date: DateFormat('MMMM dd, yyyy')
+                                            .format(job.datePosted),
+                                        workPlace: job.location,
+                                        wageRange: job.wageRange ??
+                                            'No wage range specified',
+                                        isCrypto: job.isCrypto,
+                                        professions: job.professions.join(', '),
+                                        contact: '',
+                                        category: job.categories?.join(', ') ??
+                                            'No categories available',
+                                        posterName:
+                                            job.posterName ?? 'Unknown poster',
                                       ),
-                                    );
-                                  },
-                                ),
+                                    ),
+                                  );
+                                },
                               ),
                             );
                           },
@@ -315,10 +330,9 @@ class HomePageBody extends StatelessWidget {
               ),
             ],
           );
-        } else if (state is HomeError) {
-          return Center(child: Text(state.message));
+        } else {
+          return const Center(child: Text('Error loading jobs.'));
         }
-        return const Center(child: Text('Welcome to the home page!'));
       },
     );
   }

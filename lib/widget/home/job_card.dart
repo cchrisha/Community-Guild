@@ -51,14 +51,15 @@ class HomeJobCard extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  const SizedBox(width: 8), // Add spacing between title and date
+                  const SizedBox(
+                      width: 8), // Add spacing between title and date
                   Text(date, style: const TextStyle(color: Colors.grey)),
                 ],
               ),
               const SizedBox(height: 8),
               Text(
                 jobDescription,
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(color: Colors.black54),
               ),

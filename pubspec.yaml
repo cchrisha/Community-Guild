@@ -55,6 +55,8 @@ dependencies:
   qr_flutter: ^4.1.0
   qr_code_scanner: ^1.0.1
   jwt_decoder: ^2.0.1
+  page_transition:
+  
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.1
@@ -82,10 +84,11 @@ flutter_icons:
 flutter:
   assets:
       - assets/images/logo1.png
-      - assets/images/posting.png
-      - assets/images/job_hunt.png
-      - assets/images/bit.png
+      - assets/images/postone.png
+      - assets/images/bitcoinone.png
+      - assets/images/findone.png
       - assets/images/dashboard.png
+
 
 
 
