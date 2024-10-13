@@ -68,15 +68,16 @@ class _HomePageState extends State<HomePage> {
               )
             : null,
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        body: IndexedStack(
-          index: _currentIndex,
-          children: _pages,
+        body: AnimatedSwitcher(
+          duration:
+              const Duration(milliseconds: 300), // Duration of the animation
+          child: _pages[_currentIndex], // Set the current page
         ),
         bottomNavigationBar: _currentIndex == 2 // When on PostInput page
             ? null // Hide bottom navigation bar
             : BottomNavigationBar(
                 type: BottomNavigationBarType.fixed,
-                backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                backgroundColor: const Color.fromARGB(255, 3, 169, 244),
                 currentIndex: _currentIndex,
                 items: const [
                   BottomNavigationBarItem(
@@ -100,8 +101,8 @@ class _HomePageState extends State<HomePage> {
                     label: 'Profile',
                   ),
                 ],
-                selectedItemColor: Colors.lightBlue,
-                unselectedItemColor: Colors.black,
+                selectedItemColor: Colors.black,
+                unselectedItemColor: Colors.white,
                 onTap: (index) async {
                   setState(() {
                     _currentIndex = index;
@@ -187,80 +188,80 @@ class HomePageBody extends StatelessWidget {
             );
           }
 
-          return CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SearchAndFilter(),
-                      const SizedBox(height: 20),
-                      const SectionTitle(title: 'Recommended'),
-                      SizedBox(
-                        height: 250,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
+          return Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 0.0),
+                child: SearchAndFilter(),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Container(
+                    color: const Color.fromARGB(255, 224, 247, 255),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 0, vertical: 1),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 8),
+                        const SectionTitle(title: 'Recommendations'),
+                        const SizedBox(height: 10),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: state.recommendedJobs.length,
                           itemBuilder: (context, index) {
                             final job = state.recommendedJobs[index];
                             return Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                child: HomeJobCard(
-                                  jobTitle: job.title,
-                                  jobDescription: job.description ??
-                                      'No description available',
-                                  workPlace: job.location,
-                                  date: DateFormat('MMMM dd, yyyy')
-                                      .format(job.datePosted),
-                                  wageRange: job.wageRange ??
-                                      'No wage range specified',
-                                  category: job.categories?.join(', ') ??
-                                      'No categories available',
-                                  isCrypto: job.isCrypto,
-                                  professions: job.professions.join(', '),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => JobDetailPage(
-                                          jobId: job.id,
-                                          jobTitle: job.title,
-                                          jobDescription: job.description ??
-                                              'No description available',
-                                          date: DateFormat('MMMM dd, yyyy')
-                                              .format(job.datePosted),
-                                          workPlace: job.location,
-                                          wageRange: job.wageRange ??
-                                              'No wage range specified',
-                                          isCrypto: job.isCrypto,
-                                          professions:
-                                              job.professions.join(', '),
-                                          contact: '',
-                                          category:
-                                              job.categories?.join(', ') ??
-                                                  'No categories available',
-                                          posterName: job.posterName ??
-                                              'Unknown poster',
-                                        ),
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: HomeJobCard(
+                                jobTitle: job.title,
+                                jobDescription: job.description ??
+                                    'No description available',
+                                workPlace: job.location,
+                                date: DateFormat('MMMM dd, yyyy')
+                                    .format(job.datePosted),
+                                wageRange:
+                                    job.wageRange ?? 'No wage range specified',
+                                category: job.categories?.join(', ') ??
+                                    'No categories available',
+                                isCrypto: job.isCrypto,
+                                professions: job.professions.join(', '),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => JobDetailPage(
+                                        jobId: job.id,
+                                        jobTitle: job.title,
+                                        jobDescription: job.description ??
+                                            'No description available',
+                                        date: DateFormat('MMMM dd, yyyy')
+                                            .format(job.datePosted),
+                                        workPlace: job.location,
+                                        wageRange: job.wageRange ??
+                                            'No wage range specified',
+                                        isCrypto: job.isCrypto,
+                                        professions: job.professions.join(', '),
+                                        contact: '',
+                                        category: job.categories?.join(', ') ??
+                                            'No categories available',
+                                        posterName:
+                                            job.posterName ?? 'Unknown poster',
                                       ),
-                                    );
-                                  },
-                                ),
+                                    ),
+                                  );
+                                },
                               ),
                             );
                           },
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      const SectionTitle(title: 'Most Recent Job'),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        height: 250,
-                        child: ListView.builder(
+                        const SizedBox(height: 20),
+                        const SectionTitle(title: 'Most Recent Jobs'),
+                        const SizedBox(height: 10),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: state.recentJobs.length,
                           itemBuilder: (context, index) {
                             final job = state.recentJobs[index];
@@ -308,8 +309,8 @@ class HomePageBody extends StatelessWidget {
                             );
                           },
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

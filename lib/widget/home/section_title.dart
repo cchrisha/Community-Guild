@@ -1,4 +1,3 @@
-// lib/views/home/section_title_with_dropdown.dart
 import 'package:flutter/material.dart';
 
 class SectionTitle extends StatelessWidget {
@@ -11,9 +10,15 @@ class SectionTitle extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        Padding(
+          padding: const EdgeInsets.only(left: 10), // Add padding here
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18, 
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ],
     );
