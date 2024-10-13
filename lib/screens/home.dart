@@ -149,7 +149,7 @@ class HomePageBody extends StatelessWidget {
                       const SizedBox(height: 20),
                       const SectionTitle(title: 'Recommended'),
                       SizedBox(
-                        height: 240,
+                        height: 250,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: state.recommendedJobs.length,
@@ -161,7 +161,6 @@ class HomePageBody extends StatelessWidget {
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: HomeJobCard(
                                   jobTitle: job.title,
-                                  overflow: TextOverflow.ellipsis,
                                   jobDescription: job.description ??
                                       'No description available',
                                   workPlace: job.location,
@@ -210,7 +209,7 @@ class HomePageBody extends StatelessWidget {
                       const SectionTitle(title: 'Most Recent Job'),
                       const SizedBox(height: 10),
                       SizedBox(
-                        height: 240,
+                        height: 250,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: state.recentJobs.length,
@@ -221,7 +220,6 @@ class HomePageBody extends StatelessWidget {
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: HomeJobCard(
-                                  overflow: TextOverflow.ellipsis,
                                   jobTitle: job.title,
                                   jobDescription: job.description ??
                                       'No description available',
