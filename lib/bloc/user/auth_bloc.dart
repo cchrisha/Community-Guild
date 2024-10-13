@@ -37,7 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthFailure('Contact is required.'));
           return;
         }
-        if (professionController.text.isEmpty) {
+        if (event.userauth.profession.isEmpty) {
           emit(AuthFailure('Profession is required.'));
           return;
         }
