@@ -17,7 +17,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ProfileBloc(
+      create: (context) => ProfileBloc(
         profileRepository: ProfileRepository(),
       )..add(LoadProfile()),
       child: Scaffold(

@@ -10,7 +10,6 @@ import 'package:http/http.dart' as http; // Import for Http Client
 
 import 'package:community_guild/screens/current_job_detail.dart';
 import 'package:community_guild/screens/completed_job.dart';
-import 'package:community_guild/screens/pending_job_detail.dart';
 import 'package:community_guild/screens/rejected_job_details.dart';
 import 'package:community_guild/widget/about_job/job_card.dart';
 import 'package:community_guild/widget/about_job/section_title.dart';
@@ -88,7 +87,8 @@ class _JobPageState extends State<JobPage> {
                             ? 250
                             : 0, // Adjust height based on expansion
                         child: ListView.builder(
-                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: state.jobs.length,
                           itemBuilder: (context, index) {
                             final job = state.jobs[index];
@@ -179,7 +179,8 @@ class _JobPageState extends State<JobPage> {
                           duration: const Duration(milliseconds: 300),
                           height: _isCompletedJobsExpanded ? 250 : 0,
                           child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: state.jobs.length,
                             itemBuilder: (context, index) {
                               final job = state.jobs[index];
@@ -187,10 +188,8 @@ class _JobPageState extends State<JobPage> {
                               // Improved function to handle date parsing and formatting
                               String formatDate(String dateString) {
                                 try {
-                                  // Parse the date from the string, ensure it's in ISO format
                                   DateTime parsedDate =
                                       DateTime.parse(dateString);
-                                  // Format to "Month Day, Year" format (e.g., "January 10, 2024")
                                   return DateFormat('MMMM dd, yyyy')
                                       .format(parsedDate);
                                 } catch (e) {
@@ -207,8 +206,7 @@ class _JobPageState extends State<JobPage> {
                                     jobTitle: job.title,
                                     jobDescription: job.description,
                                     workPlace: job.location,
-                                    date: formatDate(
-                                        job.datePosted), // Apply formatted date
+                                    date: formatDate(job.datePosted),
                                     wageRange: job.wageRange,
                                     contact: job.poster.name,
                                     category: job.categories.join(', '),
@@ -222,8 +220,7 @@ class _JobPageState extends State<JobPage> {
                                               CompletedJobDetail(
                                             jobTitle: job.title,
                                             jobDescription: job.description,
-                                            date: formatDate(job
-                                                .datePosted), // Apply formatted date
+                                            date: formatDate(job.datePosted),
                                             workPlace: job.location,
                                             wageRange: job.wageRange,
                                             isCrypto: job.isCrypto,
@@ -277,7 +274,8 @@ class _JobPageState extends State<JobPage> {
                           duration: const Duration(milliseconds: 300),
                           height: _isRequestedJobsExpanded ? 250 : 0,
                           child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: state.jobs.length,
                             itemBuilder: (context, index) {
                               final job = state.jobs[index];
@@ -285,10 +283,8 @@ class _JobPageState extends State<JobPage> {
                               // Improved function to handle date parsing and formatting
                               String formatDate(String dateString) {
                                 try {
-                                  // Parse the date from the string, ensure it's in ISO format
                                   DateTime parsedDate =
                                       DateTime.parse(dateString);
-                                  // Format to "Month Day, Year" format (e.g., "January 10, 2024")
                                   return DateFormat('MMMM dd, yyyy')
                                       .format(parsedDate);
                                 } catch (e) {
@@ -304,8 +300,7 @@ class _JobPageState extends State<JobPage> {
                                   child: AboutJobCard(
                                     jobTitle: job.title,
                                     jobDescription: job.description,
-                                    date: formatDate(
-                                        job.datePosted), // Apply formatted date
+                                    date: formatDate(job.datePosted),
                                     workPlace: job.location,
                                     wageRange: job.wageRange,
                                     contact: job.poster.name,
@@ -317,11 +312,10 @@ class _JobPageState extends State<JobPage> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              PendingJobDetail(
+                                              RejectedJobDetail(
                                             jobTitle: job.title,
                                             jobDescription: job.description,
-                                            date: formatDate(job
-                                                .datePosted), // Apply formatted date
+                                            date: formatDate(job.datePosted),
                                             workPlace: job.location,
                                             wageRange: job.wageRange,
                                             isCrypto: job.isCrypto,
@@ -375,7 +369,8 @@ class _JobPageState extends State<JobPage> {
                           duration: const Duration(milliseconds: 300),
                           height: _isRejectedJobsExpanded ? 250 : 0,
                           child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: state.jobs.length,
                             itemBuilder: (context, index) {
                               final job = state.jobs[index];
@@ -383,10 +378,8 @@ class _JobPageState extends State<JobPage> {
                               // Improved function to handle date parsing and formatting
                               String formatDate(String dateString) {
                                 try {
-                                  // Parse the date from the string, ensure it's in ISO format
                                   DateTime parsedDate =
                                       DateTime.parse(dateString);
-                                  // Format to "Month Day, Year" format (e.g., "January 10, 2024")
                                   return DateFormat('MMMM dd, yyyy')
                                       .format(parsedDate);
                                 } catch (e) {
@@ -402,8 +395,7 @@ class _JobPageState extends State<JobPage> {
                                   child: AboutJobCard(
                                     jobTitle: job.title,
                                     jobDescription: job.description,
-                                    date: formatDate(
-                                        job.datePosted), // Apply formatted date
+                                    date: formatDate(job.datePosted),
                                     workPlace: job.location,
                                     wageRange: job.wageRange,
                                     contact: job.poster.name,
@@ -418,8 +410,7 @@ class _JobPageState extends State<JobPage> {
                                               RejectedJobDetail(
                                             jobTitle: job.title,
                                             jobDescription: job.description,
-                                            date: formatDate(job
-                                                .datePosted), // Apply formatted date
+                                            date: formatDate(job.datePosted),
                                             workPlace: job.location,
                                             wageRange: job.wageRange,
                                             isCrypto: job.isCrypto,

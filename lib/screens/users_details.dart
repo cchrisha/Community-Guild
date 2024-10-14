@@ -78,41 +78,68 @@ class _UserDetailsState extends State<UserDetails> {
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
             : errorMessage != null
-                ? Center(child: Text(errorMessage!)) // Show error message
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Name: ${userDetails!['name']}', // Display user name
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Email: ${userDetails!['email']}', // Display user email
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Location: ${userDetails!['location']}', // Display user location
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Contact: ${userDetails!['contact']}', // Display user contact
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Profession: ${userDetails!['profession']}', // Display user profession
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Verified: ${userDetails!['isVerify'] == 1 ? 'Yes' : 'No'}', // Display verification status
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ],
+                ? Center(
+                    child: Text(errorMessage!,
+                        style: const TextStyle(color: Colors.red)))
+                : SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Display user profile picture
+                        Center(
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundImage: NetworkImage(
+                                userDetails!['profilePicture'] ??
+                                    'https://via.placeholder.com/150'),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Name: ${userDetails!['name']}',
+                          style: const TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        Card(
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          child: ListTile(
+                            leading: const Icon(Icons.email),
+                            title: Text(userDetails!['email']),
+                          ),
+                        ),
+                        Card(
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          child: ListTile(
+                            leading: const Icon(Icons.location_on),
+                            title: Text(userDetails!['location']),
+                          ),
+                        ),
+                        Card(
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          child: ListTile(
+                            leading: const Icon(Icons.phone),
+                            title: Text(userDetails!['contact']),
+                          ),
+                        ),
+                        Card(
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          child: ListTile(
+                            leading: const Icon(Icons.work),
+                            title: Text(userDetails!['profession']),
+                          ),
+                        ),
+                        Card(
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          child: ListTile(
+                            leading: const Icon(Icons.verified),
+                            title: Text(
+                              'Verified: ${userDetails!['isVerify'] == 1 ? 'Yes' : 'No'}',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
       ),
     );
