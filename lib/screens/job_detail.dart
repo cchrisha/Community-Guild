@@ -1,10 +1,15 @@
+import 'package:community_guild/screens/about_job.dart';
+import 'package:community_guild/screens/home.dart'; // Replace with actual "About Job" page
 import 'package:community_guild/screens/users_details.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http; // Import http package for API calls
+import 'dart:convert'; // Import for JSON encoding/decoding
+import 'package:shared_preferences/shared_preferences.dart'; // Import for SharedPreferences
 
 class JobDetailPage extends StatefulWidget {
   const JobDetailPage({
     super.key,
-    required this.jobId, 
+    required this.jobId,
     required this.jobTitle,
     required this.jobDescription,
     required this.date,
@@ -34,6 +39,89 @@ class JobDetailPage extends StatefulWidget {
 }
 
 class _JobDetailPageState extends State<JobDetailPage> {
+  bool _isLoading = false;
+
+  Future<void> _applyForJob(String jobId) async {
+    try {
+      setState(() {
+        _isLoading = true; // Show loading spinner
+      });
+
+      // Retrieve the token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token'); // Assuming 'token' is the key for storing the JWT
+
+      if (token == null) {
+        // Handle case where token is not available (e.g., redirect to login)
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error: You must be logged in to apply for a job.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Define the API endpoint
+      final url = 'https://api-tau-plum.vercel.app/api/jobs/$jobId/request'; // Replace with your actual API URL
+
+      // Set up the request headers
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      };
+
+      // Make the POST request
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: json.encode({}), // Include any necessary body data if needed
+      );
+
+      // Check the response status
+      if (response.statusCode == 200) {
+        _showSuccessSnackBar();
+        // Redirect to the "About Job" page (or Home)
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomePage(), // Replace with AboutJobPage
+          ),
+        );
+      } else {
+        final responseData = json.decode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${responseData['message']}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      // Show error Snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false; // Hide loading spinner
+      });
+    }
+  }
+
+  // Success Snackbar
+  void _showSuccessSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Success: Wait for the response of the user'),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,212 +144,215 @@ class _JobDetailPageState extends State<JobDetailPage> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                children: [
-                  Container(
-                    height: 180,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.lightBlueAccent, Colors.blueAccent],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius:
-                          BorderRadius.vertical(bottom: Radius.circular(30)),
-                    ),
-                  ),
-                  Positioned(
-                    top: 28,
-                    left: 16,
-                    right: 16,
-                    child: GestureDetector( // Wrap the Card with GestureDetector
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UserDetails(posterName: widget.posterName),
-                          ),
-                        );
-                      },
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 180,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.lightBlueAccent, Colors.blueAccent],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                        elevation: 3,
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              const CircleAvatar(
-                                radius: 30,
-                                backgroundColor: Colors.lightBlueAccent,
-                                child: Icon(Icons.person,
-                                    color: Colors.white, size: 30),
-                              ),
-                              const SizedBox(width: 16),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    widget.posterName, 
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
+                        borderRadius:
+                            BorderRadius.vertical(bottom: Radius.circular(30)),
+                      ),
+                    ),
+                    Positioned(
+                      top: 28,
+                      left: 16,
+                      right: 16,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UserDetails(
+                                  posterName: widget.posterName),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          elevation: 3,
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                const CircleAvatar(
+                                  radius: 30,
+                                  backgroundColor: Colors.lightBlueAccent,
+                                  child: Icon(Icons.person,
+                                      color: Colors.white, size: 30),
+                                ),
+                                const SizedBox(width: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget.posterName,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  widget.jobTitle,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    widget.jobTitle,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'Description:',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Description:',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              const SizedBox(height: 5),
-              const SizedBox(height: 5),
-              Text(
-                widget.jobDescription,
-                style: const TextStyle(fontSize: 16, color: Colors.black87),
-              ),
-              const SizedBox(height: 5),
-              const Text(
-                'Details',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                  overflow: TextOverflow.ellipsis,
+                const SizedBox(height: 5),
+                Text(
+                  widget.jobDescription,
+                  style: const TextStyle(fontSize: 16, color: Colors.black87),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Wage Range: ${widget.wageRange}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                const SizedBox(height: 5),
+                const Text(
+                  'Details',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  Row(
-                    children: [
-                      const Text('Crypto: '),
-                      Checkbox(
-                        value: widget.isCrypto,
-                        onChanged: (bool? value) {},
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Text(
-                'Date: ${widget.date}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                'Wanted Profession: ${widget.professions}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Workplace: ${widget.workPlace}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Contact: ${widget.contact}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Category: ${widget.category}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      // Implement Complete action here
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.lightBlueAccent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 20,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Wage Range: ${widget.wageRange}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black87,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    child: const Text(
-                      'Apply',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    Row(
+                      children: [
+                        const Text('Crypto: '),
+                        Checkbox(
+                          value: widget.isCrypto,
+                          onChanged: (bool? value) {},
+                        ),
+                      ],
                     ),
+                  ],
+                ),
+                Text(
+                  'Date: ${widget.date}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  'Wanted Profession: ${widget.professions}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Workplace: ${widget.workPlace}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Contact: ${widget.contact}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Category: ${widget.category}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        _applyForJob(widget.jobId);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightBlueAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 20,
+                        ),
+                      ),
+                      child: const Text(
+                        'Apply',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
+          if (_isLoading)
+            Center(
+              child: Container(
+                child: const CircularProgressIndicator(),
+              ),
+            ),
+        ],
       ),
     );
   }

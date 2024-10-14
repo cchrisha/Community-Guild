@@ -521,7 +521,11 @@ class _PaymentPageState extends State<PaymentPage> {
               BigInt bigIntValue = BigInt.from(amount * pow(10, 18));
               EtherAmount ethAmount = EtherAmount.fromBigInt(EtherUnit.wei, bigIntValue);
               Navigator.of(context).pop(); // Close the dialog
-
+              setState(() {
+                  isLoading = true;
+                  final Uri metamaskUri = Uri.parse("metamask://");
+                  launchUrl(metamaskUri, mode: LaunchMode.externalApplication);
+                });
               try {
                 await sendTransaction(recipient, ethAmount);
                 ScaffoldMessenger.of(context).showSnackBar(
