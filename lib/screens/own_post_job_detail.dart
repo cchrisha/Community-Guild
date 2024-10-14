@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http; // Required for the repository
 
 class OwnJobDetailPage extends StatefulWidget {
-  const OwnJobDetailPage({
+  const   OwnJobDetailPage({
     super.key,
     required this.jobId, // Add jobId parameter here
     required this.jobTitle,
@@ -68,6 +68,9 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
 }
 
 Widget _buildApplicantsDialog(List<String> applicants) {
+  // Print the list of applicants to the terminal
+  print('Applicants: ${applicants.join(', ')}');
+
   return AlertDialog(
     title: const Text('Applicants'),
     content: SizedBox(
@@ -86,6 +89,12 @@ Widget _buildApplicantsDialog(List<String> applicants) {
                   ),
                   const SizedBox(width: 10),
                   Expanded(child: Text(applicant)), // Display the applicant name
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<AboutJobBloc>().add(AcceptApplicantEvent(widget.jobId, applicant));
+                    },
+                    child: const Text('Accept'),
+                  ),
                 ],
               ),
             );
@@ -144,6 +153,9 @@ Widget _buildErrorDialog(String message) {
 }
 
 Widget _buildWorkersDialog(List<String> workers) {
+  // Print the list of workers to the terminal
+  print('Workers: ${workers.join(', ')}');
+
   return AlertDialog(
     title: const Text('Workers'),
     content: SizedBox(
@@ -161,7 +173,13 @@ Widget _buildWorkersDialog(List<String> workers) {
                     child: Icon(Icons.person, color: Colors.white),
                   ),
                   const SizedBox(width: 10),
-                  Expanded(child: Text(worker)),
+                  Expanded(child: Text(worker)), // Display the worker name
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<AboutJobBloc>().add(MarkWorkerDoneEvent(widget.jobId, worker));
+                    },
+                    child: const Text('Done'),
+                  ),
                 ],
               ),
             );
@@ -177,6 +195,7 @@ Widget _buildWorkersDialog(List<String> workers) {
     ],
   );
 }
+
 
 //anditoooooooooooooooooooooooooooo yung name title description emeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
   @override
