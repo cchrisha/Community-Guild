@@ -129,7 +129,7 @@ class _HomePageState extends State<HomePage> {
                             builder: (context) => const PostInput()),
                       ).then((_) {
                         setState(() {
-                          _currentIndex = 0;
+                          _currentIndex = 4;
                         });
                       });
                     } else {
