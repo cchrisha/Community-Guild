@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class JobDetailPage extends StatefulWidget {
   const JobDetailPage({
     super.key,
-    required this.jobId, 
+    required this.jobId,
     required this.jobTitle,
     required this.jobDescription,
     required this.date,
@@ -46,7 +46,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.lightBlueAccent,
+        backgroundColor: Colors.lightBlue,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
@@ -80,12 +80,14 @@ class _JobDetailPageState extends State<JobDetailPage> {
                     top: 28,
                     left: 16,
                     right: 16,
-                    child: GestureDetector( // Wrap the Card with GestureDetector
+                    child: GestureDetector(
+                      // Wrap the Card with GestureDetector
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => UserDetails(posterName: widget.posterName),
+                            builder: (context) =>
+                                UserDetails(posterName: widget.posterName),
                           ),
                         );
                       },
@@ -109,7 +111,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    widget.posterName, 
+                                    widget.posterName,
                                     style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,

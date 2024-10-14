@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class UserDetails extends StatefulWidget {
-  final String posterName; // Add posterName as a parameter
+  final String posterName;
 
   const UserDetails({super.key, required this.posterName});
 
@@ -24,32 +24,31 @@ class _UserDetailsState extends State<UserDetails> {
 
   Future<void> fetchUserDetails() async {
     try {
-      // Replace with your API URL
-      final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/api/users/${widget.posterName}'));
+      final response = await http.get(Uri.parse(
+          'https://api-tau-plum.vercel.app/api/users/${widget.posterName}'));
 
       if (response.statusCode == 200) {
-        // Parse the JSON response
         final Map<String, dynamic> data = json.decode(response.body);
         if (data['status'] == 'success') {
           setState(() {
             userDetails = data['data'];
-            isLoading = false; // Set loading to false when data is fetched
+            isLoading = false;
           });
         } else {
           setState(() {
-            errorMessage = data['message']; // Handle the error message
+            errorMessage = data['message'];
             isLoading = false;
           });
         }
       } else {
         setState(() {
-          errorMessage = 'Failed to load user details'; // Handle server errors
+          errorMessage = 'Failed to load user details';
           isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
-        errorMessage = 'An error occurred: $e'; // Handle exceptions
+        errorMessage = 'An error occurred: $e';
         isLoading = false;
       });
     }
@@ -59,46 +58,106 @@ class _UserDetailsState extends State<UserDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Details'),
-        backgroundColor: Colors.lightBlueAccent,
+        title: const Text(
+          'User Details',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        backgroundColor: Colors.lightBlue,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: isLoading
-            ? Center(child: CircularProgressIndicator()) // Show loading spinner
+            ? const Center(child: CircularProgressIndicator())
             : errorMessage != null
-                ? Center(child: Text(errorMessage!)) // Show error message
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.error_outline,
+                            color: Colors.red, size: 60),
+                        const SizedBox(height: 16),
+                        Text(errorMessage!,
+                            style: const TextStyle(
+                                fontSize: 18, color: Colors.red)),
+                      ],
+                    ),
+                  )
                 : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      // Profile Image at the top
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(
+                            userDetails!['profilePicture'] ??
+                                'https://via.placeholder.com/150'),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // User Name
                       Text(
-                        'Name: ${userDetails!['name']}', // Display user name
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        userDetails!['name'],
+                        style: const TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
+
+                      // User Profession
                       Text(
-                        'Email: ${userDetails!['email']}', // Display user email
-                        style: const TextStyle(fontSize: 16),
+                        userDetails!['profession'],
+                        style:
+                            const TextStyle(fontSize: 18, color: Colors.grey),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Location: ${userDetails!['location']}', // Display user location
-                        style: const TextStyle(fontSize: 16),
+                      const SizedBox(height: 16),
+
+                      // Details Cards
+                      Card(
+                        elevation: 2,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          leading: const Icon(Icons.email, color: Colors.blue),
+                          title: const Text('Email'),
+                          subtitle: Text(userDetails!['email']),
+                        ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Contact: ${userDetails!['contact']}', // Display user contact
-                        style: const TextStyle(fontSize: 16),
+                      Card(
+                        elevation: 2,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          leading: const Icon(Icons.location_on,
+                              color: Colors.green),
+                          title: const Text('Location'),
+                          subtitle: Text(userDetails!['location']),
+                        ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Profession: ${userDetails!['profession']}', // Display user profession
-                        style: const TextStyle(fontSize: 16),
+                      Card(
+                        elevation: 2,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          leading:
+                              const Icon(Icons.phone, color: Colors.orange),
+                          title: const Text('Contact'),
+                          subtitle: Text(userDetails!['contact']),
+                        ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Verified: ${userDetails!['isVerify'] == 1 ? 'Yes' : 'No'}', // Display verification status
-                        style: const TextStyle(fontSize: 16),
+                      Card(
+                        elevation: 2,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          leading: const Icon(Icons.verified_user,
+                              color: Colors.purple),
+                          title: const Text('Verified'),
+                          subtitle: Text(
+                              userDetails!['isVerify'] == 1 ? 'Yes' : 'No'),
+                        ),
                       ),
                     ],
                   ),
