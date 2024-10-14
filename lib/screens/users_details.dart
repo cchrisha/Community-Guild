@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:community_guild/widget/users_details/user_details_widget.dart'; // Import the UserInfoCard
 
 class UserDetails extends StatefulWidget {
   final String posterName;

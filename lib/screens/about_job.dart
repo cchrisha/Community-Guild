@@ -39,7 +39,8 @@ class _JobPageState extends State<JobPage> {
     return BlocProvider(
       create: (context) =>
           AboutJobBloc(AboutJobRepository(authRepository: authRepository))
-            ..add(FetchAboutJobsByStatus('working on')), // Fetch "working on" jobs initially
+            ..add(FetchAboutJobsByStatus(
+                'working on')), // Fetch "working on" jobs initially
       child: Scaffold(
         appBar: AppBar(
           title: const Row(
@@ -83,7 +84,9 @@ class _JobPageState extends State<JobPage> {
                     } else if (state is AboutJobLoaded) {
                       return AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
-                        height: _isCurrentJobsExpanded ? 250 : 0, // Adjust height based on expansion
+                        height: _isCurrentJobsExpanded
+                            ? 250
+                            : 0, // Adjust height based on expansion
                         child: ListView.builder(
                           scrollDirection: Axis.vertical,
                           itemCount: state.jobs.length,
@@ -93,8 +96,10 @@ class _JobPageState extends State<JobPage> {
                             // Function to handle date parsing and formatting
                             String formatDate(String dateString) {
                               try {
-                                DateTime parsedDate = DateTime.parse(dateString);
-                                return DateFormat('MMMM dd, yyyy').format(parsedDate);
+                                DateTime parsedDate =
+                                    DateTime.parse(dateString);
+                                return DateFormat('MMMM dd, yyyy')
+                                    .format(parsedDate);
                               } catch (e) {
                                 return 'Invalid date';
                               }
@@ -125,7 +130,8 @@ class _JobPageState extends State<JobPage> {
                                           workPlace: job.location,
                                           wageRange: job.wageRange,
                                           isCrypto: job.isCrypto,
-                                          professions: job.professions.join(', '),
+                                          professions:
+                                              job.professions.join(', '),
                                           contact: job.poster.name,
                                           category: job.categories.join(', '),
                                         ),
@@ -148,69 +154,7 @@ class _JobPageState extends State<JobPage> {
                   },
                 ),
                 const SizedBox(height: 10),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
-// Enhanced SectionTitleAboutJob Widget
-class SectionTitleAboutJob extends StatelessWidget {
-  final String title;
-
-  const SectionTitleAboutJob({Key? key, required this.title}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
-      decoration: BoxDecoration(
-        color: Colors.blueAccent.shade100, // Background color
-        borderRadius: BorderRadius.circular(10), // Rounded corners
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons.work, // Example icon
-                size: 24.0,
-                color: Colors.blue,
-              ),
-              const SizedBox(width: 8.0),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-            ],
-          ),
-          IconButton(
-            icon: const Icon(Icons.chevron_right),
-            onPressed: () {
-              // Handle tap action if necessary
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
                 // Completed Jobs Section
                 GestureDetector(
                   onTap: () {
