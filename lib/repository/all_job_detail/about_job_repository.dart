@@ -135,6 +135,60 @@ Future<List<String>> fetchJobWorkers(String jobId) async {
   }
 }
 
+  // Accept/Reject Job Request
+  Future<void> updateJobRequestStatus(String jobId, String userId, String action) async {
+    try {
+      String? token = await authRepository.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No valid token found. Please login again.');
+      }
+
+      final response = await http.put(
+        Uri.parse('https://api-tau-plum.vercel.app/api/jobs/$jobId/request/$userId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'action': action, // 'accept' or 'reject'
+        }),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update job request status.');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  // Update Worker Status (Mark as Done or Cancelled)
+  Future<void> updateWorkerStatus(String jobId, String userId, String action) async {
+    try {
+      String? token = await authRepository.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No valid token found. Please login again.');
+      }
+
+      final response = await http.put(
+        Uri.parse('https://api-tau-plum.vercel.app/api/jobs/$jobId/workers/$userId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'action': action, // 'done' or 'canceled'
+        }),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update worker status.');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
 }
 
 

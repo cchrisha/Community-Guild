@@ -40,5 +40,28 @@ class FetchJobWorkers extends AboutJobEvent {
   List<Object?> get props => [jobId];
 }
 
+// about_job_event.dart
+
+class AcceptApplicantEvent extends AboutJobEvent {
+  final String jobId;
+  final String userId;
+
+  AcceptApplicantEvent(this.jobId, this.userId);
+
+  @override
+  List<Object> get props => [jobId, userId];
+}
+
+class MarkWorkerDoneEvent extends AboutJobEvent {
+  final String jobId;
+  final String userId;
+
+  MarkWorkerDoneEvent(this.jobId, this.userId);
+
+  @override
+  List<Object> get props => [jobId, userId];
+}
+
+
 
 
