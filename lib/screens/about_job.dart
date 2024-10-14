@@ -87,8 +87,8 @@ class _JobPageState extends State<JobPage> {
                             ? 250
                             : 0, // Adjust height based on expansion
                         child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
                           shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: state.jobs.length,
                           itemBuilder: (context, index) {
                             final job = state.jobs[index];
@@ -179,8 +179,8 @@ class _JobPageState extends State<JobPage> {
                           duration: const Duration(milliseconds: 300),
                           height: _isCompletedJobsExpanded ? 250 : 0,
                           child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: state.jobs.length,
                             itemBuilder: (context, index) {
                               final job = state.jobs[index];
@@ -274,8 +274,8 @@ class _JobPageState extends State<JobPage> {
                           duration: const Duration(milliseconds: 300),
                           height: _isRequestedJobsExpanded ? 250 : 0,
                           child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: state.jobs.length,
                             itemBuilder: (context, index) {
                               final job = state.jobs[index];
@@ -369,8 +369,8 @@ class _JobPageState extends State<JobPage> {
                           duration: const Duration(milliseconds: 300),
                           height: _isRejectedJobsExpanded ? 250 : 0,
                           child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: state.jobs.length,
                             itemBuilder: (context, index) {
                               final job = state.jobs[index];

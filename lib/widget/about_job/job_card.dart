@@ -52,7 +52,8 @@ class AboutJobCard extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  const SizedBox(width: 8), // Add spacing between title and date
+                  const SizedBox(
+                      width: 8), // Add spacing between title and date
                   Text(date, style: const TextStyle(color: Colors.grey)),
                 ],
               ),
@@ -64,7 +65,11 @@ class AboutJobCard extends StatelessWidget {
                 style: const TextStyle(color: Colors.black54),
               ),
               const SizedBox(height: 8),
-              Text('Wanted Profession: $professions'),
+              Text(
+                professions,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
               const SizedBox(height: 5),
               Text('Category: $category'),
               const SizedBox(height: 5),

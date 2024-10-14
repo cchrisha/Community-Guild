@@ -26,7 +26,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  bool isUserVerified = false;
+
   final List<Widget> _pages = [
     const HomePageBody(),
     const JobPage(),
@@ -34,12 +34,6 @@ class _HomePageState extends State<HomePage> {
     const PaymentPage(),
     const ProfilePage(),
   ];
-
-  Future<bool> _isUserVerified() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? isVerify = prefs.getInt('isVerify');
-    return isVerify == 1;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,60 +100,22 @@ class _HomePageState extends State<HomePage> {
                 ],
                 selectedItemColor: Colors.black,
                 unselectedItemColor: Colors.white,
-                onTap: (index) async {
+                onTap: (index) {
                   setState(() {
                     _currentIndex = index;
                   });
 
                   if (_currentIndex == 2) {
-                    isUserVerified = await _isUserVerified();
-
-                    if (isUserVerified) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              'Your account is verified. You can now post.'),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const PostInput()),
-                      ).then((_) {
-                        setState(() {
-                          _currentIndex = 4;
-                        });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PostInput(),
+                      ),
+                    ).then((_) {
+                      setState(() {
+                        _currentIndex = 0;
                       });
-                    } else {
-                      // Show dialog if user is not verified
-                      showDialog(
-                        context: context,
-                        barrierDismissible:
-                            false, // Prevent closing by tapping outside
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Account Verification Required'),
-                            content: const Text(
-                                'Please verify your account before posting.'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text('Close'),
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(); // Close the dialog
-                                  setState(() {
-                                    _currentIndex =
-                                        4; // Redirect to Profile tab
-                                  });
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
+                    });
                   }
                 },
               ),
