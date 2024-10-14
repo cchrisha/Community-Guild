@@ -13,22 +13,21 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<UploadProfilePicture>(_onUploadProfilePicture);
   }
 
-  Future<void> _onLoadProfile(
-      LoadProfile event, Emitter<ProfileState> emit) async {
-    emit(ProfileLoading());
-    try {
-      final data = await profileRepository.fetchProfile();
-      emit(ProfileLoaded(
-        name: data['name'] ?? 'N/A',
-        location: data['location'] ?? 'N/A',
-        contact: data['contact'] ?? 'N/A',
-        email: data['email'] ?? 'N/A',
-        profession: data['profession'] ?? 'N/A',
-        profilePictureUrl:
-            data['profilePictureUrl'] ?? 'N/A', // Added profile picture URL
-      ));
-    } catch (e) {
-      emit(ProfileError('Failed to load profile: $e'));
+Future<void> _onLoadProfile(LoadProfile event, Emitter<ProfileState> emit) async {
+  emit(ProfileLoading());
+  try {
+    final data = await profileRepository.fetchProfile();
+    final profilePictureUrl = await profileRepository.fetchProfilePicture(); // Fetch profile picture
+    emit(ProfileLoaded(
+      name: data['name'] ?? 'N/A',
+      location: data['location'] ?? 'N/A',
+      contact: data['contact'] ?? 'N/A',
+      email: data['email'] ?? 'N/A',
+      profession: data['profession'] ?? 'N/A',
+      profilePictureUrl: profilePictureUrl, // Include profile picture
+    ));
+  } catch (e) {
+    emit(ProfileError('Failed to load profile: $e'));
     }
   }
 
@@ -40,8 +39,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       UploadProfilePicture event, Emitter<ProfileState> emit) async {
     emit(ProfilePictureUploading());
     try {
-      final url =
-          await profileRepository.uploadProfilePicture(event.profileImage);
+    final url = await profileRepository.uploadProfilePicture(event.profileImage);
       emit(ProfilePictureUploaded(url));
       add(LoadProfile());
     } catch (e) {
