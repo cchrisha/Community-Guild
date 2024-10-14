@@ -198,7 +198,7 @@ class HomePageBody extends StatelessWidget {
               Expanded(
                 child: SingleChildScrollView(
                   child: Container(
-                    color: const Color.fromARGB(255, 224, 247, 255),
+                    color: const Color.fromARGB(255, 252, 252, 252),
                     padding:
                         const EdgeInsets.symmetric(horizontal: 0, vertical: 1),
                     child: Column(
@@ -324,3 +324,5 @@ class HomePageBody extends StatelessWidget {
     );
   }
 }
+
+
