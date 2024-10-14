@@ -20,7 +20,7 @@ class SearchAndFilter extends StatelessWidget {
                     prefixIcon: const Icon(Icons.search, size: 20),
                     contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
                     filled: true,
-                    fillColor: const Color.fromARGB(255, 255, 255, 255), // Lighter blue background color
+                    fillColor: Colors.grey[200],
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
