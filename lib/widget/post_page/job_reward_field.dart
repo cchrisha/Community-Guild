@@ -9,6 +9,7 @@ class JobRewardField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      keyboardType: TextInputType.phone,
       decoration: InputDecoration(
         labelText: 'Wage Range',
         labelStyle: const TextStyle(color: Color.fromARGB(255, 3, 169, 244)),
