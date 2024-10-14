@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/edit_profile/edit_profile_bloc.dart';
 import '../bloc/edit_profile/edit_profile_event.dart';
 import '../bloc/edit_profile/edit_profile_state.dart';
-import '../bloc/edit_profile/edit_profile_bloc.dart';
 import '../repository/profile_repository.dart';
-import '../widget/edit_profile/edit_profile_app_bar.dart';
-import '../widget/edit_profile/text_field_widget.dart';
 import '../widget/edit_profile/save_button.dart';
-import 'profile_page.dart';
+import '../widget/edit_profile/text_field_widget.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+  const EditProfilePage({Key? key}) : super(key: key);
 
   @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
+  _EditProfilePageState createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
-  final TextEditingController _professionsController = TextEditingController();
-
+  final TextEditingController _professionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
    @override
@@ -48,10 +45,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   void dispose() {
+    // Dispose controllers
     _nameController.dispose();
     _locationController.dispose();
     _contactController.dispose();
-    _professionsController.dispose();
+    _professionController.dispose();
     super.dispose();
   }
 
@@ -62,20 +60,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
         profileRepository: ProfileRepository(),
       ),
       child: Scaffold(
-        appBar: const EditProfileAppBar(),
+        appBar: AppBar(
+          title: const Text('Edit Profile'),
+        ),
         body: BlocListener<EditProfileBloc, EditProfileState>(
           listener: (context, state) {
             if (state is EditProfileSaved) {
+              // Show success message
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.message)),
               );
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ProfilePage(),
-                ),
-              );
+              // Pop and return true to indicate success
+              Navigator.pop(
+                  context, true); // Returning true to indicate success
             } else if (state is EditProfileError) {
+              // Show error message
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.message)),
               );
@@ -112,7 +111,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ),
                       const SizedBox(height: 16),
                       TextFieldWidget(
-                        controller: _professionsController,
+                        controller: _professionController,
                         label: 'Profession',
                         icon: Icons.work_outline,
                         validator: _validateProfession,
@@ -127,7 +126,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     name: _nameController.text,
                                     location: _locationController.text,
                                     contact: _contactController.text,
-                                    profession: _professionsController.text,
+                                    profession: _professionController.text,
                                   ),
                                 );
                           }

@@ -79,19 +79,19 @@ class _GetStartedPageState extends State<GetStartedPage>
                   onPageChanged: _onPageChanged,
                   children: [
                     _buildPageContent(
-                      image: 'assets/images/job_hunt.png',
+                      image: 'assets/images/findone.png',
                       title: 'Find Jobs Easily',
                       description:
                           'Browse and apply for jobs in various categories. Connect with employers quickly.',
                     ),
                     _buildPageContent(
-                      image: 'assets/images/posting.png',
+                      image: 'assets/images/postone.png',
                       title: 'Post Your Own Jobs',
                       description:
                           'Create job postings, manage applications, and find the best talents.',
                     ),
                     _buildPageContent(
-                      image: 'assets/images/bit.png',
+                      image: 'assets/images/bitcoinone.png',
                       title: 'Send & Receive Cryptocurrency',
                       description:
                           'Effortlessly send and receive cryptocurrencies with fast and secure transactions.',

@@ -43,7 +43,7 @@ class LoginPage extends StatelessWidget {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasData && snapshot.data == true) {
                     Future.delayed(const Duration(milliseconds: 500), () {
-                      Get.off(() => const HomePage());
+                      Get.off(() => HomePage());
                     });
                     return const Center(child: CircularProgressIndicator());
                   }
@@ -58,7 +58,7 @@ class LoginPage extends StatelessWidget {
                           ),
                         );
                         Future.delayed(const Duration(seconds: 1), () {
-                          Get.off(() => const HomePage());
+                          Get.off(() => HomePage());
                         });
                       } else if (state is AuthFailure) {
                         ScaffoldMessenger.of(context).showSnackBar(

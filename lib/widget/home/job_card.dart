@@ -1,4 +1,3 @@
-//lkfgjlkgdfgndlkfgl jerijorigjdlfkgkgdlgkj
 import 'package:flutter/material.dart';
 
 class HomeJobCard extends StatelessWidget {
@@ -32,10 +31,12 @@ class HomeJobCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        elevation: 3,
+        elevation: 5,
         color: Colors.white, // Set the background color to white
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero), // Remove the border radius
+        margin: const EdgeInsets.symmetric(vertical: 0), // Add vertical spacing between cards
         child: Container(
+          width: MediaQuery.of(context).size.width, // Set the width to cover the entire screen
           padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,14 +52,15 @@ class HomeJobCard extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  const SizedBox(width: 8), // Add spacing between title and date
+                  const SizedBox(
+                      width: 8), // Add spacing between title and date
                   Text(date, style: const TextStyle(color: Colors.grey)),
                 ],
               ),
               const SizedBox(height: 8),
               Text(
                 jobDescription,
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(color: Colors.black54),
               ),
