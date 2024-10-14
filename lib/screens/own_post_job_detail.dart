@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http; // Required for the repository
 class OwnJobDetailPage extends StatefulWidget {
   const   OwnJobDetailPage({
     super.key,
-    required this.jobId, // Add jobId parameter here
+    required this.jobId,
     required this.jobTitle,
     required this.jobDescription,
     required this.date,
