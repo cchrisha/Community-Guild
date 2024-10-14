@@ -50,8 +50,29 @@ class AboutJobBloc extends Bloc<AboutJobEvent, AboutJobState> {
   }
 });
 
-
+    on<AcceptApplicantEvent>(_onAcceptApplicant);
+    on<MarkWorkerDoneEvent>(_onMarkWorkerDone);
   }
+
+  Future<void> _onAcceptApplicant(AcceptApplicantEvent event, Emitter<AboutJobState> emit) async {
+    try {
+      await aboutJobRepository.updateJobRequestStatus(event.jobId, event.userId, 'accept');
+      emit(AcceptApplicantSuccess());
+    } catch (e) {
+      emit(AboutJobActionError('Failed to accept applicant: $e'));
+    }
+  }
+
+  Future<void> _onMarkWorkerDone(MarkWorkerDoneEvent event, Emitter<AboutJobState> emit) async {
+    try {
+      await aboutJobRepository.updateWorkerStatus(event.jobId, event.userId, 'done');
+      emit(MarkWorkerDoneSuccess());
+    } catch (e) {
+      emit(AboutJobActionError('Failed to mark worker as done: $e'));
+    }
+  }
+
 }
+
 
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:community_guild/widget/users_details/user_details_widget.dart'; // Import the UserInfoCard
 
 class UserDetails extends StatefulWidget {
   final String posterName;
@@ -24,6 +25,7 @@ class _UserDetailsState extends State<UserDetails> {
 
   Future<void> fetchUserDetails() async {
     try {
+      // Replace with your API URL
       final response = await http.get(Uri.parse(
           'https://api-tau-plum.vercel.app/api/users/${widget.posterName}'));
 
@@ -77,87 +79,39 @@ class _UserDetailsState extends State<UserDetails> {
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
             : errorMessage != null
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.error_outline,
-                            color: Colors.red, size: 60),
-                        const SizedBox(height: 16),
-                        Text(errorMessage!,
-                            style: const TextStyle(
-                                fontSize: 18, color: Colors.red)),
-                      ],
-                    ),
-                  )
+                ? Center(child: Text(errorMessage!)) // Show error message
                 : Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Profile Image at the top
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundImage: NetworkImage(
-                            userDetails!['profilePicture'] ??
-                                'https://via.placeholder.com/150'),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // User Name
                       Text(
-                        userDetails!['name'],
+                        'Name: ${userDetails!['name']}', // Display user name
                         style: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
-
-                      // User Profession
                       Text(
-                        userDetails!['profession'],
-                        style:
-                            const TextStyle(fontSize: 18, color: Colors.grey),
+                        'Email: ${userDetails!['email']}', // Display user email
+                        style: const TextStyle(fontSize: 16),
                       ),
-                      const SizedBox(height: 16),
-
-                      // Details Cards
-                      Card(
-                        elevation: 2,
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          leading: const Icon(Icons.email, color: Colors.blue),
-                          title: const Text('Email'),
-                          subtitle: Text(userDetails!['email']),
-                        ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Location: ${userDetails!['location']}', // Display user location
+                        style: const TextStyle(fontSize: 16),
                       ),
-                      Card(
-                        elevation: 2,
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          leading: const Icon(Icons.location_on,
-                              color: Colors.green),
-                          title: const Text('Location'),
-                          subtitle: Text(userDetails!['location']),
-                        ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Contact: ${userDetails!['contact']}', // Display user contact
+                        style: const TextStyle(fontSize: 16),
                       ),
-                      Card(
-                        elevation: 2,
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          leading:
-                              const Icon(Icons.phone, color: Colors.orange),
-                          title: const Text('Contact'),
-                          subtitle: Text(userDetails!['contact']),
-                        ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Profession: ${userDetails!['profession']}', // Display user profession
+                        style: const TextStyle(fontSize: 16),
                       ),
-                      Card(
-                        elevation: 2,
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          leading: const Icon(Icons.verified_user,
-                              color: Colors.purple),
-                          title: const Text('Verified'),
-                          subtitle: Text(
-                              userDetails!['isVerify'] == 1 ? 'Yes' : 'No'),
-                        ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Verified: ${userDetails!['isVerify'] == 1 ? 'Yes' : 'No'}', // Display verification status
+                        style: const TextStyle(fontSize: 16),
                       ),
                     ],
                   ),
