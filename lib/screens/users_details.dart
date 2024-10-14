@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:community_guild/widget/users_details/user_details_widget.dart'; // Import the UserInfoCard
 
 class UserDetails extends StatefulWidget {
   final String posterName;
@@ -25,7 +24,9 @@ class _UserDetailsState extends State<UserDetails> {
 
   Future<void> fetchUserDetails() async {
     try {
-      final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/api/users/${widget.posterName}'));
+      // Replace with your API URL
+      final response = await http.get(Uri.parse(
+          'https://api-tau-plum.vercel.app/api/users/${widget.posterName}'));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
@@ -58,23 +59,60 @@ class _UserDetailsState extends State<UserDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Details'),
-        backgroundColor: Colors.lightBlueAccent,
+        title: const Text(
+          'User Details',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        backgroundColor: Colors.lightBlue,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
             : errorMessage != null
-                ? Center(child: Text(errorMessage!))
-                : UserInfoCard(
-                    name: userDetails!['name'],
-                    profession: userDetails!['profession'],
-                    email: userDetails!['email'],
-                    location: userDetails!['location'],
-                    contact: userDetails!['contact'],
-                    isVerified: userDetails!['isVerify'] == 1,
-                    profilePicture: userDetails!['profilePicture'],
+                ? Center(child: Text(errorMessage!)) // Show error message
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Name: ${userDetails!['name']}', // Display user name
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Email: ${userDetails!['email']}', // Display user email
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Location: ${userDetails!['location']}', // Display user location
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Contact: ${userDetails!['contact']}', // Display user contact
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Profession: ${userDetails!['profession']}', // Display user profession
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Verified: ${userDetails!['isVerify'] == 1 ? 'Yes' : 'No'}', // Display verification status
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
                   ),
       ),
     );

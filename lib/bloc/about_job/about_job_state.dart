@@ -74,3 +74,73 @@ class AboutJobWorkersError extends AboutJobState {
   @override
   List<Object?> get props => [message];
 }
+
+class AboutJobRequestUpdated extends AboutJobState {
+  final String message;
+
+  AboutJobRequestUpdated(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class AboutJobWorkerUpdated extends AboutJobState {
+  final String message;
+
+  AboutJobWorkerUpdated(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+// class AcceptApplicantSuccess extends AboutJobState {
+//   final String message;
+
+//   AcceptApplicantSuccess(this.message);
+
+//   @override
+//   List<Object> get props => [message];
+// }
+
+// class AcceptApplicantError extends AboutJobState {
+//   final String message;
+
+//   AcceptApplicantError(this.message);
+
+//   @override
+//   List<Object> get props => [message];
+// }
+
+// class WorkerMarkedDoneSuccess extends AboutJobState {
+//   final String message;
+
+//   WorkerMarkedDoneSuccess(this.message);
+
+//   @override
+//   List<Object> get props => [message];
+// }
+
+// class WorkerMarkedDoneError extends AboutJobState {
+//   final String message;
+
+//   WorkerMarkedDoneError(this.message);
+
+//   @override
+//   List<Object> get props => [message];
+// }
+
+// about_job_state.dart
+
+class AcceptApplicantSuccess extends AboutJobState {}
+
+class MarkWorkerDoneSuccess extends AboutJobState {}
+
+class AboutJobActionError extends AboutJobState {
+  final String message;
+
+  AboutJobActionError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+

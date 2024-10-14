@@ -22,19 +22,19 @@ class _RegisterPageState extends State<RegisterPage> {
   String _passwordStrength = '';
   Color _strengthColor = Colors.grey;
   String _passwordError = ''; // Variable to track password match error
-String _selectedProfession = 'Programmer'; // Default profession
-  final List<String> _professions = [
-    'Programmer',
-    'Gardener',
-    'Carpenter',
-    'Plumber',
-    'Cleaner',
-    'Cook',
-    'Driver',
-    'Electrician',
-    'Salesperson',
-    'Crew'
-  ];
+// String _selectedProfession = 'Programmer'; // Default profession
+//   final List<String> _professions = [
+//     'Programmer',
+//     'Gardener',
+//     'Carpenter',
+//     'Plumber',
+//     'Cleaner',
+//     'Cook',
+//     'Driver',
+//     'Electrician',
+//     'Salesperson',
+//     'Crew'
+//   ];
 
   @override
   Widget build(BuildContext context) {
@@ -166,26 +166,33 @@ String _selectedProfession = 'Programmer'; // Default profession
                       ),
                       const SizedBox(height: 15),
                       // Profession Dropdown
-                      DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(
-                          labelText: 'Profession',
-                          prefixIcon: Icon(Icons.work),
-                        ),
-                        value: _selectedProfession,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedProfession = value!;
-                          });
-                          authBloc.professionController.text = _selectedProfession;
-                        },
-                        items: _professions.map<DropdownMenuItem<String>>(
-                          (String profession) {
-                            return DropdownMenuItem<String>(
-                              value: profession,
-                              child: Text(profession),
-                            );
-                          },
-                        ).toList(),
+                      // DropdownButtonFormField<String>(
+                      //   decoration: const InputDecoration(
+                      //     labelText: 'Profession',
+                      //     prefixIcon: Icon(Icons.work),
+                      //   ),
+                      //   value: _selectedProfession,
+                      //   onChanged: (value) {
+                      //     setState(() {
+                      //       _selectedProfession = value!;
+                      //     });
+                      //     authBloc.professionController.text = _selectedProfession;
+                      //   },
+                      //   items: _professions.map<DropdownMenuItem<String>>(
+                      //     (String profession) {
+                      //       return DropdownMenuItem<String>(
+                      //         value: profession,
+                      //         child: Text(profession),
+                      //       );
+                      //     },
+                      //   ).toList(),
+                      // ),
+                      const SizedBox(height: 15),
+                      AuthWidgets.textField(
+                        icon: Icons.location_on,
+                        labelText: 'Profession',
+                        controller: authBloc.professionController,
+                        obscureText: false,
                       ),
                       const SizedBox(height: 15),
                       AuthWidgets.textField(
@@ -226,7 +233,8 @@ String _selectedProfession = 'Programmer'; // Default profession
                                 password: authBloc.passwordController.text,
                                 location: authBloc.locationController.text,
                                 contact: authBloc.contactController.text,
-                                profession: _selectedProfession,
+                                profession: authBloc.professionController.text,
+                                // profession: _selectedProfession,
                               ),
                             ));
                           }

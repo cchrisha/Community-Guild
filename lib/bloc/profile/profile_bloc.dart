@@ -7,12 +7,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final ProfileRepository profileRepository;
 
   ProfileBloc({required this.profileRepository}) : super(ProfileInitial()) {
+    //load, Verify and UploadProfile
     on<LoadProfile>(_onLoadProfile);
     on<VerifyAccount>(_onVerifyAccount);
-    on<UploadProfilePicture>(_onUploadProfilePicture); // Added event handler for uploading profile picture
+    on<UploadProfilePicture>(_onUploadProfilePicture);
   }
 
-  Future<void> _onLoadProfile(LoadProfile event, Emitter<ProfileState> emit) async {
+Future<void> _onLoadProfile(LoadProfile event, Emitter<ProfileState> emit) async {
   emit(ProfileLoading());
   try {
     final data = await profileRepository.fetchProfile();
@@ -27,8 +28,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     ));
   } catch (e) {
     emit(ProfileError('Failed to load profile: $e'));
+    }
   }
-}
 
   void _onVerifyAccount(VerifyAccount event, Emitter<ProfileState> emit) {
     // Implement account verification logic here
@@ -38,10 +39,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       UploadProfilePicture event, Emitter<ProfileState> emit) async {
     emit(ProfilePictureUploading());
     try {
-      final url = await profileRepository.uploadProfilePicture(event.profileImage);
+    final url = await profileRepository.uploadProfilePicture(event.profileImage);
       emit(ProfilePictureUploaded(url));
-      // Optionally, you can also refresh the profile after uploading
-      add(LoadProfile()); // Reload profile after picture upload
+      add(LoadProfile());
     } catch (e) {
       emit(ProfilePictureError(e.toString()));
     }

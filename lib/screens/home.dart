@@ -14,7 +14,7 @@ import 'about_job.dart';
 import 'job_detail.dart';
 import 'payment_page.dart';
 import 'profile_page.dart';
-import 'package:http/http.dart' as http; // Required for the repository
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
@@ -28,17 +28,17 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   bool isUserVerified = false;
   final List<Widget> _pages = [
-    const HomePageBody(), // The existing body of your HomePage
-    const JobPage(), // Add About Job Page here
-    const PostInput(), // Post Input Page
-    const PaymentPage(), // Payment Page
-    const ProfilePage(), // Profile Page
+    const HomePageBody(),
+    const JobPage(),
+    const PostInput(),
+    const PaymentPage(),
+    const ProfilePage(),
   ];
 
   Future<bool> _isUserVerified() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? isVerify = prefs.getInt('isVerify');
-    return isVerify == 1; // Return true if verified, otherwise false
+    return isVerify == 1;
   }
 
   @override
@@ -69,36 +69,39 @@ class _HomePageState extends State<HomePage> {
             : null,
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         body: AnimatedSwitcher(
-          duration:
-              const Duration(milliseconds: 300), // Duration of the animation
-          child: _pages[_currentIndex], // Set the current page
+          duration: const Duration(milliseconds: 300),
+          child: _pages[_currentIndex],
         ),
-        bottomNavigationBar: _currentIndex == 2 // When on PostInput page
-            ? null // Hide bottom navigation bar
+        bottomNavigationBar: _currentIndex == 2
+            ? null
             : BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                backgroundColor: const Color.fromARGB(255, 3, 169, 244),
+                type: BottomNavigationBarType.shifting,
                 currentIndex: _currentIndex,
                 items: const [
                   BottomNavigationBarItem(
                     icon: Icon(Icons.home_outlined),
                     label: 'Home',
+                    backgroundColor: Color.fromARGB(255, 3, 169, 244),
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.info_outline),
                     label: 'About Job',
+                    backgroundColor: Color.fromARGB(255, 3, 169, 244),
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.post_add),
                     label: 'Post',
+                    backgroundColor: Color.fromARGB(255, 3, 169, 244),
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.payment_outlined),
                     label: 'Payment',
+                    backgroundColor: Color.fromARGB(255, 3, 169, 244),
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.person_2_outlined),
                     label: 'Profile',
+                    backgroundColor: Color.fromARGB(255, 3, 169, 244),
                   ),
                 ],
                 selectedItemColor: Colors.black,
@@ -109,12 +112,9 @@ class _HomePageState extends State<HomePage> {
                   });
 
                   if (_currentIndex == 2) {
-                    // When Post is selected
-                    isUserVerified =
-                        await _isUserVerified(); // Await the verification check
+                    isUserVerified = await _isUserVerified();
 
                     if (isUserVerified) {
-                      // Show SnackBar if user is verified
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
@@ -123,45 +123,43 @@ class _HomePageState extends State<HomePage> {
                         ),
                       );
 
-                      // Redirect to the Post Input page
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const PostInput()),
                       ).then((_) {
                         setState(() {
-                          _currentIndex = 0; // Reset to Home after posting
+                          _currentIndex = 0;
                         });
                       });
-                    } 
-                    // else {
-                    //   // Show dialog if user is not verified
-                    //   showDialog(
-                    //     context: context,
-                    //     barrierDismissible:
-                    //         false, // Prevent closing by tapping outside
-                    //     builder: (BuildContext context) {
-                    //       return AlertDialog(
-                    //         title: const Text('Account Verification Required'),
-                    //         content: const Text(
-                    //             'Please verify your account before posting.'),
-                    //         actions: <Widget>[
-                    //           TextButton(
-                    //             child: const Text('Close'),
-                    //             onPressed: () {
-                    //               Navigator.of(context)
-                    //                   .pop(); // Close the dialog
-                    //               setState(() {
-                    //                 _currentIndex =
-                    //                     4; // Redirect to Profile tab
-                    //               });
-                    //             },
-                    //           ),
-                    //         ],
-                    //       );
-                    //     },
-                    //   );
-                    // }
+                    } else {
+                      // Show dialog if user is not verified
+                      showDialog(
+                        context: context,
+                        barrierDismissible:
+                            false, // Prevent closing by tapping outside
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Account Verification Required'),
+                            content: const Text(
+                                'Please verify your account before posting.'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('Close'),
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(); // Close the dialog
+                                  setState(() {
+                                    _currentIndex =
+                                        4; // Redirect to Profile tab
+                                  });
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
                   }
                 },
               ),
@@ -324,5 +322,3 @@ class HomePageBody extends StatelessWidget {
     );
   }
 }
-
-
