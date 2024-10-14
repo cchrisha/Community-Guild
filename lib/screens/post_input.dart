@@ -96,7 +96,6 @@ class PostInputState extends State<PostInput> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Job posted successfully!')),
               );
-              // Optionally, navigate back or clear the form here
             } else if (state is PostFailure) {
               Navigator.pop(context); // Dismiss loading indicator
               ScaffoldMessenger.of(context).showSnackBar(
@@ -107,7 +106,6 @@ class PostInputState extends State<PostInput> {
           child: BlocBuilder<PostBloc, PostState>(
             builder: (context, state) {
               return Padding(
-                // Add padding to create a gap
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 20.0),
                 child: SingleChildScrollView(
@@ -167,34 +165,50 @@ class PostInputState extends State<PostInput> {
                         Center(
                           child: PostButton(
                             onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                if (_selectedProfession != null &&
-                                    _selectedCategory != null) {
-                                  context.read<PostBloc>().add(
-                                        SubmitJob(
-                                          title: _titleController.text,
-                                          location: _locationController.text,
-                                          profession: _selectedProfession!,
-                                          category: _selectedCategory!,
-                                          wageRange: _rewardController.text,
-                                          contact: _contactController.text,
-                                          description:
-                                              _descriptionController.text,
-                                          isCrypto: _isCrypto,
-                                        ),
-                                      );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          'Please select a profession and category.'),
+                              // Check for empty fields
+                              if (_titleController.text.isEmpty ||
+                                  _locationController.text.isEmpty ||
+                                  _rewardController.text.isEmpty ||
+                                  _descriptionController.text.isEmpty ||
+                                  _contactController.text.isEmpty ||
+                                  _selectedProfession == null ||
+                                  _selectedCategory == null) {
+                                
+                                // Show centered SnackBar with red background and white text
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text(
+                                      'Please fill out all required fields.',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: Colors.white),
                                     ),
-                                  );
-                                }
+                                    backgroundColor: Colors.red,
+                                    behavior: SnackBarBehavior.floating,
+                                    margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                // Proceed with the job posting
+                                context.read<PostBloc>().add(
+                                  SubmitJob(
+                                    title: _titleController.text,
+                                    location: _locationController.text,
+                                    profession: _selectedProfession!,
+                                    category: _selectedCategory!,
+                                    wageRange: _rewardController.text,
+                                    contact: _contactController.text,
+                                    description: _descriptionController.text,
+                                    isCrypto: _isCrypto,
+                                  ),
+                                );
                               }
                             },
                           ),
                         ),
+
                       ],
                     ),
                   ),

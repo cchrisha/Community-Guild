@@ -33,16 +33,6 @@ class JobProfessionDropdown extends StatelessWidget {
               color: Color.fromARGB(255, 3, 169, 244), width: 2),
           borderRadius: BorderRadius.circular(16),
         ),
-        errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-              color: Colors.red, width: 2), // Change color to red for error
-          borderRadius: BorderRadius.circular(16),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-              color: Colors.red, width: 2), // Change color to red for error
-          borderRadius: BorderRadius.circular(16),
-        ),
       ),
       items: professions.map((String profession) {
         return DropdownMenuItem<String>(

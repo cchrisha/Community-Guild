@@ -22,14 +22,6 @@ class JobRewardField extends StatelessWidget {
           borderSide: const BorderSide(color: Color.fromARGB(255, 3, 169, 244), width: 2),
           borderRadius: BorderRadius.circular(16),
         ),
-        errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red, width: 2),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red, width: 2), // Red border when focused with an error
-          borderRadius: BorderRadius.circular(16),
-        ),
         contentPadding:
             const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
       ),
