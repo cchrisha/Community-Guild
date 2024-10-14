@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:community_guild/repository/profile_repository.dart';
 import 'package:community_guild/widget/profile/profile_header.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import '../bloc/profile/profile_state.dart';
 import '../widget/profile/profile_info_card.dart';
 import 'edit_profile_page.dart';
 import 'setting.dart';
-import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -17,7 +17,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ProfileBloc(
+      create: (context) => ProfileBloc(
         profileRepository: ProfileRepository(),
       )..add(LoadProfile()),
       child: Scaffold(
@@ -26,49 +26,44 @@ class ProfilePage extends StatelessWidget {
           title: const Text(
             'Profile',
             style: TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              fontSize: 18, 
+              fontWeight: FontWeight.bold, 
+              color: Colors.white,
+            ),
           ),
           backgroundColor: Colors.lightBlue,
           elevation: 0,
           centerTitle: true,
           actions: [
-            PopupMenuTheme(
-              data: const PopupMenuThemeData(color: Colors.white),
-              child: PopupMenuButton<String>(
-                onSelected: (value) async {
-                  if (value == 'Edit Info') {
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const EditProfilePage()),
-                    );
-                    if (result == true) {
-                      context.read<ProfileBloc>().add(LoadProfile());
-                    }
-                  } else if (value == 'Settings') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SettingsPage()),
-                    );
-                  }
-                },
-                itemBuilder: (BuildContext context) {
-                  return [
-                    const PopupMenuItem<String>(
-                      value: 'Edit Info',
-                      child: Text('Edit Info',
-                          style: TextStyle(color: Colors.black)),
-                    ),
-                    const PopupMenuItem<String>(
-                      value: 'Settings',
-                      child: Text('Settings',
-                          style: TextStyle(color: Colors.black)),
-                    ),
-                  ];
-                },
-                icon: const Icon(Icons.menu, color: Colors.white),
-              ),
+            PopupMenuButton<String>(
+              onSelected: (value) async {
+                if (value == 'Edit Info') {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const EditProfilePage()),
+                  );
+                  if (result == true) {
+                      context.read<ProfileBloc>().add(LoadProfile());}
+                } else if (value == 'Settings') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SettingsPage()),
+                  );
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return [
+                  const PopupMenuItem<String>(
+                    value: 'Edit Info',
+                    child: Text('Edit Info', style: TextStyle(color: Colors.black)),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'Settings',
+                    child: Text('Settings', style: TextStyle(color: Colors.black)),
+                  ),
+                ];
+              },
+              icon: const Icon(Icons.menu, color: Colors.white),
             ),
           ],
         ),
@@ -80,22 +75,7 @@ class ProfilePage extends StatelessWidget {
               if (state is ProfileLoading) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is ProfileLoaded) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _buildProfilePictureSection(context, state),
-                    const SizedBox(height: 15),
-                    ProfileHeader(
-                        name: state.name, profession: state.profession),
-                    const SizedBox(height: 30),
-                    ProfileInfoCard(
-                      location: state.location,
-                      contact: state.contact,
-                      email: state.email,
-                      profession: state.profession,
-                    ),
-                  ],
-                );
+                return _buildProfileContent(context, state);
               } else if (state is ProfileError) {
                 return Center(child: Text(state.error));
               }
@@ -107,8 +87,25 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfilePictureSection(
-      BuildContext context, ProfileLoaded state) {
+  Widget _buildProfileContent(BuildContext context, ProfileLoaded state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _buildProfilePictureSection(context, state),
+        const SizedBox(height: 15),
+        ProfileHeader(name: state.name, profession: state.profession),
+        const SizedBox(height: 30),
+        ProfileInfoCard(
+          location: state.location,
+          contact: state.contact,
+          email: state.email,
+          profession: state.profession,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProfilePictureSection(BuildContext context, ProfileLoaded state) {
     final profileBloc = context.read<ProfileBloc>();
 
     return Column(
@@ -116,20 +113,16 @@ class ProfilePage extends StatelessWidget {
         CircleAvatar(
           radius: 50,
           backgroundImage: state.profilePictureUrl.isNotEmpty
-              ? NetworkImage(
-                  state.profilePictureUrl) // Use the loaded profile picture
-              : const AssetImage('assets/default_profile.png')
-                  as ImageProvider, // Default picture
+              ? NetworkImage(state.profilePictureUrl) // Use the loaded profile picture
+              : const AssetImage('assets/default_profile.png'), // Default picture
         ),
         const SizedBox(height: 10),
         ElevatedButton.icon(
           onPressed: () async {
             final ImagePicker picker = ImagePicker();
-            final XFile? image =
-                await picker.pickImage(source: ImageSource.gallery);
+            final XFile? image = await picker.pickImage(source: ImageSource.gallery);
             if (image != null) {
-              profileBloc.add(UploadProfilePicture(
-                  File(image.path))); // Trigger the upload event
+              profileBloc.add(UploadProfilePicture(File(image.path))); // Trigger the upload event
             }
           },
           icon: const Icon(Icons.upload),
