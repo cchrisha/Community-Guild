@@ -1,81 +1,48 @@
+import 'package:community_guild/bloc/userdetails/user_details_bloc.dart';
+import 'package:community_guild/bloc/userdetails/user_details_event.dart';
+import 'package:community_guild/bloc/userdetails/user_details_state.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:community_guild/widget/users_details/user_details_widget.dart'; // Import the UserInfoCard
 
-class UserDetails extends StatefulWidget {
+class UserDetails extends StatelessWidget {
   final String posterName;
 
   const UserDetails({super.key, required this.posterName});
 
   @override
-  State<UserDetails> createState() => _UserDetailsState();
-}
-
-class _UserDetailsState extends State<UserDetails> {
-  Map<String, dynamic>? userDetails;
-  bool isLoading = true;
-  String? errorMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchUserDetails();
-  }
-
-  Future<void> fetchUserDetails() async {
-    try {
-      final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/api/users/${widget.posterName}'));
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        if (data['status'] == 'success') {
-          setState(() {
-            userDetails = data['data'];
-            isLoading = false;
-          });
-        } else {
-          setState(() {
-            errorMessage = data['message'];
-            isLoading = false;
-          });
-        }
-      } else {
-        setState(() {
-          errorMessage = 'Failed to load user details';
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        errorMessage = 'An error occurred: $e';
-        isLoading = false;
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('User Details'),
-        backgroundColor: Colors.lightBlueAccent,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : errorMessage != null
-                ? Center(child: Text(errorMessage!))
-                : UserInfoCard(
-                    name: userDetails!['name'],
-                    profession: userDetails!['profession'],
-                    email: userDetails!['email'],
-                    location: userDetails!['location'],
-                    contact: userDetails!['contact'],
-                    isVerified: userDetails!['isVerify'] == 1,
-                    profilePicture: userDetails!['profilePicture'],
-                  ),
+    return BlocProvider(
+      create: (context) => UserDetailsBloc()..add(LoadUserDetails(posterName)),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('User Details'),
+          backgroundColor: Colors.lightBlueAccent,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: BlocBuilder<UserDetailsBloc, UserDetailsState>(
+            builder: (context, state) {
+              if (state is UserDetailsLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is UserDetailsError) {
+                return Center(child: Text(state.errorMessage));
+              } else if (state is UserDetailsLoaded) {
+                final userDetails = state.userDetails;
+                return UserInfoCard(
+                  name: userDetails['name'] ?? 'Unknown',
+                  profession: userDetails['profession'] ?? 'N/A',
+                  email: userDetails['email'] ?? 'N/A',
+                  location: userDetails['location'] ?? 'N/A',
+                  contact: userDetails['contact'] ?? 'N/A',
+                  isVerified: userDetails['isVerify'] == 1,
+                  // profilePictureUrl: userDetails['profilePictureUrl'] ?? '',
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
       ),
     );
   }

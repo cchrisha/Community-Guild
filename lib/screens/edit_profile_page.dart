@@ -18,19 +18,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
-  String _selectedProfession = 'Programmer'; // Default profession
-  final List<String> _professions = [
-    'Programmer',
-    'Gardener',
-    'Carpenter',
-    'Plumber',
-    'Cleaner',
-    'Cook',
-    'Driver',
-    'Electrician',
-    'Salesperson',
-    'Crew'
-  ];
+  final TextEditingController _professionController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -46,7 +35,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _nameController.text = userProfile['name'];
       _locationController.text = userProfile['location'];
       _contactController.text = userProfile['contact'];
-      _selectedProfession = userProfile['profession']; // Set the selected profession
+      _professionController.text = userProfile['profession']; // Set the selected profession
     } catch (error) {
       // Handle errors, maybe show a Snackbar or dialog
       ScaffoldMessenger.of(context).showSnackBar(
@@ -120,27 +109,32 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         validator: _validateContact,
                       ),
                       const SizedBox(height: 16),
+                      TextFieldWidget(
+                        controller: _professionController,
+                        label: 'Profession',
+                        icon: Icons.work_outline,
+                        validator: _validateProfession),
                       // Profession Dropdown
-                      DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(
-                          labelText: 'Profession',
-                          prefixIcon: Icon(Icons.work),
-                        ),
-                        value: _selectedProfession,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedProfession = value!;
-                          });
-                        },
-                        items: _professions.map<DropdownMenuItem<String>>(
-                          (String profession) {
-                            return DropdownMenuItem<String>(
-                              value: profession,
-                              child: Text(profession),
-                            );
-                          },
-                        ).toList(),
-                      ),
+                      // DropdownButtonFormField<String>(
+                      //   decoration: const InputDecoration(
+                      //     labelText: 'Profession',
+                      //     prefixIcon: Icon(Icons.work),
+                      //   ),
+                      //   value: _selectedProfession,
+                      //   onChanged: (value) {
+                      //     setState(() {
+                      //       _selectedProfession = value!;
+                      //     });
+                      //   },
+                      //   items: _professions.map<DropdownMenuItem<String>>(
+                      //     (String profession) {
+                      //       return DropdownMenuItem<String>(
+                      //         value: profession,
+                      //         child: Text(profession),
+                      //       );
+                      //     },
+                      //   ).toList(),
+                      // ),
                       const SizedBox(height: 16),
                       SaveButton(
                         onPressed: () {
@@ -151,7 +145,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     name: _nameController.text,
                                     location: _locationController.text,
                                     contact: _contactController.text,
-                                    profession: _selectedProfession, // Send selected profession
+                                    profession: _professionController.text, // Send selected profession
                                   ),
                                 );
                           }
@@ -186,6 +180,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String? _validateContact(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your contact number';
+    }
+    return null;
+  }
+
+  String? _validateProfession(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your profession';
     }
     return null;
   }
