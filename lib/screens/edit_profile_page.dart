@@ -24,6 +24,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   final _formKey = GlobalKey<FormState>();
 
+   @override
+  void initState() {
+    super.initState();
+    _fetchUserProfile();
+  }
+
+  Future<void> _fetchUserProfile() async {
+  final profileRepository = ProfileRepository();
+  try {
+    final userProfile = await profileRepository.fetchProfile(); // Use fetchProfile instead
+    _nameController.text = userProfile['name'];
+    _locationController.text = userProfile['location'];
+    _contactController.text = userProfile['contact'];
+    _professionsController.text = userProfile['profession'];
+  } catch (error) {
+    // Handle errors, maybe show a Snackbar or dialog
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to fetch profile data: $error')),
+    );
+  }
+}
+
   @override
   void dispose() {
     _nameController.dispose();
