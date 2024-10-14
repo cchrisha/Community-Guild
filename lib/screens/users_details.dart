@@ -63,7 +63,7 @@ class _UserDetailsState extends State<UserDetails> {
           'User Details',
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: const Color.fromARGB(255, 3, 169, 244),
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
@@ -87,18 +87,40 @@ class _UserDetailsState extends State<UserDetails> {
                       children: [
                         // Display user profile picture
                         Center(
-                          child: CircleAvatar(
-                            radius: 50,
-                            backgroundImage: NetworkImage(
-                                userDetails!['profilePicture'] ??
-                                    'https://via.placeholder.com/150'),
+                          child: Container(
+                            width: 150, // Outer container size
+                            height: 150, // Outer container size
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: const Color.fromARGB(255, 3, 169, 244), // Light blue outline
+                                width: 2, // Thickness of the light blue outline
+                              ),
+                            ),
+                            child: Container(
+                              margin: const EdgeInsets.all(4), // White space between avatar and border
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white, // White background for the space
+                              ),
+                              child: CircleAvatar(
+                                radius: 60, // Adjust radius for the avatar
+                                backgroundImage: NetworkImage(
+                                  userDetails!['profilePicture'] ?? 'https://via.placeholder.com/150',
+                                ),
+                              ),
+                            ),
                           ),
                         ),
+
                         const SizedBox(height: 16),
-                        Text(
-                          'Name: ${userDetails!['name']}',
-                          style: const TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
+                        Center(
+                          child: Text(
+                            userDetails!['name'],
+                            style: const TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center, // Center-align the name
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Card(
