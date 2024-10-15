@@ -38,7 +38,8 @@ class AboutJobError extends AboutJobState {
 class AboutJobApplicantsLoading extends AboutJobState {}
 
 class AboutJobApplicantsLoaded extends AboutJobState {
-  final List<String> applicants;
+  final List<Map<String, String>> applicants;
+
 
   AboutJobApplicantsLoaded(this.applicants);
 
@@ -58,9 +59,9 @@ class AboutJobApplicantsError extends AboutJobState {
 class AboutJobWorkersLoading extends AboutJobState {}
 
 class AboutJobWorkersLoaded extends AboutJobState {
-  final List<String> workers;
+  final List<Map<String, String>> workers;
 
-  AboutJobWorkersLoaded(this.workers);
+    AboutJobWorkersLoaded(this.workers);
 
   @override
   List<Object?> get props => [workers];

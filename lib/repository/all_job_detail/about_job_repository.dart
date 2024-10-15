@@ -76,37 +76,48 @@ class AboutJobRepository {
 }
 
   // New method for fetching applicants for a specific job
-  Future<List<String>> fetchJobApplicants(String jobId) async {
-    try {
-      String? token = await authRepository.getToken();
+//   Future<List<String>> fetchJobApplicants(String jobId) async {
+//   try {
+//     String? token = await authRepository.getToken();
 
-      if (token == null || token.isEmpty) {
-        throw Exception('No valid token found. Please login again.');
-      }
+//     if (token == null || token.isEmpty) {
+//       throw Exception('No valid token found. Please login again.');
+//     }
 
-      final response = await http.get(
-        Uri.parse('https://api-tau-plum.vercel.app/api/jobs/$jobId/requests'), // Replace with your API endpoint
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+//     final response = await http.get(
+//       Uri.parse('https://api-tau-plum.vercel.app/api/jobs/$jobId/requests'), // Replace with your API endpoint
+//       headers: {
+//         'Authorization': 'Bearer $token',
+//         'Content-Type': 'application/json',
+//       },
+//     );
 
-      if (response.statusCode == 200) {
-        List<dynamic> jsonData = json.decode(response.body);
-        // Assuming the response contains a list of requests, each with a user object containing a name
-        return jsonData.map((request) => request['user']['name'] as String).toList();
-      } else {
-        throw Exception('Failed to load applicants. Status Code: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error in fetchJobApplicants: $e');
-      throw Exception('Error: $e');
-    }
-  }
+//     if (response.statusCode == 200) {
+//       List<dynamic> jsonData = json.decode(response.body);
 
-  // New method for fetching workers for a specific job
-Future<List<String>> fetchJobWorkers(String jobId) async {
+//       // Print the raw response body
+//       print('Raw response body: ${response.body}');
+
+//       // Print the parsed JSON data
+//       print('Parsed JSON data: $jsonData');
+
+//       // Assuming the response contains a list of requests, each with a user object containing a name
+//       List<String> applicantNames = jsonData.map((request) => request['user']['name'] as String).toList();
+
+//       // Print the list of applicant names
+//       print('Applicant Names: $applicantNames');
+
+//       return applicantNames;
+//     } else {
+//       throw Exception('Failed to load applicants. Status Code: ${response.statusCode}');
+//     }
+//   } catch (e) {
+//     print('Error in fetchJobApplicants: $e');
+//     throw Exception('Error: $e');
+//   }
+// }
+
+Future<List<Map<String, String>>> fetchJobApplicants(String jobId) async {
   try {
     String? token = await authRepository.getToken();
 
@@ -115,7 +126,7 @@ Future<List<String>> fetchJobWorkers(String jobId) async {
     }
 
     final response = await http.get(
-      Uri.parse('https://api-tau-plum.vercel.app/api/jobs/$jobId/workers'), // Replace with your API endpoint
+      Uri.parse('https://api-tau-plum.vercel.app/api/jobs/$jobId/requests'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -124,8 +135,76 @@ Future<List<String>> fetchJobWorkers(String jobId) async {
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
-      // Assuming each worker has a user object with a 'name'
-      return jsonData.map((worker) => worker['user']['name'] as String).toList();
+      return jsonData.map((request) {
+        return {
+          'userId': request['user']['_id'] as String,
+          'name': request['user']['name'] as String,
+        };
+      }).toList();
+    } else {
+      throw Exception('Failed to load applicants. Status Code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error in fetchJobApplicants: $e');
+    throw Exception('Error: $e');
+  }
+}
+
+  // New method for fetching workers for a specific job
+// Future<List<String>> fetchJobWorkers(String jobId) async {
+//   try {
+//     String? token = await authRepository.getToken();
+
+//     if (token == null || token.isEmpty) {
+//       throw Exception('No valid token found. Please login again.');
+//     }
+
+//     final response = await http.get(
+//       Uri.parse('https://api-tau-plum.vercel.app/api/jobs/$jobId/workers'), // Replace with your API endpoint
+//       headers: {
+//         'Authorization': 'Bearer $token',
+//         'Content-Type': 'application/json',
+//       },
+//     );
+
+//     if (response.statusCode == 200) {
+//       List<dynamic> jsonData = json.decode(response.body);
+//       // Assuming each worker has a user object with a 'name'
+//       return jsonData.map((worker) => worker['user']['name'] as String).toList();
+//     } else {
+//       throw Exception('Failed to load workers. Status Code: ${response.statusCode}');
+//     }
+//   } catch (e) {
+//     print('Error in fetchJobWorkers: $e');
+//     throw Exception('Error: $e');
+//   } 
+// }
+
+Future<List<Map<String, String>>> fetchJobWorkers(String jobId) async {
+  try {
+    String? token = await authRepository.getToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('No valid token found. Please login again.');
+    }
+
+    final response = await http.get(
+      Uri.parse('https://api-tau-plum.vercel.app/api/jobs/$jobId/workers'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = json.decode(response.body);
+      // Assuming each worker has a 'user' object with '_id' and 'name' fields
+      return jsonData.map((worker) {
+        return {
+          'userId': worker['user']['_id'] as String,
+          'name': worker['user']['name'] as String,
+        };
+      }).toList();
     } else {
       throw Exception('Failed to load workers. Status Code: ${response.statusCode}');
     }
@@ -134,6 +213,7 @@ Future<List<String>> fetchJobWorkers(String jobId) async {
     throw Exception('Error: $e');
   }
 }
+
 
   // Accept/Reject Job Request
   Future<void> updateJobRequestStatus(String jobId, String userId, String action) async {
