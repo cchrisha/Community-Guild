@@ -106,29 +106,49 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildProfilePictureSection(BuildContext context, ProfileLoaded state) {
-    final profileBloc = context.read<ProfileBloc>();
+  final profileBloc = context.read<ProfileBloc>();
 
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 50,
-          backgroundImage: state.profilePictureUrl.isNotEmpty
-              ? NetworkImage(state.profilePictureUrl) // Use the loaded profile picture
-              : const AssetImage('assets/default_profile.png'), // Default picture
-        ),
-        const SizedBox(height: 10),
-        ElevatedButton.icon(
-          onPressed: () async {
-            final ImagePicker picker = ImagePicker();
-            final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-            if (image != null) {
-              profileBloc.add(UploadProfilePicture(File(image.path))); // Trigger the upload event
-            }
-          },
-          icon: const Icon(Icons.upload),
-          label: const Text('Upload Profile Picture'),
-        ),
-      ],
-    );
-  }
+  return Column(
+    children: [
+      Stack(
+        children: [
+          GestureDetector(
+            child: CircleAvatar(
+              radius: 50,
+              backgroundImage: state.profilePictureUrl.isNotEmpty
+                  ? NetworkImage(state.profilePictureUrl)
+                  : const AssetImage('assets/default_profile.png') as ImageProvider,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.lightBlue,
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.camera_alt,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                onPressed: () async {
+                  final ImagePicker picker = ImagePicker();
+                  final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                  if (image != null) {
+                    profileBloc.add(UploadProfilePicture(File(image.path)));
+                  }
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
+}
 }
