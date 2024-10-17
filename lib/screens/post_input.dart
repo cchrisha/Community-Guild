@@ -184,9 +184,9 @@ class PostInputState extends State<PostInput> {
                                     ),
                                     backgroundColor: Colors.red,
                                     behavior: SnackBarBehavior.floating,
-                                    margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                                    margin: const EdgeInsets.symmetric( vertical: 20),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
+                                      borderRadius: BorderRadius.circular(0),
                                     ),
                                   ),
                                 );

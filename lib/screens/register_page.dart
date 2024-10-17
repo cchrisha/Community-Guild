@@ -203,6 +203,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         keyboardType: TextInputType.phone,
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(11),
                         ],
                       ),
                       const SizedBox(height: 20),
