@@ -117,8 +117,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfilePictureSection(
-      BuildContext context, ProfileLoaded state) {
+  Widget _buildProfilePictureSection(BuildContext context, ProfileLoaded state) {
     final profileBloc = context.read<ProfileBloc>();
 
     return Column(
@@ -126,17 +125,16 @@ class ProfilePage extends StatelessWidget {
         CircleAvatar(
           radius: 50,
           backgroundImage: state.profilePictureUrl.isNotEmpty
-              ? NetworkImage(state.profilePictureUrl)
-              : const AssetImage('assets/default_profile.png'),
+              ? NetworkImage(state.profilePictureUrl) // Use the loaded profile picture
+              : const AssetImage('assets/default_profile.png'), // Default picture
         ),
         const SizedBox(height: 10),
         ElevatedButton.icon(
           onPressed: () async {
             final ImagePicker picker = ImagePicker();
-            final XFile? image =
-                await picker.pickImage(source: ImageSource.gallery);
+            final XFile? image = await picker.pickImage(source: ImageSource.gallery);
             if (image != null) {
-              profileBloc.add(UploadProfilePicture(File(image.path)));
+              profileBloc.add(UploadProfilePicture(File(image.path))); // Trigger the upload event
             }
           },
           icon: const Icon(Icons.upload),

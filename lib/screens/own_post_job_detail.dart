@@ -6,11 +6,12 @@ import 'package:community_guild/repository/authentication/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http; // Required for the repository
+import 'dart:convert'; // Ensure you have this import for json.encode
 
 class OwnJobDetailPage extends StatefulWidget {
   const   OwnJobDetailPage({
     super.key,
-    required this.jobId, // Add jobId parameter here
+    required this.jobId,
     required this.jobTitle,
     required this.jobDescription,
     required this.date,
@@ -41,8 +42,66 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
   // Mock data for Request and Workers dialogs
   final List<String> users = ['User 1', 'User 2', 'User 3', 'User 4', 'User 5', 'User 6', 'User 7']; // Sample larger list
 
+  // Add your authRepository as a member of the state class
+  final AuthRepository authRepository = AuthRepository(httpClient: http.Client());
+
+  // Method to update job request status
+  Future<void> updateJobRequestStatus(String jobId, String userId, String action) async {
+    try {
+      String? token = await authRepository.getToken();
+      if (token == null || token.isEmpty) {
+        throw Exception('No valid token found. Please login again.');
+      }
+
+      final response = await http.put(
+        Uri.parse('https://api-tau-plum.vercel.app/api/jobs/$jobId/request/$userId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'action': action, // 'accept' or 'reject'
+        }),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update job request status.');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> updateWorkerStatus(String jobId, String userId, String action) async {
+  try {
+    String? token = await authRepository.getToken();
+    if (token == null || token.isEmpty) {
+      throw Exception('No valid token found. Please login again.');
+    }
+
+    final response = await http.put(
+      Uri.parse('https://api-tau-plum.vercel.app/api/jobs/$jobId/workers/$userId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'action': action, // 'done' or 'canceled'
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update worker status.');
+    }
+  } catch (e) {
+    throw Exception('Error: $e');
+  }
+}
+
+
 //ito yung requssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
   void _showApplicantsDialog(String jobId) {
+  print('Showing applicants for Job ID: $jobId'); // Print jobId when showing the dialog
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -50,7 +109,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
         create: (context) => AboutJobBloc(
           AboutJobRepository(authRepository: AuthRepository(httpClient: http.Client()))
         )..add(FetchJobApplicants(jobId)),
-        child: BlocBuilder<AboutJobBloc, AboutJobState>(
+        child: BlocBuilder<AboutJobBloc, AboutJobState>(    
           builder: (context, state) {
             if (state is AboutJobApplicantsLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -67,10 +126,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
   );
 }
 
-Widget _buildApplicantsDialog(List<String> applicants) {
-  // Print the list of applicants to the terminal
-  print('Applicants: ${applicants.join(', ')}');
-
+Widget _buildApplicantsDialog(List<Map<String, String>> applicants) {
   return AlertDialog(
     title: const Text('Applicants'),
     content: SizedBox(
@@ -79,6 +135,9 @@ Widget _buildApplicantsDialog(List<String> applicants) {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: applicants.map((applicant) {
+            String applicantName = applicant['name'] ?? 'Unknown';
+            String userId = applicant['userId']!; // Get userId
+            
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 3.0),
               child: Row(
@@ -88,10 +147,22 @@ Widget _buildApplicantsDialog(List<String> applicants) {
                     child: Icon(Icons.person, color: Colors.white),
                   ),
                   const SizedBox(width: 10),
-                  Expanded(child: Text(applicant)), // Display the applicant name
+                  Expanded(child: Text(applicantName)), // Display the applicant name
                   ElevatedButton(
-                    onPressed: () {
-                      context.read<AboutJobBloc>().add(AcceptApplicantEvent(widget.jobId, applicant));
+                    onPressed: () async {
+                      try {
+                        // Call the updateJobRequestStatus method
+                        await updateJobRequestStatus(widget.jobId, applicant['userId']!, 'accept');
+                        // Optionally, show a success message or refresh the state
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Applicant accepted successfully.')),
+                        );
+                      } catch (e) {
+                        // Handle error and show error message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error: $e')),
+                        );
+                      }
                     },
                     child: const Text('Accept'),
                   ),
@@ -152,10 +223,7 @@ Widget _buildErrorDialog(String message) {
   );
 }
 
-Widget _buildWorkersDialog(List<String> workers) {
-  // Print the list of workers to the terminal
-  print('Workers: ${workers.join(', ')}');
-
+Widget _buildWorkersDialog(List<Map<String, String>> workers) {
   return AlertDialog(
     title: const Text('Workers'),
     content: SizedBox(
@@ -164,6 +232,9 @@ Widget _buildWorkersDialog(List<String> workers) {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: workers.map((worker) {
+            String workerName = worker['name'] ?? 'Unknown';
+            String userId = worker['userId']!; // Get worker's userId
+
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 3.0),
               child: Row(
@@ -173,10 +244,22 @@ Widget _buildWorkersDialog(List<String> workers) {
                     child: Icon(Icons.person, color: Colors.white),
                   ),
                   const SizedBox(width: 10),
-                  Expanded(child: Text(worker)), // Display the worker name
+                  Expanded(child: Text(workerName)), // Display the worker's name
                   ElevatedButton(
-                    onPressed: () {
-                      context.read<AboutJobBloc>().add(MarkWorkerDoneEvent(widget.jobId, worker));
+                    onPressed: () async {
+                      try {
+                        // Call the updateWorkerStatus method to mark the worker as done
+                        await updateWorkerStatus(widget.jobId, userId, 'done');
+                        // Optionally, show a success message or refresh the state
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Worker marked as done.')),
+                        );
+                      } catch (e) {
+                        // Handle error and show error message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error: $e')),
+                        );
+                      }
                     },
                     child: const Text('Done'),
                   ),
@@ -195,7 +278,6 @@ Widget _buildWorkersDialog(List<String> workers) {
     ],
   );
 }
-
 
 //anditoooooooooooooooooooooooooooo yung name title description emeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
   @override
