@@ -82,12 +82,21 @@ class _JobDetailPageState extends State<JobDetailPage> {
         );
       } else {
         final responseData = json.decode(response.body);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${responseData['message']}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        if (responseData['message'] == "You cannot apply to your own job") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Error: You cannot apply to your own job.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: ${responseData['message']}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
