@@ -2,19 +2,23 @@ import 'package:community_guild/bloc/about_job/about_job_bloc.dart';
 import 'package:community_guild/bloc/about_job/about_job_event.dart';
 import 'package:community_guild/bloc/about_job/about_job_state.dart';
 import 'package:community_guild/repository/all_job_detail/about_job_repository.dart';
-import 'package:community_guild/repository/authentication/auth_repository.dart'; // Import AuthRepository
+import 'package:community_guild/repository/authentication/auth_repository.dart';
 import 'package:community_guild/screens/own_post_job_detail.dart';
+import 'package:community_guild/widget/about_job/posted_job_card.dart';
+import 'package:community_guild/widget/about_job/rejected_card.dart';
+import 'package:community_guild/widget/about_job/requested_job_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http; // Import for Http Client
-
+import 'package:http/http.dart' as http;
 import 'package:community_guild/screens/current_job_detail.dart';
 import 'package:community_guild/screens/completed_job.dart';
 import 'package:community_guild/screens/rejected_job_details.dart';
-import 'package:community_guild/widget/about_job/job_card.dart';
+import 'package:community_guild/widget/about_job/current_job_card.dart';
 import 'package:community_guild/widget/about_job/section_title.dart';
-import 'package:community_guild/widget/about_job/completed_job_card2.dart';
+import 'package:community_guild/widget/about_job/completed_job_card.dart';
 import 'package:intl/intl.dart';
+
+import '../widget/loading_widget/progressive_dots.dart';
 
 class JobPage extends StatefulWidget {
   const JobPage({super.key});
@@ -32,14 +36,12 @@ class _JobPageState extends State<JobPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Create an instance of AuthRepository with the HTTP client
     final authRepository = AuthRepository(httpClient: http.Client());
 
     return BlocProvider(
       create: (context) =>
           AboutJobBloc(AboutJobRepository(authRepository: authRepository))
-            ..add(FetchAboutJobsByStatus(
-                'working on')), // Fetch "working on" jobs initially
+            ..add(FetchAboutJobsByStatus('working on')), // Fetch jobs
       child: Scaffold(
         appBar: AppBar(
           title: const Row(
@@ -65,83 +67,95 @@ class _JobPageState extends State<JobPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Current Jobs Section with Expandable Feature
-                GestureDetector(
+                SectionTitleAboutJob(
+                  title: 'Current Jobs',
+                  isExpanded: _isCurrentJobsExpanded,
                   onTap: () {
                     setState(() {
-                      _isCurrentJobsExpanded =
-                          !_isCurrentJobsExpanded; // Toggle expansion
+                      _isCurrentJobsExpanded = !_isCurrentJobsExpanded;
                     });
                   },
-                  child: SectionTitleAboutJob(title: 'Current Jobs'),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 0),
                 BlocBuilder<AboutJobBloc, AboutJobState>(
                   builder: (context, state) {
                     if (state is AboutJobLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return const Center(
+                        child: ProgressiveDots(
+                          color: Colors.blue,
+                          size: 40.0, // Customize the size as per your need
+                        ),
+                      );
                     } else if (state is AboutJobLoaded) {
                       return AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
-                        height: _isCurrentJobsExpanded
-                            ? 250
-                            : 0, // Adjust height based on expansion
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          itemCount: state.jobs.length,
-                          itemBuilder: (context, index) {
-                            final job = state.jobs[index];
+                        constraints: BoxConstraints(
+                          maxHeight: _isCurrentJobsExpanded ? 230 : 0,
+                        ),
+                        child: ClipRect(
+                          child: OverflowBox(
+                            maxHeight: _isCurrentJobsExpanded ? 230 : 0,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              itemCount: state.jobs.length,
+                              itemBuilder: (context, index) {
+                                final job = state.jobs[index];
 
-                            // Function to handle date parsing and formatting
-                            String formatDate(String dateString) {
-                              try {
-                                DateTime parsedDate =
-                                    DateTime.parse(dateString);
-                                return DateFormat('MMMM dd, yyyy')
-                                    .format(parsedDate);
-                              } catch (e) {
-                                return 'Invalid date';
-                              }
-                            }
+                                // Function to handle date parsing and formatting
+                                String formatDate(String dateString) {
+                                  try {
+                                    DateTime parsedDate =
+                                        DateTime.parse(dateString);
+                                    return DateFormat('MMMM dd, yyyy')
+                                        .format(parsedDate);
+                                  } catch (e) {
+                                    return 'Invalid date'; // Return a fallback if parsing fails
+                                  }
+                                }
 
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                child: AboutJobCard(
-                                  jobTitle: job.title,
-                                  jobDescription: job.description,
-                                  workPlace: job.location,
-                                  date: formatDate(job.datePosted),
-                                  wageRange: job.wageRange,
-                                  contact: job.poster.name,
-                                  category: job.categories.join(', '),
-                                  isCrypto: job.isCrypto,
-                                  professions: job.professions.join(', '),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => CurrentJobDetail(
-                                          jobTitle: job.title,
-                                          jobDescription: job.description,
-                                          date: formatDate(job.datePosted),
-                                          workPlace: job.location,
-                                          wageRange: job.wageRange,
-                                          isCrypto: job.isCrypto,
-                                          professions:
-                                              job.professions.join(', '),
-                                          contact: job.poster.name,
-                                          category: job.categories.join(', '),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            );
-                          },
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 0),
+                                  child: SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.9,
+                                    child: CurrentJobCard(
+                                      jobTitle: job.title,
+                                      jobDescription: job.description,
+                                      workPlace: job.location,
+                                      date: formatDate(job.datePosted),
+                                      wageRange: job.wageRange,
+                                      contact: job.poster.name,
+                                      category: job.categories.join(', '),
+                                      isCrypto: job.isCrypto,
+                                      professions: job.professions.join(', '),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                CurrentJobDetail(
+                                              jobTitle: job.title,
+                                              jobDescription: job.description,
+                                              date: formatDate(job.datePosted),
+                                              workPlace: job.location,
+                                              wageRange: job.wageRange,
+                                              isCrypto: job.isCrypto,
+                                              professions:
+                                                  job.professions.join(', '),
+                                              contact: job.poster.name,
+                                              category:
+                                                  job.categories.join(', '),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ),
                       );
                     } else if (state is AboutJobError) {
@@ -154,90 +168,99 @@ class _JobPageState extends State<JobPage> {
                   },
                 ),
                 const SizedBox(height: 10),
-
-                // Completed Jobs Section
-                GestureDetector(
+                SectionTitleAboutJob(
+                  title: 'Completed Jobs',
+                  isExpanded: _isCompletedJobsExpanded,
                   onTap: () {
                     setState(() {
-                      _isCompletedJobsExpanded =
-                          !_isCompletedJobsExpanded; // Toggle expansion
+                      _isCompletedJobsExpanded = !_isCompletedJobsExpanded;
                     });
                   },
-                  child: const SectionTitleAboutJob(title: 'Completed Jobs'),
                 ),
                 BlocProvider(
                   create: (context) => AboutJobBloc(
                       AboutJobRepository(authRepository: authRepository))
-                    ..add(FetchAboutJobsByStatus(
-                        'done')), // Fetch "completed" jobs
+                    ..add(FetchAboutJobsByStatus('done')),
                   child: BlocBuilder<AboutJobBloc, AboutJobState>(
                     builder: (context, state) {
                       if (state is AboutJobLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is AboutJobLoaded) {
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          height: _isCompletedJobsExpanded ? 250 : 0,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            itemCount: state.jobs.length,
-                            itemBuilder: (context, index) {
-                              final job = state.jobs[index];
-
-                              // Improved function to handle date parsing and formatting
-                              String formatDate(String dateString) {
-                                try {
-                                  DateTime parsedDate =
-                                      DateTime.parse(dateString);
-                                  return DateFormat('MMMM dd, yyyy')
-                                      .format(parsedDate);
-                                } catch (e) {
-                                  return 'Invalid date'; // Return a fallback if parsing fails
-                                }
-                              }
-
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.8,
-                                  child: CompletedJobCard2(
-                                    jobTitle: job.title,
-                                    jobDescription: job.description,
-                                    workPlace: job.location,
-                                    date: formatDate(job.datePosted),
-                                    wageRange: job.wageRange,
-                                    contact: job.poster.name,
-                                    category: job.categories.join(', '),
-                                    isCrypto: job.isCrypto,
-                                    professions: job.professions.join(', '),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              CompletedJobDetail(
-                                            jobTitle: job.title,
-                                            jobDescription: job.description,
-                                            date: formatDate(job.datePosted),
-                                            workPlace: job.location,
-                                            wageRange: job.wageRange,
-                                            isCrypto: job.isCrypto,
-                                            professions:
-                                                job.professions.join(', '),
-                                            contact: job.poster.name,
-                                            category: job.categories.join(', '),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
+                        return const Center(
+                          child: ProgressiveDots(
+                            color: Colors.blue,
+                            size: 40.0, // Customize the size as per your need
                           ),
                         );
+                      } else if (state is AboutJobLoaded) {
+                        return AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            constraints: BoxConstraints(
+                              maxHeight: _isCompletedJobsExpanded ? 230 : 0,
+                            ),
+                            child: ClipRect(
+                                child: OverflowBox(
+                              maxHeight: _isCompletedJobsExpanded ? 230 : 0,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemCount: state.jobs.length,
+                                itemBuilder: (context, index) {
+                                  final job = state.jobs[index];
+
+                                  // Improved function to handle date parsing and formatting
+                                  String formatDate(String dateString) {
+                                    try {
+                                      DateTime parsedDate =
+                                          DateTime.parse(dateString);
+                                      return DateFormat('MMMM dd, yyyy')
+                                          .format(parsedDate);
+                                    } catch (e) {
+                                      return 'Invalid date'; // Return a fallback if parsing fails
+                                    }
+                                  }
+
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 0),
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.9,
+                                      child: CompletedJobCard(
+                                        jobTitle: job.title,
+                                        jobDescription: job.description,
+                                        workPlace: job.location,
+                                        date: formatDate(job.datePosted),
+                                        wageRange: job.wageRange,
+                                        contact: job.poster.name,
+                                        category: job.categories.join(', '),
+                                        isCrypto: job.isCrypto,
+                                        professions: job.professions.join(', '),
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CompletedJobDetail(
+                                                jobTitle: job.title,
+                                                jobDescription: job.description,
+                                                date:
+                                                    formatDate(job.datePosted),
+                                                workPlace: job.location,
+                                                wageRange: job.wageRange,
+                                                isCrypto: job.isCrypto,
+                                                professions:
+                                                    job.professions.join(', '),
+                                                contact: job.poster.name,
+                                                category:
+                                                    job.categories.join(', '),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            )));
                       } else if (state is AboutJobError) {
                         return Center(
                           child: Text('Error: ${state.message}'),
@@ -249,90 +272,99 @@ class _JobPageState extends State<JobPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                // Pending Jobs Section
-                GestureDetector(
+                SectionTitleAboutJob(
+                  title: 'Requested Jobs',
+                  isExpanded: _isRequestedJobsExpanded,
                   onTap: () {
                     setState(() {
-                      _isRequestedJobsExpanded =
-                          !_isRequestedJobsExpanded; // Toggle expansion
+                      _isRequestedJobsExpanded = !_isRequestedJobsExpanded;
                     });
                   },
-                  child: const SectionTitleAboutJob(title: 'Requested Jobs'),
                 ),
                 BlocProvider(
                   create: (context) => AboutJobBloc(
                       AboutJobRepository(authRepository: authRepository))
-                    ..add(FetchAboutJobsByStatus(
-                        'requested')), // Fetch "requested" jobs
+                    ..add(FetchAboutJobsByStatus('requested')),
                   child: BlocBuilder<AboutJobBloc, AboutJobState>(
                     builder: (context, state) {
                       if (state is AboutJobLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is AboutJobLoaded) {
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          height: _isRequestedJobsExpanded ? 250 : 0,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            itemCount: state.jobs.length,
-                            itemBuilder: (context, index) {
-                              final job = state.jobs[index];
-
-                              // Improved function to handle date parsing and formatting
-                              String formatDate(String dateString) {
-                                try {
-                                  DateTime parsedDate =
-                                      DateTime.parse(dateString);
-                                  return DateFormat('MMMM dd, yyyy')
-                                      .format(parsedDate);
-                                } catch (e) {
-                                  return 'Invalid date'; // Return a fallback if parsing fails
-                                }
-                              }
-
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.8,
-                                  child: AboutJobCard(
-                                    jobTitle: job.title,
-                                    jobDescription: job.description,
-                                    date: formatDate(job.datePosted),
-                                    workPlace: job.location,
-                                    wageRange: job.wageRange,
-                                    contact: job.poster.name,
-                                    category: job.categories.join(', '),
-                                    isCrypto: job.isCrypto,
-                                    professions: job.professions.join(', '),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              RejectedJobDetail(
-                                            jobTitle: job.title,
-                                            jobDescription: job.description,
-                                            date: formatDate(job.datePosted),
-                                            workPlace: job.location,
-                                            wageRange: job.wageRange,
-                                            isCrypto: job.isCrypto,
-                                            professions:
-                                                job.professions.join(', '),
-                                            contact: job.poster.name,
-                                            category: job.categories.join(', '),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
+                        return const Center(
+                          child: ProgressiveDots(
+                            color: Colors.blue,
+                            size: 40.0, // Customize the size as per your need
                           ),
                         );
+                      } else if (state is AboutJobLoaded) {
+                        return AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            constraints: BoxConstraints(
+                              maxHeight: _isRequestedJobsExpanded ? 230 : 0,
+                            ),
+                            child: ClipRect(
+                                child: OverflowBox(
+                              maxHeight: _isRequestedJobsExpanded ? 230 : 0,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemCount: state.jobs.length,
+                                itemBuilder: (context, index) {
+                                  final job = state.jobs[index];
+
+                                  // Improved function to handle date parsing and formatting
+                                  String formatDate(String dateString) {
+                                    try {
+                                      DateTime parsedDate =
+                                          DateTime.parse(dateString);
+                                      return DateFormat('MMMM dd, yyyy')
+                                          .format(parsedDate);
+                                    } catch (e) {
+                                      return 'Invalid date'; // Return a fallback if parsing fails
+                                    }
+                                  }
+
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 0),
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.9,
+                                      child: RequestedJobCard(
+                                        jobTitle: job.title,
+                                        jobDescription: job.description,
+                                        date: formatDate(job.datePosted),
+                                        workPlace: job.location,
+                                        wageRange: job.wageRange,
+                                        contact: job.poster.name,
+                                        category: job.categories.join(', '),
+                                        isCrypto: job.isCrypto,
+                                        professions: job.professions.join(', '),
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RejectedJobDetail(
+                                                jobTitle: job.title,
+                                                jobDescription: job.description,
+                                                date:
+                                                    formatDate(job.datePosted),
+                                                workPlace: job.location,
+                                                wageRange: job.wageRange,
+                                                isCrypto: job.isCrypto,
+                                                professions:
+                                                    job.professions.join(', '),
+                                                contact: job.poster.name,
+                                                category:
+                                                    job.categories.join(', '),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            )));
                       } else if (state is AboutJobError) {
                         return Center(
                           child: Text('Error: ${state.message}'),
@@ -344,90 +376,98 @@ class _JobPageState extends State<JobPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                // Rejected Jobs Section
-                GestureDetector(
+                SectionTitleAboutJob(
+                  title: 'Rejected Jobs',
+                  isExpanded: _isRejectedJobsExpanded,
                   onTap: () {
                     setState(() {
-                      _isRejectedJobsExpanded =
-                          !_isRejectedJobsExpanded; // Toggle expansion
+                      _isRejectedJobsExpanded = !_isRejectedJobsExpanded;
                     });
                   },
-                  child: const SectionTitleAboutJob(title: 'Rejected Jobs'),
                 ),
                 BlocProvider(
                   create: (context) => AboutJobBloc(
                       AboutJobRepository(authRepository: authRepository))
-                    ..add(FetchAboutJobsByStatus(
-                        'rejected')), // Fetch "rejected" jobs
+                    ..add(FetchAboutJobsByStatus('rejected')),
                   child: BlocBuilder<AboutJobBloc, AboutJobState>(
                     builder: (context, state) {
                       if (state is AboutJobLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is AboutJobLoaded) {
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          height: _isRejectedJobsExpanded ? 250 : 0,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            itemCount: state.jobs.length,
-                            itemBuilder: (context, index) {
-                              final job = state.jobs[index];
-
-                              // Improved function to handle date parsing and formatting
-                              String formatDate(String dateString) {
-                                try {
-                                  DateTime parsedDate =
-                                      DateTime.parse(dateString);
-                                  return DateFormat('MMMM dd, yyyy')
-                                      .format(parsedDate);
-                                } catch (e) {
-                                  return 'Invalid date'; // Return a fallback if parsing fails
-                                }
-                              }
-
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.8,
-                                  child: AboutJobCard(
-                                    jobTitle: job.title,
-                                    jobDescription: job.description,
-                                    date: formatDate(job.datePosted),
-                                    workPlace: job.location,
-                                    wageRange: job.wageRange,
-                                    contact: job.poster.name,
-                                    category: job.categories.join(', '),
-                                    isCrypto: job.isCrypto,
-                                    professions: job.professions.join(', '),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              RejectedJobDetail(
-                                            jobTitle: job.title,
-                                            jobDescription: job.description,
-                                            date: formatDate(job.datePosted),
-                                            workPlace: job.location,
-                                            wageRange: job.wageRange,
-                                            isCrypto: job.isCrypto,
-                                            professions:
-                                                job.professions.join(', '),
-                                            contact: job.poster.name,
-                                            category: job.categories.join(', '),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
+                        return const Center(
+                          child: ProgressiveDots(
+                            color: Colors.blue,
+                            size: 40.0, // Customize the size as per your need
                           ),
                         );
+                      } else if (state is AboutJobLoaded) {
+                        return AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            constraints: BoxConstraints(
+                              maxHeight: _isRejectedJobsExpanded ? 230 : 0,
+                            ),
+                            child: ClipRect(
+                                child: OverflowBox(
+                              maxHeight: _isRejectedJobsExpanded ? 230 : 0,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemCount: state.jobs.length,
+                                itemBuilder: (context, index) {
+                                  final job = state.jobs[index];
+                                  // Improved function to handle date parsing and formatting
+                                  String formatDate(String dateString) {
+                                    try {
+                                      DateTime parsedDate =
+                                          DateTime.parse(dateString);
+                                      return DateFormat('MMMM dd, yyyy')
+                                          .format(parsedDate);
+                                    } catch (e) {
+                                      return 'Invalid date'; // Return a fallback if parsing fails
+                                    }
+                                  }
+
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 0),
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.9,
+                                      child: RejectedJobCard(
+                                        jobTitle: job.title,
+                                        jobDescription: job.description,
+                                        date: formatDate(job.datePosted),
+                                        workPlace: job.location,
+                                        wageRange: job.wageRange,
+                                        contact: job.poster.name,
+                                        category: job.categories.join(', '),
+                                        isCrypto: job.isCrypto,
+                                        professions: job.professions.join(', '),
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RejectedJobDetail(
+                                                jobTitle: job.title,
+                                                jobDescription: job.description,
+                                                date:
+                                                    formatDate(job.datePosted),
+                                                workPlace: job.location,
+                                                wageRange: job.wageRange,
+                                                isCrypto: job.isCrypto,
+                                                professions:
+                                                    job.professions.join(', '),
+                                                contact: job.poster.name,
+                                                category:
+                                                    job.categories.join(', '),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            )));
                       } else if (state is AboutJobError) {
                         return Center(
                           child: Text('Error: ${state.message}'),
@@ -439,16 +479,14 @@ class _JobPageState extends State<JobPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                // Posted Jobs Section
-                GestureDetector(
+                SectionTitleAboutJob(
+                  title: 'Posted Jobs',
+                  isExpanded: _isPostedJobsExpanded,
                   onTap: () {
                     setState(() {
-                      _isPostedJobsExpanded =
-                          !_isPostedJobsExpanded; // Toggle expansion
+                      _isPostedJobsExpanded = !_isPostedJobsExpanded;
                     });
                   },
-                  child: const SectionTitleAboutJob(title: 'Posted Jobs'),
                 ),
                 FutureBuilder<String?>(
                   future: AuthRepository(httpClient: http.Client())
@@ -479,84 +517,97 @@ class _JobPageState extends State<JobPage> {
                               authRepository: authRepository);
 
                           return AboutJobBloc(aboutJobRepository)
-                            ..add(FetchJobsPostedByUser(
-                                userId)); // Fetch jobs posted by the user
+                            ..add(FetchJobsPostedByUser(userId));
                         },
                         child: BlocBuilder<AboutJobBloc, AboutJobState>(
                           builder: (context, state) {
                             if (state is AboutJobLoading) {
                               return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (state is AboutJobLoaded) {
-                              return AnimatedContainer(
-                                duration: const Duration(milliseconds: 300),
-                                height: _isPostedJobsExpanded ? 250 : 0,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: state.jobs.length,
-                                  itemBuilder: (context, index) {
-                                    final job = state.jobs[index];
-
-                                    // Improved function to handle date parsing and formatting
-                                    String formatDate(String dateString) {
-                                      try {
-                                        DateTime parsedDate =
-                                            DateTime.parse(dateString);
-                                        return DateFormat('MMMM dd, yyyy')
-                                            .format(parsedDate);
-                                      } catch (e) {
-                                        return 'Invalid date'; // Fallback if parsing fails
-                                      }
-                                    }
-
-                                    return Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.8,
-                                        child: AboutJobCard(
-                                          jobTitle: job.title,
-                                          jobDescription: job.description,
-                                          date: formatDate(job
-                                              .datePosted), // Apply formatted date
-                                          workPlace: job.location,
-                                          wageRange: job.wageRange,
-                                          contact: job.poster.name,
-                                          category: job.categories.join(', '),
-                                          isCrypto: job.isCrypto,
-                                          professions:
-                                              job.professions.join(', '),
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    OwnJobDetailPage(
-                                                  jobId: job.id,
-                                                  jobTitle: job.title,
-                                                  jobDescription:
-                                                      job.description,
-                                                  date: formatDate(
-                                                      job.datePosted),
-                                                  workPlace: job.location,
-                                                  wageRange: job.wageRange,
-                                                  isCrypto: job.isCrypto,
-                                                  professions: job.professions
-                                                      .join(', '),
-                                                  contact: job.poster.name,
-                                                  category:
-                                                      job.categories.join(', '),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                child: ProgressiveDots(
+                                  color: Colors.blue,
+                                  size:
+                                      40.0, // Customize the size as per your need
                                 ),
                               );
+                            } else if (state is AboutJobLoaded) {
+                              return AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  constraints: BoxConstraints(
+                                    maxHeight: _isPostedJobsExpanded ? 230 : 0,
+                                  ),
+                                  child: ClipRect(
+                                      child: OverflowBox(
+                                    maxHeight: _isPostedJobsExpanded ? 230 : 0,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      shrinkWrap: true,
+                                      itemCount: state.jobs.length,
+                                      itemBuilder: (context, index) {
+                                        final job = state.jobs[index];
+
+                                        // Improved function to handle date parsing and formatting
+                                        String formatDate(String dateString) {
+                                          try {
+                                            DateTime parsedDate =
+                                                DateTime.parse(dateString);
+                                            return DateFormat('MMMM dd, yyyy')
+                                                .format(parsedDate);
+                                          } catch (e) {
+                                            return 'Invalid date'; // Fallback if parsing fails
+                                          }
+                                        }
+
+                                        return Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 0),
+                                          child: SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.9,
+                                            child: PostedJobCard(
+                                              jobTitle: job.title,
+                                              jobDescription: job.description,
+                                              date: formatDate(job.datePosted),
+                                              workPlace: job.location,
+                                              wageRange: job.wageRange,
+                                              contact: job.poster.name,
+                                              category:
+                                                  job.categories.join(', '),
+                                              isCrypto: job.isCrypto,
+                                              professions:
+                                                  job.professions.join(', '),
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        OwnJobDetailPage(
+                                                      jobId: job.id,
+                                                      jobTitle: job.title,
+                                                      jobDescription:
+                                                          job.description,
+                                                      date: formatDate(
+                                                          job.datePosted),
+                                                      workPlace: job.location,
+                                                      wageRange: job.wageRange,
+                                                      isCrypto: job.isCrypto,
+                                                      professions: job
+                                                          .professions
+                                                          .join(', '),
+                                                      contact: job.poster.name,
+                                                      category: job.categories
+                                                          .join(', '),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )));
                             } else if (state is AboutJobError) {
                               return Center(
                                 child: Text('Error: ${state.message}'),

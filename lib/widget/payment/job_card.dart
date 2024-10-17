@@ -35,7 +35,8 @@ class _PaymentJobCardPageState extends State<PaymentJobCardPage> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      color: Colors.white,
+      margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
       elevation: 4,
       child: GestureDetector(
         onTap: () {
@@ -52,8 +53,9 @@ class _PaymentJobCardPageState extends State<PaymentJobCardPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${widget.isSent ? 'Sent' : 'Recieved'} ${widget.amount} ETH', 
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    '${widget.isSent ? 'Sent' : 'Recieved'} ${widget.amount} ETH',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   Text(
                     widget.date.toLocal().toString().split(' ')[0],
@@ -62,14 +64,16 @@ class _PaymentJobCardPageState extends State<PaymentJobCardPage> {
                 ],
               ),
               const SizedBox(height: 8),
-              Text('From: ${_isExpanded ? widget.sender : shortenAddress(widget.sender)}'),
-              Text('To: ${_isExpanded ? widget.recipient : shortenAddress(widget.recipient)}'),
+              Text(
+                  'From: ${_isExpanded ? widget.sender : shortenAddress(widget.sender)}'),
+              Text(
+                  'To: ${_isExpanded ? widget.recipient : shortenAddress(widget.recipient)}'),
               const SizedBox(height: 8),
-              Text('Hash: ${_isExpanded ? widget.hash : shortenAddress(widget.hash)}'),
+              Text(
+                  'Hash: ${_isExpanded ? widget.hash : shortenAddress(widget.hash)}'),
             ],
           ),
         ),
-
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:async'; // Importing Timer
 import 'package:community_guild/repository/authentication/auth_repository.dart';
 import 'package:community_guild/screens/forget_password.dart';
+import 'package:community_guild/widget/loading_widget/ink_drop.dart';
 import 'package:community_guild/widget/login_and_register/login_register_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,9 +13,6 @@ import 'package:community_guild/screens/home.dart';
 import 'package:community_guild/screens/register_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'admin/admin.dart';
-import 'admin/adminHome.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -40,12 +38,24 @@ class LoginPage extends StatelessWidget {
                 future: _checkLoginStatus(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                      child: InkDrop(
+                        size: 40,
+                        color: Colors.lightBlue,
+                        ringColor: Colors.lightBlue.withOpacity(0.2),
+                      ),
+                    );
                   } else if (snapshot.hasData && snapshot.data == true) {
                     Future.delayed(const Duration(milliseconds: 500), () {
-                      Get.off(() => HomePage());
+                      Get.off(() => const HomePage());
                     });
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                      child: InkDrop(
+                        size: 40,
+                        color: Colors.lightBlue,
+                        ringColor: Colors.lightBlue.withOpacity(0.2),
+                      ),
+                    );
                   }
 
                   return BlocConsumer<AuthBloc, AuthState>(
@@ -58,7 +68,7 @@ class LoginPage extends StatelessWidget {
                           ),
                         );
                         Future.delayed(const Duration(seconds: 1), () {
-                          Get.off(() => HomePage());
+                          Get.off(() => const HomePage());
                         });
                       } else if (state is AuthFailure) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -73,7 +83,13 @@ class LoginPage extends StatelessWidget {
                       final authBloc = context.read<AuthBloc>();
 
                       if (state is AuthLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return Center(
+                          child: InkDrop(
+                            size: 40,
+                            color: Colors.lightBlue,
+                            ringColor: Colors.lightBlue.withOpacity(0.2),
+                          ),
+                        );
                       }
 
                       return Column(
@@ -87,7 +103,7 @@ class LoginPage extends StatelessWidget {
                             labelText: 'Email',
                             controller: authBloc.emailController,
                             obscureText: false,
-                            icon: Icons.email, 
+                            icon: Icons.email,
                           ),
                           const SizedBox(height: 20),
                           AuthWidgets.textField(

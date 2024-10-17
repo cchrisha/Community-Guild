@@ -38,7 +38,8 @@ class SearchAndFilter extends StatelessWidget {
             ],
           ),
         ),
-        const Divider( // Add a stroke (divider) below the padding
+        const Divider(
+          // Add a stroke (divider) below the padding
           color: Colors.grey, // Lighter grey color
           thickness: 1,
           height: 1,

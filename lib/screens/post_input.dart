@@ -66,6 +66,7 @@ class PostInputState extends State<PostInput> {
     return BlocProvider(
       create: (context) => PostBloc(jobRepository: JobRepository()),
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text(
             'Create New Job Post',
