@@ -11,6 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+import '../widget/loading_widget/ink_drop.dart';
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -61,7 +63,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   if (state is AuthFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(state.error), // Display error from backend
+                        content:
+                            Text(state.error), // Display error from backend
                         backgroundColor: Colors.red,
                       ),
                     );
@@ -70,7 +73,13 @@ class _RegisterPageState extends State<RegisterPage> {
                 builder: (context, state) {
                   final authBloc = context.read<AuthBloc>();
                   if (state is AuthLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                      child: InkDrop(
+                        size: 40,
+                        color: Colors.lightBlue,
+                        ringColor: Colors.lightBlue.withOpacity(0.2),
+                      ),
+                    );
                   }
 
                   bool isKeyboardVisible =

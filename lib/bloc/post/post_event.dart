@@ -10,7 +10,7 @@ class SubmitJob extends PostEvent {
   final String location;
   final String profession;
   final String wageRange;
-  final String contact;
+  //final String contact;
   final String description;
   final bool isCrypto;
   final String category;
@@ -20,7 +20,7 @@ class SubmitJob extends PostEvent {
     required this.location,
     required this.profession,
     required this.wageRange,
-    required this.contact,
+    //required this.contact,
     required this.description,
     required this.isCrypto,
     required this.category,
@@ -28,5 +28,7 @@ class SubmitJob extends PostEvent {
 
   @override
   List<Object?> get props =>
-      [title, location, profession, wageRange, contact, description, isCrypto];
+      [title, location, profession, wageRange, description, isCrypto];
+      //[title, location, profession, wageRange, contact, description, isCrypto];
 }
+

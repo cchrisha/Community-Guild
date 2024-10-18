@@ -54,7 +54,7 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   void initializeAppKitModal() async {
-    ReownAppKitModalNetworks.addNetworks('eip155', [customNetwork]);  
+    ReownAppKitModalNetworks.addNetworks('eip155', [customNetwork]);
     appKitModal = ReownAppKitModal(
       context: context,
       projectId: '2d5e262acbc9bf4a4ee3102881528534',
@@ -75,7 +75,7 @@ class _PaymentPageState extends State<PaymentPage> {
     appKitModal!.addListener(updateWalletAddress);
     // Listen for session updates
     setState(() {
-      fetchTransactions(walletAddress); 
+      fetchTransactions(walletAddress);
     });
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -198,6 +198,7 @@ class _PaymentPageState extends State<PaymentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           CustomScrollView(
@@ -215,7 +216,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       children: [
                         const Spacer(),
                         Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
                               BalanceCard(
@@ -262,25 +263,30 @@ class _PaymentPageState extends State<PaymentPage> {
                           AppKitModalConnectButton(
                             appKit: appKitModal!,
                             custom: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors
+                                    .lightBlue, // Set background color to light blue
+                              ),
                               onPressed: () {
                                 if (appKitModal!.isConnected) {
-                                  // Add logic for disconnecting
                                   appKitModal!
-                                      .disconnect(); // Example method for disconnecting
+                                      .disconnect(); // Logic for disconnecting
                                 } else {
                                   appKitModal!
                                       .openModalView(); // Open connection modal
                                 }
                               },
-                              child: Text(appKitModal!.isConnected
-                                  ? 'Disconnect'
-                                  : 'Connect Wallet'),
+                              child: Text(
+                                appKitModal!.isConnected
+                                    ? 'Disconnect'
+                                    : 'Connect Wallet',
+                                style: const TextStyle(color: Colors.white),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 16),
                           Visibility(
-                            visible: !appKitModal!
-                                .isConnected, //kapag !appKitModal! naman ay yan yung kapag hindi connected tsaka lalabas yan
+                            visible: !appKitModal!.isConnected,
                             child: AppKitModalNetworkSelectButton(
                                 appKit: appKitModal!),
                           ),
@@ -291,18 +297,32 @@ class _PaymentPageState extends State<PaymentPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors
+                                        .lightBlue, // Set background color to light blue
+                                  ),
                                   onPressed: () {
                                     _showSendDialog(
                                         context); // Show send dialog on press
                                   },
-                                  child: const Text('Send'),
+                                  child: const Text(
+                                    'Send',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
                                 const SizedBox(width: 17),
                                 ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors
+                                        .lightBlue, // Set background color to light blue
+                                  ),
                                   onPressed: () {
                                     _showReceiveQRCode(context);
                                   },
-                                  child: const Text('Receive'),
+                                  child: const Text(
+                                    'Receive',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
                               ],
                             ),
@@ -355,7 +375,10 @@ class _PaymentPageState extends State<PaymentPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Scan QR Code'),
+          title: const Text(
+            'Scan QR Code',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -368,6 +391,10 @@ class _PaymentPageState extends State<PaymentPage> {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Colors.lightBlue, // Set background color to light blue
+                  ),
                   onPressed: () {
                     // Copy wallet address to clipboard
                     Clipboard.setData(ClipboardData(text: walletAddress))
@@ -379,7 +406,10 @@ class _PaymentPageState extends State<PaymentPage> {
                       );
                     });
                   },
-                  child: const Text('Copy Address'), // Button to copy address
+                  child: const Text(
+                    'Copy Address',
+                    style: TextStyle(color: Colors.white),
+                  ), // Button to copy address
                 ),
               ],
             ),
@@ -389,7 +419,10 @@ class _PaymentPageState extends State<PaymentPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Close'),
+              child: const Text(
+                'Close',
+                style: TextStyle(color: Colors.lightBlue),
+              ),
             ),
           ],
         );
@@ -405,7 +438,10 @@ class _PaymentPageState extends State<PaymentPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Send Crypto Token'),
+          title: const Text(
+            'Send Crypto Token',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -446,20 +482,29 @@ class _PaymentPageState extends State<PaymentPage> {
                   );
                 }
               },
-              child: const Text('Send'),
+              child: const Text(
+                'Send',
+                style: TextStyle(color: Colors.lightBlue),
+              ),
             ),
             TextButton(
               onPressed: () {
-                 Navigator.of(context).pop();
+                Navigator.of(context).pop();
                 _openScanner(context, addressController);
               },
-              child: const Text('Scan'),
+              child: const Text(
+                'Scan',
+                style: TextStyle(color: Colors.lightBlue),
+              ),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: const Text('Cancel'),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.lightBlue),
+              ),
             ),
           ],
         );
@@ -494,63 +539,69 @@ class _PaymentPageState extends State<PaymentPage> {
   void _showAmountDialog(BuildContext context, String scannedAddress) {
     final TextEditingController amountController = TextEditingController();
 
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('Send Crypto'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Recipient Address: $scannedAddress'),
-            TextField(
-              controller: amountController,
-              decoration: const InputDecoration(
-                hintText: 'Amount to Send',
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Send Crypto'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Recipient Address: $scannedAddress'),
+              TextField(
+                controller: amountController,
+                decoration: const InputDecoration(
+                  hintText: 'Amount to Send',
+                ),
+                keyboardType: TextInputType.number,
               ),
-              keyboardType: TextInputType.number,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              // Handle the sending logic here using scannedAddress and amountController.text
-              String recipient = scannedAddress;
-              double amount = double.parse(amountController.text);
-              BigInt bigIntValue = BigInt.from(amount * pow(10, 18));
-              EtherAmount ethAmount = EtherAmount.fromBigInt(EtherUnit.wei, bigIntValue);
-              Navigator.of(context).pop(); // Close the dialog
-              setState(() {
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                // Handle the sending logic here using scannedAddress and amountController.text
+                String recipient = scannedAddress;
+                double amount = double.parse(amountController.text);
+                BigInt bigIntValue = BigInt.from(amount * pow(10, 18));
+                EtherAmount ethAmount =
+                    EtherAmount.fromBigInt(EtherUnit.wei, bigIntValue);
+                Navigator.of(context).pop(); // Close the dialog
+                setState(() {
                   isLoading = true;
                   final Uri metamaskUri = Uri.parse("metamask://");
                   launchUrl(metamaskUri, mode: LaunchMode.externalApplication);
                 });
-              try {
-                await sendTransaction(recipient, ethAmount);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Transaction successful!')),
-                );
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error: ${e.toString()}')),
-                );
-              }
-            },
-            child: const Text('Send'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-            },
-            child: const Text('Cancel'),
-          ),
-        ],
-      );
-    },
-  );
-}
-
+                try {
+                  await sendTransaction(recipient, ethAmount);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Transaction successful!')),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: ${e.toString()}')),
+                  );
+                }
+              },
+              child: const Text(
+                'Send',
+                style: TextStyle(color: Colors.lightBlue),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.lightBlue),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
     setState(() {

@@ -10,6 +10,8 @@ import 'package:community_guild/bloc/home/home_bloc.dart';
 import 'package:community_guild/bloc/home/home_event.dart';
 import 'package:community_guild/bloc/home/home_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../widget/home/bottom_nav.dart';
+import '../widget/loading_widget/ink_drop.dart';
 import 'about_job.dart';
 import 'job_detail.dart';
 import 'payment_page.dart';
@@ -26,6 +28,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+  HomeBloc? _homeBloc;
 
   final List<Widget> _pages = [
     const HomePageBody(),
@@ -36,12 +39,19 @@ class _HomePageState extends State<HomePage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _homeBloc = HomeBloc(
+      homeRepository: HomeRepository(httpClient: http.Client()),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomeBloc(
-        homeRepository: HomeRepository(httpClient: http.Client()),
-      )..add(const LoadJobs('developer')),
+      create: (context) => _homeBloc!..add(const LoadJobs('developer')),
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: _currentIndex == 0
             ? AppBar(
                 title: const Row(
@@ -57,70 +67,95 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                backgroundColor: const Color.fromARGB(255, 3, 169, 244),
+                backgroundColor: Colors.lightBlue,
                 automaticallyImplyLeading: false,
               )
             : null,
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         body: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           child: _pages[_currentIndex],
         ),
         bottomNavigationBar: _currentIndex == 2
             ? null
-            : BottomNavigationBar(
-                type: BottomNavigationBarType.shifting,
-                currentIndex: _currentIndex,
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.home_outlined),
-                    label: 'Home',
-                    backgroundColor: Color.fromARGB(255, 3, 169, 244),
+            : Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.info_outline),
-                    label: 'About Job',
-                    backgroundColor: Color.fromARGB(255, 3, 169, 244),
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.post_add),
-                    label: 'Post',
-                    backgroundColor: Color.fromARGB(255, 3, 169, 244),
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.payment_outlined),
-                    label: 'Payment',
-                    backgroundColor: Color.fromARGB(255, 3, 169, 244),
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.person_2_outlined),
-                    label: 'Profile',
-                    backgroundColor: Color.fromARGB(255, 3, 169, 244),
-                  ),
-                ],
-                selectedItemColor: Colors.black,
-                unselectedItemColor: Colors.white,
-                onTap: (index) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-
-                  if (_currentIndex == 2) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const PostInput(),
-                      ),
-                    ).then((_) {
-                      setState(() {
-                        _currentIndex = 0;
-                      });
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12.withOpacity(0.1),
+                      spreadRadius: 5,
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: BottomNavigationBar(
+                  type: BottomNavigationBarType.fixed,
+                  currentIndex: _currentIndex,
+                  elevation: 0,
+                  backgroundColor: Colors.transparent,
+                  selectedItemColor: Colors.black,
+                  unselectedItemColor: Colors.grey,
+                  showSelectedLabels: false,
+                  showUnselectedLabels: false,
+                  items: [
+                    _buildCustomNavItem(Icons.home_outlined, 'Home', 0),
+                    _buildCustomNavItem(Icons.task_outlined, 'Task', 1),
+                    _buildCustomNavItem(Icons.post_add_outlined, 'Post', 2),
+                    _buildCustomNavItem(Icons.payment_outlined, 'Payment', 3),
+                    _buildCustomNavItem(Icons.person_2_outlined, 'Profile', 4),
+                  ],
+                  onTap: (index) {
+                    setState(() {
+                      _currentIndex = index;
                     });
-                  }
-                },
+
+                    if (_currentIndex == 0) {
+                      // Trigger job loading when "Home" is tapped
+                      _homeBloc!.add(const LoadJobs('developer'));
+                    }
+
+                    if (_currentIndex == 2) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PostInput(),
+                        ),
+                      ).then((_) {
+                        setState(() {
+                          _currentIndex = 0;
+                        });
+                        // Trigger job loading when returning to "Home"
+                        _homeBloc!.add(const LoadJobs('developer'));
+                      });
+                    }
+                  },
+                ),
               ),
       ),
     );
+  }
+
+  BottomNavigationBarItem _buildCustomNavItem(
+      IconData icon, String label, int index) {
+    return BottomNavigationBarItem(
+      icon: CustomBottomNavItem(
+        icon: icon,
+        label: label,
+        isSelected: _currentIndex == index,
+      ),
+      label: '',
+    );
+  }
+
+  @override
+  void dispose() {
+    _homeBloc?.close();
+    super.dispose();
   }
 }
 
@@ -132,7 +167,13 @@ class HomePageBody extends StatelessWidget {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state is HomeLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: InkDrop(
+              size: 40.0,
+              color: Colors.lightBlue,
+              ringColor: Colors.lightBlue.withOpacity(0.2),
+            ),
+          );
         } else if (state is HomeLoaded) {
           if (state.recommendedJobs.isEmpty) {
             return const Center(
@@ -198,7 +239,7 @@ class HomePageBody extends StatelessWidget {
                                             'No wage range specified',
                                         isCrypto: job.isCrypto,
                                         professions: job.professions.join(', '),
-                                        contact: '',
+                                        // contact: '',
                                         category: job.categories?.join(', ') ??
                                             'No categories available',
                                         posterName:
@@ -251,7 +292,7 @@ class HomePageBody extends StatelessWidget {
                                             'No wage range specified',
                                         isCrypto: job.isCrypto,
                                         professions: job.professions.join(', '),
-                                        contact: '',
+                                        // contact: '',
                                         category: job.categories?.join(', ') ??
                                             'No categories available',
                                         posterName:
@@ -272,7 +313,9 @@ class HomePageBody extends StatelessWidget {
             ],
           );
         } else {
-          return const Center(child: Text('Error loading jobs.'));
+          return const Center(
+            child: Text('Error loading jobs.'),
+          );
         }
       },
     );

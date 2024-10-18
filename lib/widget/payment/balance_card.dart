@@ -10,7 +10,7 @@ class BalanceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 135,
-      width: MediaQuery.of(context).size.width * 0.89, // Responsive width
+      width: MediaQuery.of(context).size.width * 0.94, // Responsive width
       decoration: BoxDecoration(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(10),

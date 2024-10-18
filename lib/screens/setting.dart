@@ -11,6 +11,7 @@ import '../widget/settings/settings_app_bar.dart';
 import '../widget/settings/settings_tile.dart';
 import 'about_app.dart';
 import 'change_password.dart';
+import '../widget/loading_widget/ink_drop.dart'; // Import your custom InkDrop widget
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -62,7 +63,6 @@ class SettingsPage extends StatelessWidget {
                       icon: Icons.info_outline,
                       title: 'About the App',
                       onTap: () {
-                        // Navigate to AboutAppPage
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -80,8 +80,12 @@ class SettingsPage extends StatelessWidget {
                   ],
                 ),
                 if (state is LogoutLoading)
-                  const Center(
-                    child: CircularProgressIndicator(),
+                  Center(
+                    child: InkDrop(
+                      size: 40,
+                      color: Colors.lightBlue,
+                      ringColor: Colors.lightBlue.withOpacity(0.2),
+                    ),
                   ),
               ],
             ),

@@ -202,13 +202,13 @@ class _CurrentJobDetailState extends State<CurrentJobDetail> {
                 ),
               ),
               const SizedBox(height: 10),
-              Text(
-                'Contact: ${widget.contact}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-              ),
+              // Text(
+              //   'Contact: ${widget.contact}',
+              //   style: const TextStyle(
+              //     fontSize: 16,
+              //     color: Colors.black87,
+              //   ),
+              // ),
               const SizedBox(height: 10),
               Text(
                 'Category: ${widget.category}',

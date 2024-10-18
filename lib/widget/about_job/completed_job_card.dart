@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class HomeJobCard extends StatelessWidget {
+class CompletedJobCard extends StatelessWidget {
   final String jobTitle;
   final String jobDescription;
   final String workPlace;
@@ -8,16 +8,18 @@ class HomeJobCard extends StatelessWidget {
   final String wageRange;
   final String category;
   final bool isCrypto;
+  //final String contact;
   final String professions;
   final VoidCallback onTap;
 
-  const HomeJobCard({
+  const CompletedJobCard({
     super.key,
     required this.jobTitle,
     required this.jobDescription,
     required this.workPlace,
     required this.date,
     required this.wageRange,
+    //required this.contact,
     required this.category,
     required this.isCrypto,
     required this.professions,
@@ -29,16 +31,15 @@ class HomeJobCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        elevation: 4, // Reduced elevation for a smaller visual effect
+        elevation: 4, // Reduced elevation
         color: Colors.white,
         shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.circular(12)), // Slightly reduced border radius
+          borderRadius: BorderRadius.circular(10), // Smaller rounded corners
+        ),
         child: Container(
-          padding: const EdgeInsets.all(
-              10), // Reduced padding for a more compact design
+          padding: const EdgeInsets.all(10), // Reduced padding
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10),
             gradient: LinearGradient(
               colors: [Colors.white, Colors.grey.shade50],
               begin: Alignment.topLeft,
@@ -46,10 +47,10 @@ class HomeJobCard extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1), // Lightened shadow opacity
+                color: Colors.grey.withOpacity(0.2),
                 spreadRadius: 1,
-                blurRadius: 2, // Reduced blur radius for less emphasis
-                offset: const Offset(0, 1), // Reduced shadow position
+                blurRadius: 2, // Reduced blur radius
+                offset: const Offset(0, 1), // Slightly reduced shadow position
               ),
             ],
           ),
@@ -57,20 +58,21 @@ class HomeJobCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeader(),
-              const SizedBox(height: 4), // Slightly reduced vertical spacing
+              const SizedBox(height: 4), // Reduced spacing
               Text(
                 jobDescription,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                    color: Colors.black54,
-                    fontSize: 12), // Reduced font size for job description
+                  color: Colors.black54,
+                  fontSize: 12, // Reduced font size
+                ),
               ),
               const SizedBox(height: 4), // Reduced spacing
               _buildInfoRow(Icons.work, 'Profession:', professions),
               _buildInfoRow(Icons.category, 'Category:', category),
               _buildInfoRow(Icons.location_on, 'Workplace:', workPlace),
-              const SizedBox(height: 0), // Further spacing reduction
+              //_buildInfoRow(Icons.contact_phone, 'Contact:', contact),
               _buildWageRow(),
             ],
           ),
@@ -90,17 +92,17 @@ class HomeJobCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 18, // Reduced font size for job title
+              fontSize: 18, // Slightly reduced font size
               color: Colors.black87,
             ),
           ),
         ),
-        const SizedBox(width: 4), // Reduced horizontal spacing
+        const SizedBox(width: 4), // Reduced spacing
         Text(
           date,
           style: const TextStyle(
             color: Colors.grey,
-            fontSize: 11, // Reduced font size for the date
+            fontSize: 11, // Reduced font size
             fontStyle: FontStyle.italic,
           ),
         ),
@@ -111,7 +113,7 @@ class HomeJobCard extends StatelessWidget {
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Padding(
       padding:
-          const EdgeInsets.symmetric(vertical: 2.0), // Reduced vertical padding
+          const EdgeInsets.symmetric(vertical: 3.0), // Reduced vertical padding
       child: Row(
         children: [
           Icon(icon, color: Colors.blueAccent, size: 18), // Reduced icon size
@@ -130,8 +132,9 @@ class HomeJobCard extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 12), // Reduced value font size
+                color: Colors.black87,
+                fontSize: 12, // Reduced font size
+              ),
             ),
           ),
         ],
@@ -149,7 +152,7 @@ class HomeJobCard extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
-              fontSize: 12, // Reduced font size for wage info
+              fontSize: 12, // Reduced font size
               fontWeight: FontWeight.bold,
             ),
           ),
