@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/profile/profile_bloc.dart';
 import '../bloc/profile/profile_event.dart';
 import '../bloc/profile/profile_state.dart';
+import '../widget/home/section_title.dart';
 import '../widget/loading_widget/ink_drop.dart';
+import '../widget/profile/profession_info_card.dart';
 import '../widget/profile/profile_info_card.dart';
 import 'edit_profile_page.dart';
 import 'setting.dart';
@@ -83,7 +85,7 @@ class ProfilePage extends StatelessWidget {
                   color: Colors.lightBlue,
                   ringColor: Colors.lightBlue.withOpacity(0.2),
                 ),
-              ); // Centered InkDrop
+              );
             } else if (state is ProfileLoaded) {
               return _buildProfileContent(context, state);
             } else if (state is ProfileError) {
@@ -98,18 +100,23 @@ class ProfilePage extends StatelessWidget {
 
   Widget _buildProfileContent(BuildContext context, ProfileLoaded state) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildProfilePictureSection(context, state),
-          const SizedBox(height: 15),
+          const SizedBox(height: 0),
           ProfileHeader(name: state.name, profession: state.profession),
-          const SizedBox(height: 30),
+          const SizedBox(height: 15),
+          const SectionTitle(title: 'Contac Info:'),
           ProfileInfoCard(
             location: state.location,
             contact: state.contact,
             email: state.email,
+          ),
+          const SizedBox(height: 15),
+          const SectionTitle(title: 'Professional Info:'),
+          ProfessionInfoCard(
             profession: state.profession,
           ),
         ],
@@ -117,28 +124,53 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfilePictureSection(BuildContext context, ProfileLoaded state) {
+  Widget _buildProfilePictureSection(
+      BuildContext context, ProfileLoaded state) {
     final profileBloc = context.read<ProfileBloc>();
 
-    return Column(
+    return Stack(
+      alignment: Alignment.center,
       children: [
         CircleAvatar(
           radius: 50,
-          backgroundImage: state.profilePictureUrl.isNotEmpty
-              ? NetworkImage(state.profilePictureUrl) // Use the loaded profile picture
-              : const AssetImage('assets/default_profile.png'), // Default picture
+          backgroundColor: Colors.grey[200],
+          child: CircleAvatar(
+            radius: 55,
+            backgroundImage: state.profilePictureUrl.isNotEmpty
+                ? NetworkImage(state.profilePictureUrl)
+                : const AssetImage('assets/default_profile.png')
+                    as ImageProvider,
+          ),
         ),
-        const SizedBox(height: 10),
-        ElevatedButton.icon(
-          onPressed: () async {
-            final ImagePicker picker = ImagePicker();
-            final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-            if (image != null) {
-              profileBloc.add(UploadProfilePicture(File(image.path))); // Trigger the upload event
-            }
-          },
-          icon: const Icon(Icons.upload),
-          label: const Text('Upload Profile Picture'),
+        Positioned(
+          bottom: -1,
+          right: 0,
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.lightBlue,
+              border: Border.all(
+                color: Colors.white,
+                width: 3,
+              ),
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.camera_alt, color: Colors.white),
+              onPressed: () async {
+                final ImagePicker picker = ImagePicker();
+                final XFile? image =
+                    await picker.pickImage(source: ImageSource.gallery);
+                if (image != null) {
+                  profileBloc.add(UploadProfilePicture(File(image.path)));
+                }
+              },
+              iconSize: 22,
+              padding: EdgeInsets.zero,
+              splashRadius: 28,
+            ),
+          ),
         ),
       ],
     );
