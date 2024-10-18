@@ -143,7 +143,7 @@ class _JobPageState extends State<JobPage> {
                                               isCrypto: job.isCrypto,
                                               professions:
                                                   job.professions.join(', '),
-                                              //contact: job.poster.name,
+                                              contact: job.poster.name,
                                               category:
                                                   job.categories.join(', '),
                                             ),
@@ -248,7 +248,7 @@ class _JobPageState extends State<JobPage> {
                                                 isCrypto: job.isCrypto,
                                                 professions:
                                                     job.professions.join(', '),
-                                                //contact: job.poster.name,
+                                                contact: job.poster.name,
                                                 category:
                                                     job.categories.join(', '),
                                               ),
@@ -352,7 +352,7 @@ class _JobPageState extends State<JobPage> {
                                                 isCrypto: job.isCrypto,
                                                 professions:
                                                     job.professions.join(', '),
-                                                //contact: job.poster.name,
+                                                contact: job.poster.name,
                                                 category:
                                                     job.categories.join(', '),
                                               ),
@@ -436,7 +436,7 @@ class _JobPageState extends State<JobPage> {
                                         date: formatDate(job.datePosted),
                                         workPlace: job.location,
                                         wageRange: job.wageRange,
-                                        contact: job.poster.name,
+                                        //contact: job.poster.name,
                                         category: job.categories.join(', '),
                                         isCrypto: job.isCrypto,
                                         professions: job.professions.join(', '),
@@ -455,7 +455,7 @@ class _JobPageState extends State<JobPage> {
                                                 isCrypto: job.isCrypto,
                                                 professions:
                                                     job.professions.join(', '),
-                                                //contact: job.poster.name,
+                                                contact: job.poster.name,
                                                 category:
                                                     job.categories.join(', '),
                                               ),
@@ -595,7 +595,7 @@ class _JobPageState extends State<JobPage> {
                                                       professions: job
                                                           .professions
                                                           .join(', '),
-                                                      //contact: job.poster.name,
+                                                      contact: job.poster.name,
                                                       category: job.categories
                                                           .join(', '),
                                                     ),

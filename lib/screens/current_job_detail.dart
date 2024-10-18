@@ -11,7 +11,7 @@ class CurrentJobDetail extends StatefulWidget {
     required this.isCrypto,
     required this.professions,
     required this.workPlace,
-    //required this.contact,
+    required this.contact,
     required this.category,
   });
 
@@ -22,7 +22,7 @@ class CurrentJobDetail extends StatefulWidget {
   final bool isCrypto;
   final String professions;
   final String workPlace;
-  //final String contact;
+  final String contact;
   final String category;
 
   @override
@@ -99,15 +99,15 @@ class _CurrentJobDetailState extends State<CurrentJobDetail> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Text(
-                                //   widget.contact,
-                                //   style: const TextStyle(
-                                //     fontSize: 20,
-                                //     fontWeight: FontWeight.bold,
-                                //     color: Colors.black87,
-                                //   ),
-                                //   overflow: TextOverflow.ellipsis,
-                                // ),
+                                Text(
+                                  widget.contact,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ],
                             ),
                           ],

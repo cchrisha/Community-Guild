@@ -119,7 +119,7 @@ class PostPage extends StatelessWidget {
                                           wageRange: job.wageRange,
                                           isCrypto: job.isCrypto,
                                           professions: job.professions,
-                                          //contact: job.contact,
+                                          contact: job.contact,
                                           category: job.category,
                                         ),
                                       ),

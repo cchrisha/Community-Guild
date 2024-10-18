@@ -27,7 +27,8 @@ class PostInputState extends State<PostInput> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
-  final TextEditingController _rewardController = TextEditingController();
+  final TextEditingController _minRewardController = TextEditingController();
+  final TextEditingController _maxRewardController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
 
@@ -144,7 +145,20 @@ class PostInputState extends State<PostInput> {
                                 professions: _professions,
                               ),
                               const SizedBox(height: 16),
-                              JobRewardField(controller: _rewardController),
+                              // Updated JobRewardField with minimum and maximum wage inputs
+                              Column(
+                                children: [
+                                  JobRewardField(
+                                    controller: _minRewardController,
+                                    label: 'Minimum Wage',
+                                  ),
+                                  const SizedBox(height: 16),
+                                  JobRewardField(
+                                    controller: _maxRewardController,
+                                    label: 'Maximum Wage',
+                                  ),
+                                ],
+                              ),
                               const SizedBox(height: 10),
                               CryptoPaymentCheckbox(
                                 isCrypto: _isCrypto,
@@ -155,8 +169,6 @@ class PostInputState extends State<PostInput> {
                                 },
                               ),
                               const SizedBox(height: 16),
-                              JobContactField(controller: _contactController),
-                              const SizedBox(height: 16),
                               JobDescriptionField(
                                   controller: _descriptionController),
                             ],
@@ -166,16 +178,19 @@ class PostInputState extends State<PostInput> {
                         Center(
                           child: PostButton(
                             onPressed: () {
-                              // Check for empty fields
+                              final double? minReward =
+                                  double.tryParse(_minRewardController.text);
+                              final double? maxReward =
+                                  double.tryParse(_maxRewardController.text);
+
+                              // Check for empty fields and validate wage range
                               if (_titleController.text.isEmpty ||
                                   _locationController.text.isEmpty ||
-                                  _rewardController.text.isEmpty ||
+                                  _minRewardController.text.isEmpty ||
+                                  _maxRewardController.text.isEmpty ||
                                   _descriptionController.text.isEmpty ||
-                                  _contactController.text.isEmpty ||
                                   _selectedProfession == null ||
                                   _selectedCategory == null) {
-                                
-                                // Show centered SnackBar with red background and white text
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: const Text(
@@ -185,7 +200,25 @@ class PostInputState extends State<PostInput> {
                                     ),
                                     backgroundColor: Colors.red,
                                     behavior: SnackBarBehavior.floating,
-                                    margin: const EdgeInsets.symmetric( vertical: 20),
+                                    margin: const EdgeInsets.symmetric(vertical: 20),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(0),
+                                    ),
+                                  ),
+                                );
+                              } else if (minReward == null ||
+                                  maxReward == null ||
+                                  minReward >= maxReward) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text(
+                                      'Ensure that the minimum wage is less than the maximum wage.',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    backgroundColor: Colors.red,
+                                    behavior: SnackBarBehavior.floating,
+                                    margin: const EdgeInsets.symmetric(vertical: 20),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(0),
                                     ),
@@ -199,8 +232,8 @@ class PostInputState extends State<PostInput> {
                                     location: _locationController.text,
                                     profession: _selectedProfession!,
                                     category: _selectedCategory!,
-                                    wageRange: _rewardController.text,
-                                    contact: _contactController.text,
+                                    wageRange:
+                                        '${_minRewardController.text} - ${_maxRewardController.text}',
                                     description: _descriptionController.text,
                                     isCrypto: _isCrypto,
                                   ),
@@ -209,7 +242,6 @@ class PostInputState extends State<PostInput> {
                             },
                           ),
                         ),
-
                       ],
                     ),
                   ),
@@ -226,9 +258,9 @@ class PostInputState extends State<PostInput> {
   void dispose() {
     _titleController.dispose();
     _locationController.dispose();
-    _rewardController.dispose();
+    _minRewardController.dispose();
+    _maxRewardController.dispose();
     _descriptionController.dispose();
-    _contactController.dispose();
     super.dispose();
   }
 }
