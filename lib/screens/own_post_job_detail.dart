@@ -137,34 +137,68 @@ Widget _buildApplicantsDialog(List<Map<String, String>> applicants) {
           children: applicants.map((applicant) {
             String applicantName = applicant['name'] ?? 'Unknown';
             String userId = applicant['userId']!; // Get userId
-            
+
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3.0),
-              child: Row(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CircleAvatar(
-                    backgroundColor: Colors.lightBlueAccent,
-                    child: Icon(Icons.person, color: Colors.white),
+                  Row(
+                    children: [
+                      const CircleAvatar(
+                        backgroundColor: Colors.lightBlueAccent,
+                        child: Icon(Icons.person, color: Colors.white),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(child: Text(applicantName, style: const TextStyle(fontSize: 16))),
+                    ],
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(child: Text(applicantName)), // Display the applicant name
-                  ElevatedButton(
-                    onPressed: () async {
-                      try {
-                        // Call the updateJobRequestStatus method
-                        await updateJobRequestStatus(widget.jobId, applicant['userId']!, 'accept');
-                        // Optionally, show a success message or refresh the state
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Applicant accepted successfully.')),
-                        );
-                      } catch (e) {
-                        // Handle error and show error message
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error: $e')),
-                        );
-                      }
-                    },
-                    child: const Text('Accept'),
+                  const SizedBox(height: 10), // Space between name and buttons
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Accept Button
+                      ElevatedButton(
+                        onPressed: () async {
+                          try {
+                            // Call the updateJobRequestStatus method to accept the applicant
+                            await updateJobRequestStatus(widget.jobId, userId, 'accept');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Applicant accepted successfully.')),
+                            );
+                          } catch (e) {
+                            // Handle error and show error message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error: $e')),
+                            );
+                          }
+                        },
+                        child: const Text('Accept'),
+                      ),
+
+                      // Reject Button
+                      ElevatedButton(
+                        onPressed: () async {
+                          try {
+                            // Call the updateJobRequestStatus method to reject the applicant
+                            await updateJobRequestStatus(widget.jobId, userId, 'reject');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Applicant rejected successfully.')),
+                            );
+                          } catch (e) {
+                            // Handle error and show error message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error: $e')),
+                            );
+                          }
+                        },
+                        child: const Text('Reject'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.redAccent, // Set button color to red for Reject
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
