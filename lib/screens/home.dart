@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:community_guild/repository/home_repository.dart';
 import 'package:community_guild/screens/post_input.dart';
 import 'package:community_guild/widget/home/job_card.dart';
@@ -9,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:community_guild/bloc/home/home_bloc.dart';
 import 'package:community_guild/bloc/home/home_event.dart';
 import 'package:community_guild/bloc/home/home_state.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../widget/home/bottom_nav.dart';
 import '../widget/loading_widget/ink_drop.dart';
 import 'about_job.dart';
@@ -171,7 +169,7 @@ class HomePageBody extends StatelessWidget {
             child: InkDrop(
               size: 40.0,
               color: Colors.lightBlue,
-              ringColor: Colors.lightBlue.withOpacity(0.2),
+              ringColor: Colors.lightBlue.withOpacity(0.1),
             ),
           );
         } else if (state is HomeLoaded) {
