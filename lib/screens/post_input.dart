@@ -30,7 +30,6 @@ class PostInputState extends State<PostInput> {
   final TextEditingController _minRewardController = TextEditingController();
   final TextEditingController _maxRewardController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _contactController = TextEditingController();
 
   bool _isCrypto = false;
   String? _selectedProfession;
@@ -95,9 +94,16 @@ class PostInputState extends State<PostInput> {
               );
             } else if (state is PostSuccess) {
               Navigator.pop(context); // Dismiss loading indicator
+
+              // Close the screen after showing success
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Job posted successfully!')),
               );
+
+              // Close the PostInput screen and return to the previous screen
+              Future.delayed(const Duration(seconds: 1), () {
+                Navigator.pop(context); // Close the PostInput screen
+              });
             } else if (state is PostFailure) {
               Navigator.pop(context); // Dismiss loading indicator
               ScaffoldMessenger.of(context).showSnackBar(
@@ -145,7 +151,6 @@ class PostInputState extends State<PostInput> {
                                 professions: _professions,
                               ),
                               const SizedBox(height: 16),
-                              // Updated JobRewardField with minimum and maximum wage inputs
                               Column(
                                 children: [
                                   JobRewardField(
