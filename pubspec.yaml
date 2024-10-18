@@ -56,7 +56,10 @@ dependencies:
   qr_code_scanner: ^1.0.1
   jwt_decoder: ^2.0.1
   page_transition:
-  
+  csv: ^6.0.0
+  path_provider: ^2.1.4
+  permission_handler: ^11.3.1
+  fl_chart: ^0.69.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.1
