@@ -108,7 +108,7 @@ class ProfilePage extends StatelessWidget {
           const SizedBox(height: 0),
           ProfileHeader(name: state.name, profession: state.profession),
           const SizedBox(height: 15),
-          const SectionTitle(title: 'Contac Info:'),
+          const SectionTitle(title: 'Contact Info:'),
           ProfileInfoCard(
             location: state.location,
             contact: state.contact,
