@@ -24,7 +24,6 @@ class _UserDetailsState extends State<UserDetails> {
 
   Future<void> fetchUserDetails() async {
     try {
-      // Replace with your API URL
       final response = await http.get(Uri.parse(
           'https://api-tau-plum.vercel.app/api/users/${widget.posterName}'));
 
@@ -73,7 +72,8 @@ class _UserDetailsState extends State<UserDetails> {
           },
         ),
       ),
-      body: Padding(
+      body: Container(
+        color: Colors.white, // Set background color to white
         padding: const EdgeInsets.all(16.0),
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
@@ -88,23 +88,23 @@ class _UserDetailsState extends State<UserDetails> {
                         // Display user profile picture
                         Center(
                           child: Container(
-                            width: 150, // Outer container size
-                            height: 150, // Outer container size
+                            width: 150,
+                            height: 150,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: const Color.fromARGB(255, 3, 169, 244), // Light blue outline
-                                width: 2, // Thickness of the light blue outline
+                                color: const Color.fromARGB(255, 3, 169, 244),
+                                width: 2,
                               ),
                             ),
                             child: Container(
-                              margin: const EdgeInsets.all(4), // White space between avatar and border
+                              margin: const EdgeInsets.all(4),
                               decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Colors.white, // White background for the space
+                                color: Colors.white,
                               ),
                               child: CircleAvatar(
-                                radius: 60, // Adjust radius for the avatar
+                                radius: 60,
                                 backgroundImage: NetworkImage(
                                   userDetails!['profilePicture'] ?? 'https://via.placeholder.com/150',
                                 ),
@@ -112,51 +112,100 @@ class _UserDetailsState extends State<UserDetails> {
                             ),
                           ),
                         ),
-
                         const SizedBox(height: 16),
                         Center(
                           child: Text(
                             userDetails!['name'],
                             style: const TextStyle(
                                 fontSize: 24, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center, // Center-align the name
+                            textAlign: TextAlign.center,
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Card(
-                          margin: const EdgeInsets.symmetric(vertical: 4),
-                          child: ListTile(
-                            leading: const Icon(Icons.email),
-                            title: Text(userDetails!['email']),
+
+                        // Contact Info Section
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                            'Contact Info',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         Card(
+                          elevation: 4, // Added shadow to the card
                           margin: const EdgeInsets.symmetric(vertical: 4),
-                          child: ListTile(
-                            leading: const Icon(Icons.location_on),
-                            title: Text(userDetails!['location']),
+                          color: Colors.white, // Set card background color to white
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: const Icon(
+                                    Icons.email,
+                                    color: Color.fromARGB(255, 3, 169, 244),
+                                  ),
+                                  title: Text(userDetails!['email']),
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  leading: const Icon(
+                                    Icons.location_on,
+                                    color: Color.fromARGB(255, 3, 169, 244),
+                                  ),
+                                  title: Text(userDetails!['location']),
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  leading: const Icon(
+                                    Icons.phone,
+                                    color: Color.fromARGB(255, 3, 169, 244),
+                                  ),
+                                  title: Text(userDetails!['contact']),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // Professional Info Section
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                            'Professional Info',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         Card(
+                          elevation: 4, // Added shadow to the card
                           margin: const EdgeInsets.symmetric(vertical: 4),
-                          child: ListTile(
-                            leading: const Icon(Icons.phone),
-                            title: Text(userDetails!['contact']),
-                          ),
-                        ),
-                        Card(
-                          margin: const EdgeInsets.symmetric(vertical: 4),
-                          child: ListTile(
-                            leading: const Icon(Icons.work),
-                            title: Text(userDetails!['profession']),
-                          ),
-                        ),
-                        Card(
-                          margin: const EdgeInsets.symmetric(vertical: 4),
-                          child: ListTile(
-                            leading: const Icon(Icons.verified),
-                            title: Text(
-                              'Verified: ${userDetails!['isVerify'] == 1 ? 'Yes' : 'No'}',
+                          color: Colors.white, // Set card background color to white
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: const Icon(
+                                    Icons.work,
+                                    color: Color.fromARGB(255, 3, 169, 244),
+                                  ),
+                                  title: Text(userDetails!['profession']),
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  leading: const Icon(
+                                    Icons.verified,
+                                    color: Color.fromARGB(255, 3, 169, 244),
+                                  ),
+                                  title: Text(
+                                      'Verified: ${userDetails!['isVerify'] == 1 ? 'Yes' : 'No'}'),
+                                ),
+                              ],
                             ),
                           ),
                         ),

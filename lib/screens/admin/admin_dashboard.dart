@@ -1,22 +1,25 @@
+import 'dart:io';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 class AdminDashboard extends StatelessWidget {
   final int totalUsers;
   final int completedTransactions;
 
   const AdminDashboard({
-    Key? key,
+    super.key,
     required this.totalUsers,
     required this.completedTransactions,
-  }) : super(key: key);
+  });
 
-  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'), // Set the title of the AppBar
-        centerTitle: true, // Center the title
+        title: const Text('Dashboard'),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -24,16 +27,20 @@ class AdminDashboard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Removed the title Text widget, as it is now in the AppBar
               const SizedBox(height: 16),
-              // Metric cards
               _buildMetricCard('Total Users', '$totalUsers', Icons.people),
               const SizedBox(height: 16),
-              _buildMetricCard('Completed Transactions',
-                  '$completedTransactions', Icons.check_circle),
+              _buildMetricCard('Completed Transactions', '$completedTransactions', Icons.check_circle),
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          // Fetch CSV from API and save locally
+          await downloadCsvFromApi(context);
+        },
+        child: const Icon(Icons.download),
       ),
     );
   }
@@ -58,5 +65,37 @@ class AdminDashboard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> downloadCsvFromApi(BuildContext context) async {
+    try {
+      // Replace with your API endpoint
+      final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/api/jobs/export'));
+      
+      if (response.statusCode == 200) {
+        // Get the external storage directory
+        final directory = await getExternalStorageDirectory();
+        final path = 'storage/emulated/0/Download/admin_dashboard_data.csv';
+
+        // Write the CSV data to the file
+        final file = File(path);
+        await file.writeAsBytes(response.bodyBytes); // Save the response body as bytes
+
+        // Show a success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('CSV file saved at: $path')),
+        );
+      } else {
+        // Handle API error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to download CSV: ${response.reasonPhrase}')),
+        );
+      }
+    } catch (e) {
+      // Handle any errors that may occur
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving file: ${e.toString()}')),
+      );
+    }
   }
 }

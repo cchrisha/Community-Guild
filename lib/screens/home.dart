@@ -239,7 +239,7 @@ class HomePageBody extends StatelessWidget {
                                             'No wage range specified',
                                         isCrypto: job.isCrypto,
                                         professions: job.professions.join(', '),
-                                        contact: '',
+                                        // contact: '',
                                         category: job.categories?.join(', ') ??
                                             'No categories available',
                                         posterName:
@@ -292,7 +292,7 @@ class HomePageBody extends StatelessWidget {
                                             'No wage range specified',
                                         isCrypto: job.isCrypto,
                                         professions: job.professions.join(', '),
-                                        contact: '',
+                                        // contact: '',
                                         category: job.categories?.join(', ') ??
                                             'No categories available',
                                         posterName:

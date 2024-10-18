@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <application
+        android:requestLegacyExternalStorage="true"
         android:label="community_guild"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
@@ -29,6 +32,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <!-- Replace 'exampleapp' with your app's deep link scheme -->
                 <data android:scheme="cryptoflutter" />
             </intent-filter>

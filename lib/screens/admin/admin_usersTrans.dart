@@ -1,3 +1,5 @@
+import 'package:community_guild/models/payment_model.dart';
+import 'package:community_guild/screens/admin/admin_transactionDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -13,6 +15,7 @@ class _UserTransactionPageState extends State<UserTransactionPage> {
   List<dynamic> _usersWithTransactions = [];
   bool _isLoading = true;
   String? _errorMessage;
+  String _searchQuery = "";
 
   @override
   void initState() {
@@ -59,7 +62,7 @@ class _UserTransactionPageState extends State<UserTransactionPage> {
 
   Future<List<dynamic>> fetchTransactions(String? walletAddress) async {
     if (walletAddress == null || walletAddress.isEmpty) return [];
-    
+
     const etherscanApiKey = '5KEE4GXQSGWAFCJ6CWBJPMQ5BV3VQ33IX1';
     final url = 'https://api-sepolia.etherscan.io/api?module=account&action=txlist&address=$walletAddress&startblock=0&endblock=99999999&sort=desc&apikey=$etherscanApiKey';
 
@@ -69,7 +72,7 @@ class _UserTransactionPageState extends State<UserTransactionPage> {
 
       if (data['status'] == '1') {
         return data['result'].map((tx) {
-          final amount = (BigInt.parse(tx['value']) / BigInt.from(10).pow(18)).toString();// Convert from Wei to ETH
+          final amount = (BigInt.parse(tx['value']) / BigInt.from(10).pow(18)).toString(); // Convert from Wei to ETH
           final date = DateTime.fromMillisecondsSinceEpoch(int.parse(tx['timeStamp']) * 1000).toLocal();
           final isSent = tx['from'].toLowerCase() == walletAddress.toLowerCase(); // Determine if it's sent or received
 
@@ -99,43 +102,68 @@ class _UserTransactionPageState extends State<UserTransactionPage> {
         title: const Text('User Transactions'),
         centerTitle: true,
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _errorMessage != null
-              ? Center(child: Text(_errorMessage!))
-              : SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    columns: const [
-                      DataColumn(label: Text('No.')),
-                      DataColumn(label: Text('Name')),
-                      DataColumn(label: Text('Email')),
-                      DataColumn(label: Text('From')),
-                      DataColumn(label: Text('To')),
-                      DataColumn(label: Text('Amount (ETH)')),
-                      DataColumn(label: Text('Date')),
-                      DataColumn(label: Text('Time')),
-                      DataColumn(label: Text('Type')), // New column for Sent/Received
-                    ],
-                    rows: _usersWithTransactions.expand<DataRow>((user) {
-                      return user['transactions'].map<DataRow>((tx) {
-                        return DataRow(
-                          cells: [
-                            DataCell(Text('${_usersWithTransactions.indexOf(user) + 1}')),
-                            DataCell(Text(user['name'])),
-                            DataCell(Text(user['email'])),
-                            DataCell(Text(tx['From'])),
-                            DataCell(Text(tx['To'])),
-                            DataCell(Text(tx['Amount'])),
-                            DataCell(Text(tx['Date'])),
-                            DataCell(Text(tx['Time'])),
-                            DataCell(Text(tx['isSent'] ? 'Sent' : 'Received')), // Determine sent or received
-                          ],
-                        );
-                      });
-                    }).toList(),
-                  ),
-                ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value.toLowerCase();
+                });
+              },
+              decoration: InputDecoration(
+                labelText: 'Search Users',
+                border: const OutlineInputBorder(),
+                suffixIcon: const Icon(Icons.search),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _errorMessage != null
+                      ? Center(child: Text(_errorMessage!))
+                      : ListView.builder(
+                          itemCount: _usersWithTransactions.length,
+                          itemBuilder: (context, userIndex) {
+                            var user = _usersWithTransactions[userIndex];
+                            // Filter users based on the search query
+                            if (!user['name'].toLowerCase().contains(_searchQuery) &&
+                                !user['email'].toLowerCase().contains(_searchQuery)) {
+                              return const SizedBox.shrink();
+                            }
+
+                            return Card(
+                              margin: const EdgeInsets.symmetric(vertical: 8),
+                              child: InkWell(
+                                onTap: () {
+                                  // Navigate to MyWidget with user data
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AdminTransactionDetails(user: user), // Pass user data here
+                                    ),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('${user['name']}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                      Text('Email: ${user['email']}', style: const TextStyle(color: Colors.grey)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -8,7 +8,7 @@ class RejectedJobCard extends StatelessWidget {
   final String wageRange;
   final String category;
   final bool isCrypto;
-  final String contact;
+  //final String contact;
   final String professions;
   final VoidCallback onTap;
 
@@ -19,7 +19,7 @@ class RejectedJobCard extends StatelessWidget {
     required this.workPlace,
     required this.date,
     required this.wageRange,
-    required this.contact,
+    //required this.contact,
     required this.category,
     required this.isCrypto,
     required this.professions,
@@ -72,7 +72,7 @@ class RejectedJobCard extends StatelessWidget {
               _buildInfoRow(Icons.work, 'Profession:', professions),
               _buildInfoRow(Icons.category, 'Category:', category),
               _buildInfoRow(Icons.location_on, 'Workplace:', workPlace),
-              _buildInfoRow(Icons.contact_phone, 'Contact:', contact),
+              //_buildInfoRow(Icons.contact_phone, 'Contact:', contact),
               _buildWageRow(),
             ],
           ),

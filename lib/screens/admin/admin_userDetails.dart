@@ -13,11 +13,40 @@ class AdminUserDetailsPage extends StatefulWidget {
 
 class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
   late bool isVerified;
+  List<dynamic> currentJobs = [];
+  List<dynamic> completedJobs = [];
+  List<dynamic> requestedJobs = [];
+  List<dynamic> rejectedJobs = [];
 
   @override
   void initState() {
     super.initState();
     isVerified = widget.user['isVerify'] == 1;
+    _fetchJobs(); // Fetch the jobs when the page loads
+  }
+
+  Future<void> _fetchJobs() async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://api-tau-plum.vercel.app/api/user/${widget.user['_id']}/jobs/all'), // API to fetch all jobs by user ID
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          // Categorizing jobs by their statuses
+          currentJobs = data['current'] ?? [];
+          completedJobs = data['completed'] ?? [];
+          requestedJobs = data['requested'] ?? [];
+          rejectedJobs = data['rejected'] ?? [];
+        });
+      } else {
+        print('Failed to load jobs');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   Future<void> _updateVerifyStatus(String userId, bool isVerified) async {
@@ -44,7 +73,7 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
-      print(e);  // Debugging output
+      print(e); // Debugging output
     }
   }
 
@@ -55,7 +84,7 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
         title: const Text('User Details'),
         centerTitle: true,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,64 +131,92 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
             ),
             const SizedBox(height: 20),
 
-            // Recent Jobs Section
-            Text(
-              'Recent Jobs',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            // Here you can fetch and display recent jobs
-            // For example, use a ListView to display jobs
-            _buildJobsSection('Recent Jobs', [
-              // Sample recent jobs data
-              {'title': 'Job Title 1', 'status': 'Posted'},
-              {'title': 'Job Title 2', 'status': 'Completed'},
-            ]),
-
-            // Posted Jobs Section
+            // Jobs Section
+            _buildJobsSection('Current Jobs', currentJobs),
             const SizedBox(height: 20),
-            Text(
-              'Posted Jobs',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            _buildJobsSection('Posted Jobs', [
-              // Sample posted jobs data
-              {'title': 'Job Title 3', 'status': 'Posted'},
-              {'title': 'Job Title 4', 'status': 'Posted'},
-            ]),
 
-            // Completed Jobs Section
+            _buildJobsSection('Completed Jobs', completedJobs),
             const SizedBox(height: 20),
-            Text(
-              'Completed Jobs',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            _buildJobsSection('Completed Jobs', [
-              // Sample completed jobs data
-              {'title': 'Job Title 5', 'status': 'Completed'},
-              {'title': 'Job Title 6', 'status': 'Completed'},
-            ]),
+
+            _buildJobsSection('Requested Jobs', requestedJobs),
+            const SizedBox(height: 20),
+
+            _buildJobsSection('Rejected Jobs', rejectedJobs),
           ],
         ),
       ),
     );
   }
 
-  // Method to build jobs section
-  Widget _buildJobsSection(String sectionTitle, List<Map<String, String>> jobs) {
+  // Method to build a job section with horizontal scrollable cards
+  Widget _buildJobsSection(String sectionTitle, List<dynamic> jobs) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: jobs.map((job) {
-        return Card(
-          margin: const EdgeInsets.symmetric(vertical: 5),
-          child: ListTile(
-            title: Text(job['title'] ?? ''),
-            subtitle: Text('Status: ${job['status']}'),
-          ),
-        );
-      }).toList(),
+      children: [
+        Text(
+          sectionTitle,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 240, // Increased height for the job cards to prevent overflow
+          child: jobs.isNotEmpty
+              ? ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: jobs.length,
+                  itemBuilder: (context, index) {
+                    final job = jobs[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Container(
+                        width: 300, // Increased width for each job card
+                        padding: const EdgeInsets.all(20), // Increased padding
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              job['title'] ?? '',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18, // Increased font size for title
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Wage Range: ${job['wageRange'] ?? ''}',
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Location: ${job['location'] ?? ''}',
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Crypto: ${job['isCrypto'] ? 'Yes' : 'No'}',
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
+                            const SizedBox(height: 15),
+                            Text(
+                              'Description: ${job['description'] ?? ''}',
+                              maxLines: 4, // Increased max lines for description
+                              overflow: TextOverflow.ellipsis, // Handle overflow
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Professions: ${job['professions']?.join(', ') ?? ''}',
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                )
+              : Center(child: Text('No jobs available')),
+        ),
+      ],
     );
   }
 }
