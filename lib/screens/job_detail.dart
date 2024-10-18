@@ -17,7 +17,7 @@ class JobDetailPage extends StatefulWidget {
     required this.isCrypto,
     required this.professions,
     required this.workPlace,
-    required this.contact,
+    //required this.contact,
     required this.category,
     required this.posterName,
   });
@@ -30,7 +30,7 @@ class JobDetailPage extends StatefulWidget {
   final bool isCrypto;
   final String professions;
   final String workPlace;
-  final String contact;
+  //final String contact;
   final String category;
   final String posterName;
 
@@ -298,14 +298,14 @@ class _JobDetailPageState extends State<JobDetailPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              Text(
-                'Contact: ${widget.contact}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
+              // Text(
+              //   'Contact: ${widget.contact}',
+              //   style: const TextStyle(
+              //     fontSize: 16,
+              //     color: Colors.black87,
+              //     overflow: TextOverflow.ellipsis,
+              //   ),
+              // ),
               const SizedBox(height: 10),
               Text(
                 'Category: ${widget.category}',
