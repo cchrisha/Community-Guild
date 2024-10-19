@@ -44,7 +44,8 @@ class ProfilePage extends StatelessWidget {
                   final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const EditProfilePage()),
+                      builder: (context) => const EditProfilePage(),
+                    ),
                   );
                   if (result == true) {
                     context.read<ProfileBloc>().add(LoadProfile());
@@ -53,7 +54,8 @@ class ProfilePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const SettingsPage()),
+                      builder: (context) => const SettingsPage(),
+                    ),
                   );
                 }
               },
@@ -61,13 +63,17 @@ class ProfilePage extends StatelessWidget {
                 return [
                   const PopupMenuItem<String>(
                     value: 'Edit Info',
-                    child: Text('Edit Info',
-                        style: TextStyle(color: Colors.black)),
+                    child: Text(
+                      'Edit Info',
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                   const PopupMenuItem<String>(
                     value: 'Settings',
-                    child:
-                        Text('Settings', style: TextStyle(color: Colors.black)),
+                    child: Text(
+                      'Settings',
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                 ];
               },
@@ -106,7 +112,10 @@ class ProfilePage extends StatelessWidget {
         children: [
           _buildProfilePictureSection(context, state),
           const SizedBox(height: 0),
-          ProfileHeader(name: state.name, profession: state.profession),
+          ProfileHeader(
+            name: state.name,
+            profession: state.profession,
+          ),
           const SizedBox(height: 15),
           const SectionTitle(title: 'Contact Info:'),
           ProfileInfoCard(
@@ -131,29 +140,39 @@ class ProfilePage extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        CircleAvatar(
-          radius: 50,
-          backgroundColor: Colors.grey[200],
+        Container(
+          margin: const EdgeInsets.all(4.0), // Add margin around the avatar
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: Colors.lightBlue, // Border color
+              width: 4.0, // Border width
+            ),
+          ),
           child: CircleAvatar(
-            radius: 55,
-            backgroundImage: state.profilePictureUrl.isNotEmpty
-                ? NetworkImage(state.profilePictureUrl)
-                : const AssetImage('assets/default_profile.png')
-                    as ImageProvider,
+            radius: 60, // Avatar size (outer radius including border)
+            backgroundColor: Colors.grey[200], // Fallback background color
+            child: CircleAvatar(
+              radius: 56, // Inner avatar size to avoid cutting
+              backgroundImage: state.profilePictureUrl.isNotEmpty
+                  ? NetworkImage(state.profilePictureUrl)
+                  : const AssetImage('assets/default_profile.png')
+                      as ImageProvider,
+            ),
           ),
         ),
         Positioned(
-          bottom: -1,
+          bottom: 0,
           right: 0,
           child: Container(
             width: 40,
-            height: 40,
+            height: 40, // Adjust size for camera icon
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.lightBlue,
+              color: Colors.lightBlue, // Icon background color
               border: Border.all(
                 color: Colors.white,
-                width: 3,
+                width: 3, // Border width around icon
               ),
             ),
             child: IconButton(
@@ -166,7 +185,7 @@ class ProfilePage extends StatelessWidget {
                   profileBloc.add(UploadProfilePicture(File(image.path)));
                 }
               },
-              iconSize: 22,
+              iconSize: 20,
               padding: EdgeInsets.zero,
               splashRadius: 28,
             ),

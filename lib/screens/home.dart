@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:community_guild/repository/home_repository.dart';
 import 'package:community_guild/screens/post_input.dart';
 import 'package:community_guild/widget/home/job_card.dart';
-import 'package:community_guild/widget/home/search_and_filter.dart';
+// import 'package:community_guild/widget/home/search_and_filter.dart';
 import 'package:community_guild/widget/home/section_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -162,160 +164,247 @@ class HomePageBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        if (state is HomeLoading) {
-          return Center(
-            child: InkDrop(
-              size: 40.0,
-              color: Colors.lightBlue,
-              ringColor: Colors.lightBlue.withOpacity(0.1),
+    return BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+      if (state is HomeLoading) {
+        return Center(
+          child: InkDrop(
+            size: 40.0,
+            color: Colors.lightBlue,
+            ringColor: Colors.lightBlue.withOpacity(0.1),
+          ),
+        );
+      } else if (state is HomeLoaded) {
+        if (state.recommendedJobs.isEmpty) {
+          return const Center(
+            child: Text(
+              'No jobs available at the moment.',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
           );
-        } else if (state is HomeLoaded) {
-          if (state.recommendedJobs.isEmpty) {
-            return const Center(
-              child: Text(
-                'No jobs available at the moment.',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-              ),
-            );
-          }
+        }
 
-          return Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 0.0),
-                child: SearchAndFilter(),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Container(
-                    color: const Color.fromARGB(255, 252, 252, 252),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 0, vertical: 1),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 8),
-                        const SectionTitle(title: 'Recommendations'),
-                        const SizedBox(height: 10),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: state.recommendedJobs.length,
-                          itemBuilder: (context, index) {
-                            final job = state.recommendedJobs[index];
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: HomeJobCard(
-                                jobTitle: job.title,
-                                jobDescription: job.description ??
-                                    'No description available',
-                                workPlace: job.location,
-                                date: DateFormat('MMMM dd, yyyy')
-                                    .format(job.datePosted),
-                                wageRange:
-                                    job.wageRange ?? 'No wage range specified',
-                                category: job.categories?.join(', ') ??
-                                    'No categories available',
-                                isCrypto: job.isCrypto,
-                                professions: job.professions.join(', '),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => JobDetailPage(
-                                        jobId: job.id,
-                                        jobTitle: job.title,
-                                        jobDescription: job.description ??
-                                            'No description available',
-                                        date: DateFormat('MMMM dd, yyyy')
-                                            .format(job.datePosted),
-                                        workPlace: job.location,
-                                        wageRange: job.wageRange ??
-                                            'No wage range specified',
-                                        isCrypto: job.isCrypto,
-                                        professions: job.professions.join(', '),
-                                        // contact: '',
-                                        category: job.categories?.join(', ') ??
-                                            'No categories available',
-                                        posterName:
-                                            job.posterName ?? 'Unknown poster',
-                                      ),
+        return Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 0.0),
+              child: SearchAndFilter(),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Container(
+                  color: const Color.fromARGB(255, 252, 252, 252),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 0, vertical: 1),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 8),
+                      const SectionTitle(title: 'Recommendations'),
+                      const SizedBox(height: 10),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: state.recommendedJobs.length,
+                        itemBuilder: (context, index) {
+                          final job = state.recommendedJobs[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: HomeJobCard(
+                              jobTitle: job.title,
+                              jobDescription:
+                                  job.description ?? 'No description available',
+                              workPlace: job.location,
+                              date: DateFormat('MMMM dd, yyyy')
+                                  .format(job.datePosted),
+                              wageRange:
+                                  job.wageRange ?? 'No wage range specified',
+                              category: job.categories?.join(', ') ??
+                                  'No categories available',
+                              isCrypto: job.isCrypto,
+                              professions: job.professions.join(', '),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => JobDetailPage(
+                                      jobId: job.id,
+                                      jobTitle: job.title,
+                                      jobDescription: job.description ??
+                                          'No description available',
+                                      date: DateFormat('MMMM dd, yyyy')
+                                          .format(job.datePosted),
+                                      workPlace: job.location,
+                                      wageRange: job.wageRange ??
+                                          'No wage range specified',
+                                      isCrypto: job.isCrypto,
+                                      professions: job.professions.join(', '),
+                                      category: job.categories?.join(', ') ??
+                                          'No categories available',
+                                      posterName:
+                                          job.posterName ?? 'Unknown poster',
                                     ),
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 20),
-                        const SectionTitle(title: 'Most Recent Jobs'),
-                        const SizedBox(height: 10),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: state.recentJobs.length,
-                          itemBuilder: (context, index) {
-                            final job = state.recentJobs[index];
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: HomeJobCard(
-                                jobTitle: job.title,
-                                jobDescription: job.description ??
-                                    'No description available',
-                                workPlace: job.location,
-                                date: DateFormat('MMMM dd, yyyy')
-                                    .format(job.datePosted),
-                                wageRange:
-                                    job.wageRange ?? 'No wage range specified',
-                                category: job.categories?.join(', ') ??
-                                    'No categories available',
-                                isCrypto: job.isCrypto,
-                                professions: job.professions.join(', '),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => JobDetailPage(
-                                        jobId: job.id,
-                                        jobTitle: job.title,
-                                        jobDescription: job.description ??
-                                            'No description available',
-                                        date: DateFormat('MMMM dd, yyyy')
-                                            .format(job.datePosted),
-                                        workPlace: job.location,
-                                        wageRange: job.wageRange ??
-                                            'No wage range specified',
-                                        isCrypto: job.isCrypto,
-                                        professions: job.professions.join(', '),
-                                        // contact: '',
-                                        category: job.categories?.join(', ') ??
-                                            'No categories available',
-                                        posterName:
-                                            job.posterName ?? 'Unknown poster',
-                                      ),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      const SectionTitle(title: 'Most Recent Jobs'),
+                      const SizedBox(height: 10),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: state.recentJobs.length,
+                        itemBuilder: (context, index) {
+                          final job = state.recentJobs[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: HomeJobCard(
+                              jobTitle: job.title,
+                              jobDescription:
+                                  job.description ?? 'No description available',
+                              workPlace: job.location,
+                              date: DateFormat('MMMM dd, yyyy')
+                                  .format(job.datePosted),
+                              wageRange:
+                                  job.wageRange ?? 'No wage range specified',
+                              category: job.categories?.join(', ') ??
+                                  'No categories available',
+                              isCrypto: job.isCrypto,
+                              professions: job.professions.join(', '),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => JobDetailPage(
+                                      jobId: job.id,
+                                      jobTitle: job.title,
+                                      jobDescription: job.description ??
+                                          'No description available',
+                                      date: DateFormat('MMMM dd, yyyy')
+                                          .format(job.datePosted),
+                                      workPlace: job.location,
+                                      wageRange: job.wageRange ??
+                                          'No wage range specified',
+                                      isCrypto: job.isCrypto,
+                                      professions: job.professions.join(', '),
+                                      category: job.categories?.join(', ') ??
+                                          'No categories available',
+                                      posterName:
+                                          job.posterName ?? 'Unknown poster',
                                     ),
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ),
                 ),
               ),
-            ],
-          );
-        } else {
-          return const Center(
-            child: Text('Error loading jobs.'),
-          );
-        }
-      },
+            ),
+          ],
+        );
+      } else if (state is HomeError) {
+        return Center(
+          child: Text(
+            'Error: ${state.message}',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+          ),
+        );
+      }
+      return const SizedBox.shrink();
+    });
+  }
+}
+
+class SearchAndFilter extends StatefulWidget {
+  const SearchAndFilter({Key? key}) : super(key: key);
+
+  @override
+  _SearchAndFilterState createState() => _SearchAndFilterState();
+}
+
+class _SearchAndFilterState extends State<SearchAndFilter> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search jobs...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: const BorderSide(
+                    color: Colors.lightBlue, // Outline color
+                    width: 1.0,
+                  ),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(
+                    vertical: 12.0, horizontal: 16.0),
+                prefixIcon: const Icon(Icons.search,
+                    color: Colors.lightBlue), // Search icon
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, color: Colors.grey),
+                        onPressed: () {
+                          _searchController.clear();
+                          // Optionally, trigger a search with an empty query
+                          context.read<HomeBloc>().add(const SearchJobs(''));
+                          setState(() {});
+                        },
+                      )
+                    : null,
+              ),
+              onSubmitted: (value) {
+                // Trigger search when the user submits
+                if (value.isNotEmpty) {
+                  context.read<HomeBloc>().add(SearchJobs(value));
+                }
+              },
+            ),
+          ),
+          const SizedBox(width: 8),
+          ElevatedButton(
+            onPressed: () {
+              // Trigger the search action only if the input is not empty
+              String searchTerm = _searchController.text;
+              if (searchTerm.isNotEmpty) {
+                // Dispatch search event
+                context.read<HomeBloc>().add(SearchJobs(searchTerm));
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              backgroundColor: Colors.white, // Button color
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            child: const Text(
+              'Search',
+              style: TextStyle(
+                  color: Colors.lightBlue,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

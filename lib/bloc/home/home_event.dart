@@ -15,3 +15,9 @@ class LoadJobs extends HomeEvent {
   @override
   List<Object> get props => [profession];
 }
+
+class SearchJobs extends HomeEvent {
+  final String query;
+
+  const SearchJobs(this.query);
+}

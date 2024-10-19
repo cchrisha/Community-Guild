@@ -35,7 +35,7 @@ class UserDetails extends StatelessWidget {
             if (state is UserLoading) {
               return const Center(
                 child: InkDrop(
-                    size: 100,
+                    size: 40,
                     color: Colors
                         .lightBlue), // Show InkDrop instead of CircularProgressIndicator
               );

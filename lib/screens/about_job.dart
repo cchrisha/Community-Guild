@@ -28,11 +28,26 @@ class JobPage extends StatefulWidget {
 }
 
 class _JobPageState extends State<JobPage> {
-  bool _isCurrentJobsExpanded = true;
+  bool _isCurrentJobsExpanded = false;
   bool _isCompletedJobsExpanded = false;
   bool _isRequestedJobsExpanded = false;
   bool _isRejectedJobsExpanded = false;
   bool _isPostedJobsExpanded = false;
+
+  void _toggleSection(String section) {
+    setState(() {
+      _isCurrentJobsExpanded =
+          section == 'current' ? !_isCurrentJobsExpanded : false;
+      _isCompletedJobsExpanded =
+          section == 'completed' ? !_isCompletedJobsExpanded : false;
+      _isRequestedJobsExpanded =
+          section == 'requested' ? !_isRequestedJobsExpanded : false;
+      _isRejectedJobsExpanded =
+          section == 'rejected' ? !_isRejectedJobsExpanded : false;
+      _isPostedJobsExpanded =
+          section == 'posted' ? !_isPostedJobsExpanded : false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,14 +83,11 @@ class _JobPageState extends State<JobPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SectionTitleAboutJob(
-                  title: 'Current Jobs',
-                  isExpanded: _isCurrentJobsExpanded,
-                  onTap: () {
-                    setState(() {
-                      _isCurrentJobsExpanded = !_isCurrentJobsExpanded;
-                    });
-                  },
-                ),
+                    title: 'Current Jobs',
+                    isExpanded: _isCurrentJobsExpanded,
+                    onTap: () {
+                      _toggleSection('current');
+                    }),
                 const SizedBox(height: 0),
                 BlocBuilder<AboutJobBloc, AboutJobState>(
                   builder: (context, state) {
@@ -172,9 +184,7 @@ class _JobPageState extends State<JobPage> {
                   title: 'Completed Jobs',
                   isExpanded: _isCompletedJobsExpanded,
                   onTap: () {
-                    setState(() {
-                      _isCompletedJobsExpanded = !_isCompletedJobsExpanded;
-                    });
+                    _toggleSection('completed');
                   },
                 ),
                 BlocProvider(
@@ -276,9 +286,7 @@ class _JobPageState extends State<JobPage> {
                   title: 'Requested Jobs',
                   isExpanded: _isRequestedJobsExpanded,
                   onTap: () {
-                    setState(() {
-                      _isRequestedJobsExpanded = !_isRequestedJobsExpanded;
-                    });
+                    _toggleSection('requested');
                   },
                 ),
                 BlocProvider(
@@ -380,9 +388,7 @@ class _JobPageState extends State<JobPage> {
                   title: 'Rejected Jobs',
                   isExpanded: _isRejectedJobsExpanded,
                   onTap: () {
-                    setState(() {
-                      _isRejectedJobsExpanded = !_isRejectedJobsExpanded;
-                    });
+                    _toggleSection('rejected');
                   },
                 ),
                 BlocProvider(
@@ -483,9 +489,7 @@ class _JobPageState extends State<JobPage> {
                   title: 'Posted Jobs',
                   isExpanded: _isPostedJobsExpanded,
                   onTap: () {
-                    setState(() {
-                      _isPostedJobsExpanded = !_isPostedJobsExpanded;
-                    });
+                    _toggleSection('posted');
                   },
                 ),
                 FutureBuilder<String?>(
