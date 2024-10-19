@@ -112,10 +112,7 @@ class ProfilePage extends StatelessWidget {
         children: [
           _buildProfilePictureSection(context, state),
           const SizedBox(height: 0),
-          ProfileHeader(
-            name: state.name,
-            profession: state.profession,
-          ),
+          ProfileHeader(name: state.name, profession: state.profession),
           const SizedBox(height: 15),
           const SectionTitle(title: 'Contact Info:'),
           ProfileInfoCard(
@@ -150,15 +147,11 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           child: CircleAvatar(
-            radius: 60, // Avatar size (outer radius including border)
-            backgroundColor: Colors.grey[200], // Fallback background color
-            child: CircleAvatar(
-              radius: 56, // Inner avatar size to avoid cutting
-              backgroundImage: state.profilePictureUrl.isNotEmpty
-                  ? NetworkImage(state.profilePictureUrl)
-                  : const AssetImage('assets/default_profile.png')
-                      as ImageProvider,
-            ),
+            radius: 55,
+            backgroundImage: state.profilePictureUrl.isNotEmpty
+                ? NetworkImage(state.profilePictureUrl)
+                : const AssetImage('assets/default_profile.png')
+                    as ImageProvider,
           ),
         ),
         Positioned(
