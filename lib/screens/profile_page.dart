@@ -147,11 +147,15 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           child: CircleAvatar(
-            radius: 55,
-            backgroundImage: state.profilePictureUrl.isNotEmpty
-                ? NetworkImage(state.profilePictureUrl)
-                : const AssetImage('assets/default_profile.png')
-                    as ImageProvider,
+            radius: 60, // Avatar size (outer radius including border)
+            backgroundColor: Colors.grey[200], // Fallback background color
+            child: CircleAvatar(
+              radius: 56, // Inner avatar size to avoid cutting
+              backgroundImage: state.profilePictureUrl.isNotEmpty
+                  ? NetworkImage(state.profilePictureUrl)
+                  : const AssetImage('assets/default_profile.png')
+                      as ImageProvider,
+            ),
           ),
         ),
         Positioned(
