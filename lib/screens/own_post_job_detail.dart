@@ -343,12 +343,12 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100], // Light background for a modern look
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text(
           'Job Details',
           style: TextStyle(
-            fontSize: 24, // Slightly increased font size for better readability
+            fontSize: 24,
             fontWeight: FontWeight.bold,
             color: Colors.white,
             shadows: [
@@ -361,7 +361,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
           ),
         ),
         backgroundColor: Colors.blueAccent,
-        elevation: 8, // Increased elevation for a more defined AppBar
+        elevation: 8,
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -376,11 +376,11 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Profile Header with Background and Gradient
+              // Profile Header
               Stack(
                 children: [
                   Container(
-                    height: 180, // Height for a more prominent header
+                    height: 140,
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         colors: [Colors.lightBlueAccent, Colors.blueAccent],
@@ -392,7 +392,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                     ),
                   ),
                   Positioned(
-                    top: 40,
+                    top: 20,
                     left: 16,
                     right: 16,
                     child: GestureDetector(
@@ -403,19 +403,19 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        elevation: 8, // Enhanced shadow for depth
+                        elevation: 8,
                         shadowColor: Colors.black26,
                         child: Container(
                           padding: const EdgeInsets.all(16),
                           child: Row(
                             children: [
                               const CircleAvatar(
-                                radius: 36, // Larger avatar size
+                                radius: 36,
                                 backgroundColor: Colors.lightBlueAccent,
                                 child: Icon(
                                   Icons.person,
                                   color: Colors.white,
-                                  size: 36, // Larger icon size
+                                  size: 36,
                                 ),
                               ),
                               const SizedBox(width: 16),
@@ -442,16 +442,16 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
 
               // Job Title
               Text(
-                'Title: ${widget.jobTitle}',
+                widget.jobTitle,
                 style: const TextStyle(
-                  fontSize:
-                      22, // Slightly increased font size for better visibility
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
               ),
               const SizedBox(height: 8),
               const Divider(thickness: 1.2, color: Colors.black26),
+
               // Description Section
               const Text(
                 'Description:',
@@ -484,64 +484,27 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                   color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: 0),
+              const SizedBox(height: 8),
 
-              // Wage Range and Crypto Payment
+              // Using _buildDetailRow for the details
+              const SizedBox(height: 8),
+              _buildDetailRow('Wage Range:', widget.wageRange),
+              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Wage Range: ${widget.wageRange}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      const Text('Crypto: '),
-                      Checkbox(
-                        value: widget.isCrypto,
-                        onChanged: (bool? value) {},
-                        activeColor: Colors.blueAccent,
-                      ),
-                    ],
+                  const Text('Crypto: ', style: TextStyle(fontSize: 16)),
+                  Checkbox(
+                    value: widget.isCrypto,
+                    onChanged: (bool? value) {},
+                    activeColor: Colors.blueAccent,
                   ),
                 ],
               ),
-              const SizedBox(height: 0),
-              Text(
-                'Date: ${widget.date}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black54,
-                ),
-              ),
-              const SizedBox(height: 8),
-              // Other Job Details
-              Text(
-                'Wanted Profession: ${widget.professions}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Workplace: ${widget.workPlace}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Category: ${widget.category}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-              ),
+              _buildDetailRow('Date:', widget.date),
+              _buildDetailRow('Wanted Profession:', widget.professions),
+              _buildDetailRow('Workplace:', widget.workPlace),
+              _buildDetailRow('Category:', widget.category),
               const SizedBox(height: 20),
 
               // Action Buttons (Applicants and Workers)
@@ -585,23 +548,26 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
       ),
     );
   }
-}
 
-Widget _buildDetailRow(String label, String value) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(
-        label,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: const TextStyle(fontSize: 16, color: Colors.black87),
+            ),
+          ),
+        ],
       ),
-      Expanded(
-        child: Text(
-          value,
-          textAlign: TextAlign.end,
-          style: const TextStyle(fontSize: 16, color: Colors.black87),
-        ),
-      ),
-    ],
-  );
+    );
+  }
 }
