@@ -32,11 +32,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> _fetchUserProfile() async {
     final profileRepository = ProfileRepository();
     try {
-      final userProfile = await profileRepository.fetchProfile(); // Use fetchProfile instead
+      final userProfile =
+          await profileRepository.fetchProfile(); // Use fetchProfile instead
       _nameController.text = userProfile['name'];
       _locationController.text = userProfile['location'];
       _contactController.text = userProfile['contact'];
-      _professionController.text = userProfile['profession']; // Set the selected profession
+      _professionController.text =
+          userProfile['profession']; // Set the selected profession
     } catch (error) {
       // Handle errors, maybe show a Snackbar or dialog
       ScaffoldMessenger.of(context).showSnackBar(
@@ -62,7 +64,23 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Edit Profile'),
+          title: const Text(
+            'Edit Profile',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          backgroundColor: Colors.lightBlue,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
+            },
+          ),
         ),
         body: BlocListener<EditProfileBloc, EditProfileState>(
           listener: (context, state) {
@@ -72,10 +90,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 SnackBar(content: Text(state.message)),
               );
               // Pop and return true to indicate success
-              Navigator.pushReplacement(
+              Navigator.pop(
                 context,
-                MaterialPageRoute(builder: (context) => const ProfilePage()), // Replace ProfilePage with your target page
-              );// Returning true to indicate success
+                MaterialPageRoute(
+                    builder: (context) =>
+                        const ProfilePage()), // Replace ProfilePage with your target page
+              ); // Returning true to indicate success
             } else if (state is EditProfileError) {
               // Show error message
               ScaffoldMessenger.of(context).showSnackBar(
@@ -114,10 +134,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ),
                       const SizedBox(height: 16),
                       TextFieldWidget(
-                        controller: _professionController,
-                        label: 'Profession',
-                        icon: Icons.work_outline,
-                        validator: _validateProfession),
+                          controller: _professionController,
+                          label: 'Profession',
+                          icon: Icons.work_outline,
+                          validator: _validateProfession),
                       // Profession Dropdown
                       // DropdownButtonFormField<String>(
                       //   decoration: const InputDecoration(
@@ -149,7 +169,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     name: _nameController.text,
                                     location: _locationController.text,
                                     contact: _contactController.text,
-                                    profession: _professionController.text, // Send selected profession
+                                    profession: _professionController
+                                        .text, // Send selected profession
                                   ),
                                 );
                           }

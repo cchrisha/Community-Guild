@@ -11,14 +11,14 @@ class JobLocationField extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
         labelText: 'Location',
-        labelStyle: const TextStyle(color: Color.fromARGB(255, 3, 169, 244)),
-        prefixIcon: const Icon(Icons.location_on, color: Color.fromARGB(255, 3, 169, 244)),
+        labelStyle: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+        prefixIcon: const Icon(Icons.location_on, color: Color.fromARGB(255, 0, 0, 0)),
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromARGB(255, 3, 169, 244), width: 2),
+          borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 1),
           borderRadius: BorderRadius.circular(16),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromARGB(255, 3, 169, 244), width: 2),
+          borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2),
           borderRadius: BorderRadius.circular(16),
         ),
         contentPadding:

@@ -18,19 +18,19 @@ class JobCategoryDropdown extends StatelessWidget {
       value: selectedCategory,
       decoration: InputDecoration(
         labelText: 'Category',
-        labelStyle: const TextStyle(color: Color.fromARGB(255, 3, 169, 244)),
+        labelStyle: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
         prefixIcon: const Icon(
           Icons.category,
-          color: Color.fromARGB(255, 3, 169, 244),
+          color: Color.fromARGB(255, 5, 6, 6),
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(
-              color: Color.fromARGB(255, 3, 169, 244), width: 2),
+              color: Color.fromARGB(255, 7, 8, 8), width: 1),
           borderRadius: BorderRadius.circular(16),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(
-              color: Color.fromARGB(255, 3, 169, 244), width: 2),
+              color: Color.fromARGB(255, 0, 0, 0), width: 2),
           borderRadius: BorderRadius.circular(16),
         ),
       ),
