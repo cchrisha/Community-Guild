@@ -632,11 +632,13 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-    Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
+    
+  Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
   setState(() {
     isLoading = true;
   });
 
+  // Tether contract setup (pseudo-code)
   final tetherContract = DeployedContract(
     ContractAbi.fromJson(
       jsonEncode([
@@ -706,20 +708,20 @@ class _PaymentPageState extends State<PaymentPage> {
     );
 
     if (result != null) {
-  // Assuming you have a way to get the current user's ID
-  String userId = 'currentUser.id'; // Replace with the actual way to get the user ID
+      // Assuming you have a way to get the current user's ID
+      String userId = receiver; // Replace with the actual way to get the user ID
 
-  // Trigger notifications for both sender and recipient after successful transaction
-  await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), userId);
+      // Trigger notifications for both sender and recipient after successful transaction
+      await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), userId);
 
-  CoolAlert.show(
-    context: context,
-    type: CoolAlertType.success,
-    title: 'Transaction Successful',
-    text: 'Your transaction was completed successfully!',
-    confirmBtnText: 'Great!',
-    );
-    await appKitModal!.loadAccountData();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.success,
+        title: 'Transaction Successful',
+        text: 'Your transaction was completed successfully!',
+        confirmBtnText: 'Great!',
+      );
+      await appKitModal!.loadAccountData();
     } else {
       throw Exception('Transaction failed. Please try again.');
     }
@@ -753,28 +755,27 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 }
 
-  Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount, String userId) async {
-    // Ensure notification ID is within 32-bit limit
-    int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
+Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount, String userId) async {
+  int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
 
-    // Notification for the sender
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        channelKey: 'basic_channel',
-        id: notificationId,
-        title: 'Successful Payment',
-        body: 'You have successfully sent $amount ETH to $receiverAddress.',
-        notificationLayout: NotificationLayout.Default,
-      ),
-    );
+  // Notification for the sender
+  await AwesomeNotifications().createNotification(
+    content: NotificationContent(
+      channelKey: 'basic_channel',
+      id: notificationId,
+      title: 'Successful Payment',
+      body: 'You have successfully sent $amount ETH to $receiverAddress.',
+      notificationLayout: NotificationLayout.Default,
+    ),
+  );
 
-    // Notify the recipient
-    await triggerNotification(senderAddress, receiverAddress, amount, userId);
+  // Notify the recipient
+  await notifyRecipient(senderAddress, receiverAddress, amount, userId);
+}
 
-
-  Future<void> notifyRecipient(String senderAddress, String receiverAddress, double amount) async {
+  Future<void> notifyRecipient(String senderAddress, String receiverAddress, String amount, String userId) async {
     final response = await http.post(
-      Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment'), // Update with your actual API endpoint
+      Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'senderId': senderAddress, // Ensure these IDs are correct
@@ -790,17 +791,17 @@ class _PaymentPageState extends State<PaymentPage> {
       // Trigger Awesome Notification for the recipient
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
-          channelKey: 'transaction_channel', // Ensure this matches your defined channel key
-          id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647) + 1, // Ensure a unique ID
+          channelKey: 'transaction_channel',
+          id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647) + 1, // Unique ID
           title: 'Transaction Received',
-          body: transactionDetails, // Customize message as needed
+          body: transactionDetails,
           notificationLayout: NotificationLayout.Default,
         ),
       );
     } else {
       // Handle error
       print('Transaction failed: ${response.body}');
-      }
     }
   }
+
 }
