@@ -769,44 +769,38 @@ class _PaymentPageState extends State<PaymentPage> {
     );
 
     // Notify the recipient
-    await notifyRecipient(receiverAddress, senderAddress, amount, notificationId + 1);
-  }
+    await triggerNotification(senderAddress, receiverAddress, amount, userId);
 
-  Future<void> notifyRecipient(String receiverAddress, String senderAddress, String amount, int recipientNotificationId) async {
-  final url = "https://api-tau-plum.vercel.app/api/notifyPayment";  
 
-  try {
+  Future<void> notifyRecipient(String senderAddress, String receiverAddress, double amount) async {
     final response = await http.post(
-      Uri.parse(url),
-      headers: {
-        'Content-Type': 'application/json', 
-      },
+      Uri.parse('https://your-api-url/api/transactions'), // Update with your actual API endpoint
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'receiverAddress': receiverAddress,
-        'senderAddress': senderAddress,
+        'senderId': senderAddress, // Ensure these IDs are correct
+        'receiverId': receiverAddress,
         'amount': amount,
       }),
     );
 
     if (response.statusCode == 200) {
-      // Notification for the recipient
+      final data = jsonDecode(response.body);
+      final transactionDetails = data['transactionDetails'];
+
+      // Trigger Awesome Notification for the recipient
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
-          channelKey: 'basic_channel',
-          id: recipientNotificationId % 2147483647, // Ensure the second notification ID is also within range
-          title: 'Received Payment!',
-          body: '$senderAddress sent you $amount ETH.',
+          channelKey: 'transaction_channel', // Ensure this matches your defined channel key
+          id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647) + 1, // Ensure a unique ID
+          title: 'Transaction Received',
+          body: transactionDetails, // Customize message as needed
           notificationLayout: NotificationLayout.Default,
         ),
       );
-
-      print("Recipient notified successfully.");
     } else {
-      print("Failed to notify recipient: ${response.statusCode}");
+      // Handle error
+      print('Transaction failed: ${response.body}');
+      }
     }
-  } catch (e) {
-    print("Error notifying recipient: $e");
   }
-}
-
 }
