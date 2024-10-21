@@ -1,3 +1,4 @@
+import 'package:community_guild/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/edit_profile/edit_profile_bloc.dart';
@@ -71,7 +72,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 SnackBar(content: Text(state.message)),
               );
               // Pop and return true to indicate success
-              Navigator.pop(context, true); // Returning true to indicate success
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()), // Replace ProfilePage with your target page
+              );// Returning true to indicate success
             } else if (state is EditProfileError) {
               // Show error message
               ScaffoldMessenger.of(context).showSnackBar(
