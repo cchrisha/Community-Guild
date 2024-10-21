@@ -43,75 +43,117 @@ class _JobDetailPageState extends State<JobDetailPage> {
   bool _isLoading = false;
 
   Future<void> _applyForJob(String jobId) async {
-    try {
-      setState(() {
-        _isLoading = true; // Show loading spinner
-      });
+  try {
+    setState(() {
+      _isLoading = true; // Show loading spinner
+    });
 
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('auth_token');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+    final userName = prefs.getString('user_name'); // Get the current user's name
 
-      if (token == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error: You must be logged in to apply for a job.'),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
-
-      final url = 'https://api-tau-plum.vercel.app/api/jobs/$jobId/request';
-      final headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      };
-
-      final response = await http.post(
-        Uri.parse(url),
-        headers: headers,
-        body: json.encode({}), // Include any necessary body data if needed
-      );
-
-      if (response.statusCode == 200) {
-        _showSuccessSnackBar();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomePage(), // Replace with AboutJobPage
-          ),
-        );
-      } else {
-        final responseData = json.decode(response.body);
-        if (responseData['message'] == "You cannot apply to your own job") {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Error: You cannot apply to your own job.'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error: ${responseData['message']}'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    } catch (e) {
+    if (token == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: ${e.toString()}'),
+        const SnackBar(
+          content: Text('Error: You must be logged in to apply for a job.'),
           backgroundColor: Colors.red,
         ),
       );
-    } finally {
-      setState(() {
-        _isLoading = false; // Hide loading spinner
-      });
+      return;
     }
+
+    final url = 'https://api-tau-plum.vercel.app/api/jobs/$jobId/request';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: json.encode({}), // Include any necessary body data if needed
+    );
+
+    if (response.statusCode == 200) {
+      // After successfully applying, notify the poster
+      _notifyJobPoster(widget.jobId, userName ?? '', widget.jobTitle);
+
+      _showSuccessSnackBar();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+      );
+    } else {
+      final responseData = json.decode(response.body);
+      if (responseData['message'] == "You cannot apply to your own job") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error: You cannot apply to your own job.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${responseData['message']}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Error: ${e.toString()}'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  } finally {
+    setState(() {
+      _isLoading = false; // Hide loading spinner
+    });
   }
+}
+
+// Notify the poster of the job
+Future<void> _notifyJobPoster(String jobId, String userName, String jobTitle) async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+
+    if (token == null) {
+      // Handle missing token
+      return;
+    }
+
+    final notificationUrl = 'https://api-tau-plum.vercel.app/api/notifications'; // Replace with your actual notification URL
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    // The notification data, assuming your backend accepts this format
+    final body = json.encode({
+      'jobId': jobId,
+      'message': 'User $userName applied for the job $jobTitle',
+    });
+
+    final response = await http.post(
+      Uri.parse(notificationUrl),
+      headers: headers,
+      body: body,
+    );
+
+    if (response.statusCode != 200) {
+      // Handle notification failure
+      throw Exception('Failed to notify job poster.');
+    }
+  } catch (e) {
+    print('Error sending notification: $e');
+  }
+}
 
   void _showSuccessSnackBar() {
     ScaffoldMessenger.of(context).showSnackBar(
