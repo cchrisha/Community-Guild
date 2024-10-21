@@ -705,10 +705,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
     if (result != null) {
       // Assuming you have a way to get the current user's ID
-      // Replace with actual logic to get user ID
       String userId = '6708a0368cbadfd1e3267cf5'; // Example user ID
-
-      // Rest of the code...
 
       // Trigger notifications for both sender and recipient after successful transaction
       await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), userId);
@@ -753,54 +750,54 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 }
 
-      Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount, String userId) async {
-        int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
+Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount, String userId) async {
+  int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
 
-        // Notification for the sender
-        await AwesomeNotifications().createNotification(
-          content: NotificationContent(
-            channelKey: 'basic_channel',
-            id: notificationId,
-            title: 'Successful Payment',
-            body: 'You have successfully sent $amount ETH to $receiverAddress.',
-            notificationLayout: NotificationLayout.Default,
-          ),
-        );
+  // Notification for the sender
+  await AwesomeNotifications().createNotification(
+    content: NotificationContent(
+      channelKey: 'basic_channel',
+      id: notificationId,
+      title: 'Successful Payment',
+      body: 'You have successfully sent $amount ETH to $receiverAddress.',
+      notificationLayout: NotificationLayout.Default,
+    ),
+  );
 
-        // Notify the recipient
-        await notifyRecipient(senderAddress, receiverAddress, amount, userId);
-      }
+  // Notify the recipient through API
+  await notifyRecipient(senderAddress, receiverAddress, amount, userId);
+}
 
-      Future<void> notifyRecipient(String senderAddress, String receiverAddress, String amount, String userId) async {
-        final response = await http.post(
-          Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment'),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({
-            'senderId': senderAddress,
-            'receiverId': receiverAddress,
-            'amount': amount,
-          }),
-        );
+Future<void> notifyRecipient(String senderAddress, String receiverAddress, String amount, String userId) async {
+  final response = await http.post(
+    Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
+      'senderId': senderAddress,
+      'receiverId': receiverAddress,
+      'amount': amount,
+    }),
+  );
 
-        if (response.statusCode == 200) {
-          final data = jsonDecode(response.body);
-          final transactionDetails = data['transactionDetails'];
+  if (response.statusCode == 200) {
+    // Successfully notified the recipient
+    final data = jsonDecode(response.body);
+    final transactionDetails = data['transactionDetails'];
 
-          // Trigger Awesome Notification for the recipient
-          await AwesomeNotifications().createNotification(
-            content: NotificationContent(
-              channelKey: 'transaction_channel',
-              id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647) + 1, // Unique ID
-              title: 'Transaction Received',
-              body: transactionDetails,
-              notificationLayout: NotificationLayout.Default,
-            ),
-          );
-        } else {
-          // Handle error
-          print('Transaction failed: ${response.body}');
-        }
-      }
-
+    // Trigger Awesome Notification for the recipient
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        channelKey: 'transaction_channel',
+        id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647) + 1, // Unique ID
+        title: 'Transaction Received',
+        body: 'You have received $amount ETH from $senderAddress.',
+        notificationLayout: NotificationLayout.Default,
+      ),
+    );
+  } else {
+    // Handle error
+    print('Transaction notification failed: ${response.body}');
+  }
+}
 
 }
