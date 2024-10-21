@@ -779,46 +779,46 @@ Future<void> notifyRecipient(String senderAddress, String receiverAddress, Strin
   final response = await http.post(
     Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment'), // Adjust API endpoint accordingly
     headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({
-      'senderId': senderAddress, // Ensure these IDs are correct
-      'receiverId': receiverAddress,
-      'amount': amount,
-      'deviceToken': deviceToken, // Send the recipient's device token
-    }),
-  );
-
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    final transactionDetails = data['transactionDetails'];
-
-    // Trigger Awesome Notification for the recipient
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        channelKey: 'transaction_channel',
-        id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647) + 1, // Unique ID
-        title: 'Transaction Received',
-        body: transactionDetails,
-        notificationLayout: NotificationLayout.Default,
-      ),
+      body: jsonEncode({
+        'senderId': senderAddress, // Ensure these IDs are correct
+        'receiverId': receiverAddress,
+        'amount': amount,
+        'deviceToken': deviceToken, // Send the recipient's device token
+      }),
     );
-  } else {
-    // Handle error
-    print('Transaction failed: ${response.body}');
-  }
-}
 
-Future<String?> getRecipientDeviceToken(String receiverId) async {
-  final response = await http.get(
-    Uri.parse('https://api-tau-plum.vercel.app/getDeviceToken/$receiverId'),
-  );
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final transactionDetails = data['transactionDetails'];
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    return data['deviceToken']; // Return the recipient's device token
-  } else {
-    return null; // Handle error
+      // Trigger Awesome Notification for the recipient
+      await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          channelKey: 'transaction_channel',
+          id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647) + 1, // Unique ID
+          title: 'Transaction Received',
+          body: transactionDetails,
+          notificationLayout: NotificationLayout.Default,
+        ),
+      );
+    } else {
+      // Handle error
+      print('Transaction failed: ${response.body}');
+    }
   }
-}
+  Future<String?> getRecipientDeviceToken(String receiverId) async {
+      final response = await http.get(
+        Uri.parse('https://api-tau-plum.vercel.app/getDeviceToken/$receiverId'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['deviceToken']; // Return the recipient's device token
+      } else {
+        return null; // Handle error
+      }
+    }
+
 
 
 }
