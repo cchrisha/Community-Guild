@@ -101,8 +101,7 @@ class _HomePageState extends State<HomePage> {
           duration: const Duration(milliseconds: 300),
           child: _pages[_currentIndex],
         ),
-        bottomNavigationBar: _currentIndex == 2
-            ? null
+        bottomNavigationBar
             : Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
@@ -143,21 +142,6 @@ class _HomePageState extends State<HomePage> {
                     if (_currentIndex == 0) {
                       // Trigger job loading when "Home" is tapped
                       _homeBloc!.add(const LoadJobs('developer'));
-                    }
-
-                    if (_currentIndex == 2) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const PostInput(),
-                        ),
-                      ).then((_) {
-                        setState(() {
-                          _currentIndex = 0;
-                        });
-                        // Trigger job loading when returning to "Home"
-                        _homeBloc!.add(const LoadJobs('developer'));
-                      });
                     }
                   },
                 ),
