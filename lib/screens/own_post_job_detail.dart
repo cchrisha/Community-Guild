@@ -451,17 +451,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                 ),
               ),
               const SizedBox(height: 8),
-
-              // Date
-              Text(
-                'Date: ${widget.date}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black54,
-                ),
-              ),
-              const SizedBox(height: 12),
-
+              const Divider(thickness: 1.2, color: Colors.black26),
               // Description Section
               const Text(
                 'Description:',
@@ -494,7 +484,7 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                   color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 0),
 
               // Wage Range and Crypto Payment
               Row(
@@ -519,8 +509,15 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                   ),
                 ],
               ),
+              const SizedBox(height: 0),
+              Text(
+                'Date: ${widget.date}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
+                ),
+              ),
               const SizedBox(height: 8),
-
               // Other Job Details
               Text(
                 'Wanted Profession: ${widget.professions}',
@@ -588,4 +585,23 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
       ),
     );
   }
+}
+
+Widget _buildDetailRow(String label, String value) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(
+        label,
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+      ),
+      Expanded(
+        child: Text(
+          value,
+          textAlign: TextAlign.end,
+          style: const TextStyle(fontSize: 16, color: Colors.black87),
+        ),
+      ),
+    ],
+  );
 }
