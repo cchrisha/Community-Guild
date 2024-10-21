@@ -708,74 +708,71 @@ class _PaymentPageState extends State<PaymentPage> {
     );
 
     if (result != null) {
-      // Assuming you have a way to get the current user's ID
-      String userId = receiver; // Replace with the actual way to get the user ID
+      // Get actual user ID
+        String? userId = 'currentUser.id'; // Replace with actual method to fetch user ID
 
-      // Trigger notifications for both sender and recipient after successful transaction
-      await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), userId);
+        // Trigger notifications for both sender and recipient after a successful transaction
+        await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), userId);
+        await notifyRecipient(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), userId);
 
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.success,
-        title: 'Transaction Successful',
-        text: 'Your transaction was completed successfully!',
-        confirmBtnText: 'Great!',
-      );
-      await appKitModal!.loadAccountData();
-    } else {
-      throw Exception('Transaction failed. Please try again.');
+        CoolAlert.show(
+          context: context,
+          type: CoolAlertType.success,
+          title: 'Transaction Successful',
+          text: 'Your transaction was completed successfully!',
+          confirmBtnText: 'Great!',
+        );
+        await appKitModal!.loadAccountData();
+            } else {
+        throw Exception('Transaction failed. Please try again.');
+      }
+    } catch (e) {
+      String errorMessage;
+
+      if (e.toString().contains('User denied transaction signature')) {
+        errorMessage = 'Transaction cancelled by the user.';
+        CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          title: 'Transaction Cancelled',
+          text: errorMessage,
+          confirmBtnText: 'Okay',
+        );
+      } else {
+        errorMessage = 'An unexpected error occurred: $e';
+        CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          title: 'Error',
+          text: errorMessage,
+          confirmBtnText: 'Okay',
+        );
+      }
+    } finally {
+      setState(() {
+        isLoading = false; // Hide loader
+      });
     }
-
-  } catch (e) {
-    String errorMessage;
-
-    if (e.toString().contains('User denied transaction signature')) {
-      errorMessage = 'Transaction cancelled by the user.';
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.error,
-        title: 'Transaction Cancelled',
-        text: errorMessage,
-        confirmBtnText: 'Okay',
-      );
-    } else {
-      errorMessage = 'An unexpected error occurred: $e';
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.error,
-        title: 'Error',
-        text: errorMessage,
-        confirmBtnText: 'Okay',
-      );
-    }
-  } finally {
-    setState(() {
-      isLoading = false; // Hide loader
-    });
   }
-}
 
-Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount, String userId) async {
-  int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
+  Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount, String userId) async {
+    int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
 
-  // Notification for the sender
-  await AwesomeNotifications().createNotification(
-    content: NotificationContent(
-      channelKey: 'basic_channel',
-      id: notificationId,
-      title: 'Successful Payment',
-      body: 'You have successfully sent $amount ETH to $receiverAddress.',
-      notificationLayout: NotificationLayout.Default,
-    ),
-  );
-
-  // Notify the recipient
-  await notifyRecipient(senderAddress, receiverAddress, amount, userId);
-}
+    // Notification for the sender
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        channelKey: 'basic_channel',
+        id: notificationId,
+        title: 'Successful Payment',
+        body: 'You have successfully sent $amount ETH to $receiverAddress.',
+        notificationLayout: NotificationLayout.Default,
+      ),
+    );
+  }
 
   Future<void> notifyRecipient(String senderAddress, String receiverAddress, String amount, String userId) async {
     final response = await http.post(
-      Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment'),
+      Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment'), // Adjust API endpoint accordingly
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'senderId': senderAddress, // Ensure these IDs are correct
@@ -803,5 +800,6 @@ Future<void> triggerNotification(String senderAddress, String receiverAddress, S
       print('Transaction failed: ${response.body}');
     }
   }
+
 
 }
