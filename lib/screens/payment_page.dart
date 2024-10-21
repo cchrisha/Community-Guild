@@ -631,9 +631,7 @@ class _PaymentPageState extends State<PaymentPage> {
       },
     );
   }
-
-    
-Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
+  Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
   setState(() {
     isLoading = true;
   });
@@ -641,20 +639,18 @@ Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
   // Tether contract setup (pseudo-code)
   final tetherContract = DeployedContract(
     ContractAbi.fromJson(
-      jsonEncode([
-        {
-          "constant": false,
-          "inputs": [
-            {"internalType": "address", "name": "_to", "type": "address"},
-            {"internalType": "uint256", "name": "_value", "type": "uint256"}
-          ],
-          "name": "transfer",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        }
-      ]),
+      jsonEncode([{
+        "constant": false,
+        "inputs": [
+          {"internalType": "address", "name": "_to", "type": "address"},
+          {"internalType": "uint256", "name": "_value", "type": "uint256"}
+        ],
+        "name": "transfer",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }]),
       'ETH',
     ),
     EthereumAddress.fromHex(receiver),
@@ -687,7 +683,7 @@ Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
         text: 'You have insufficient funds to complete this transaction. Please add more funds.',
         confirmBtnText: 'Okay',
       );
-      return; // Stop further execution, do not redirect to MetaMask
+      return; // Stop further execution
     }
 
     final result = await appKitModal!.requestWriteContract(
@@ -708,17 +704,14 @@ Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
     );
 
     if (result != null) {
-      // Get actual user ID
-      String userId = 'currentUser.id'; // Replace with actual method to fetch user ID
+      // Assuming you have a way to get the current user's ID
+      // Replace with actual logic to get user ID
+      String userId = '6708a0368cbadfd1e3267cf5'; // Example user ID
 
-      // Trigger notifications for both sender and recipient after a successful transaction
+      // Rest of the code...
+
+      // Trigger notifications for both sender and recipient after successful transaction
       await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), userId);
-
-      // Notify the recipient
-      final recipientDeviceToken = await getRecipientDeviceToken(receiver);
-      if (recipientDeviceToken != null) {
-        await notifyRecipient(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), userId, recipientDeviceToken);
-      }
 
       CoolAlert.show(
         context: context,
@@ -760,65 +753,54 @@ Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
   }
 }
 
-Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount, String userId) async {
-  int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
+      Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount, String userId) async {
+        int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
 
-  // Notification for the sender
-  await AwesomeNotifications().createNotification(
-    content: NotificationContent(
-      channelKey: 'basic_channel',
-      id: notificationId,
-      title: 'Successful Payment',
-      body: 'You have successfully sent $amount ETH to $receiverAddress.',
-      notificationLayout: NotificationLayout.Default,
-    ),
-  );
-}
+        // Notification for the sender
+        await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            channelKey: 'basic_channel',
+            id: notificationId,
+            title: 'Successful Payment',
+            body: 'You have successfully sent $amount ETH to $receiverAddress.',
+            notificationLayout: NotificationLayout.Default,
+          ),
+        );
 
-Future<void> notifyRecipient(String senderAddress, String receiverAddress, String amount, String userId, String deviceToken) async {
-  final response = await http.post(
-    Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment'), // Adjust API endpoint accordingly
-    headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'senderId': senderAddress, // Ensure these IDs are correct
-        'receiverId': receiverAddress,
-        'amount': amount,
-        'deviceToken': deviceToken, // Send the recipient's device token
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final transactionDetails = data['transactionDetails'];
-
-      // Trigger Awesome Notification for the recipient
-      await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          channelKey: 'transaction_channel',
-          id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647) + 1, // Unique ID
-          title: 'Transaction Received',
-          body: transactionDetails,
-          notificationLayout: NotificationLayout.Default,
-        ),
-      );
-    } else {
-      // Handle error
-      print('Transaction failed: ${response.body}');
-    }
-  }
-  Future<String?> getRecipientDeviceToken(String receiverId) async {
-      final response = await http.get(
-        Uri.parse('https://api-tau-plum.vercel.app/getDeviceToken/$receiverId'),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data['deviceToken']; // Return the recipient's device token
-      } else {
-        return null; // Handle error
+        // Notify the recipient
+        await notifyRecipient(senderAddress, receiverAddress, amount, userId);
       }
-    }
 
+      Future<void> notifyRecipient(String senderAddress, String receiverAddress, String amount, String userId) async {
+        final response = await http.post(
+          Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            'senderId': senderAddress,
+            'receiverId': receiverAddress,
+            'amount': amount,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          final transactionDetails = data['transactionDetails'];
+
+          // Trigger Awesome Notification for the recipient
+          await AwesomeNotifications().createNotification(
+            content: NotificationContent(
+              channelKey: 'transaction_channel',
+              id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647) + 1, // Unique ID
+              title: 'Transaction Received',
+              body: transactionDetails,
+              notificationLayout: NotificationLayout.Default,
+            ),
+          );
+        } else {
+          // Handle error
+          print('Transaction failed: ${response.body}');
+        }
+      }
 
 
 }
