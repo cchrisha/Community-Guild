@@ -632,14 +632,27 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
+    Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
   setState(() {
     isLoading = true;
   });
 
   final tetherContract = DeployedContract(
     ContractAbi.fromJson(
-      jsonEncode([ /* ABI code */ ]),
+      jsonEncode([
+        {
+          "constant": false,
+          "inputs": [
+            {"internalType": "address", "name": "_to", "type": "address"},
+            {"internalType": "uint256", "name": "_value", "type": "uint256"}
+          ],
+          "name": "transfer",
+          "outputs": [],
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ]),
       'ETH',
     ),
     EthereumAddress.fromHex(receiver),
@@ -672,7 +685,7 @@ class _PaymentPageState extends State<PaymentPage> {
         text: 'You have insufficient funds to complete this transaction. Please add more funds.',
         confirmBtnText: 'Okay',
       );
-      return;
+      return; // Stop further execution, do not redirect to MetaMask
     }
 
     final result = await appKitModal!.requestWriteContract(
@@ -692,8 +705,8 @@ class _PaymentPageState extends State<PaymentPage> {
       ],
     );
 
+    // If transaction is successful, notify the recipient and trigger the notification
     if (result != null) {
-      // Trigger notifications for both sender and recipient after successful transaction
       await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString());
 
       CoolAlert.show(
@@ -729,17 +742,16 @@ class _PaymentPageState extends State<PaymentPage> {
         confirmBtnText: 'Okay',
       );
     }
-    } finally {
-      setState(() {
-        isLoading = false; // Hide loader
-      });
-    }
+  } finally {
+    setState(() {
+      isLoading = false; // Hide loader
+    });
   }
+}
 
-
-// Function to trigger the notification using Awesome Notifications
   Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount) async {
-    int notificationId = DateTime.now().millisecondsSinceEpoch;
+    // Ensure notification ID is within 32-bit limit
+    int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
 
     // Notification for the sender
     await AwesomeNotifications().createNotification(
@@ -756,12 +768,12 @@ class _PaymentPageState extends State<PaymentPage> {
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         channelKey: 'basic_channel',
-        id: notificationId + 1, // Increment ID for the second notification
+        id: (notificationId + 1) % 2147483647, // Ensure the second notification ID is also within range
         title: 'Received Payment!',
         body: '$senderAddress sent you $amount ETH.',
         notificationLayout: NotificationLayout.Default,
       ),
     );
-  }
+}
 
 }
