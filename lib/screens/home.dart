@@ -15,6 +15,7 @@ import '../widget/home/bottom_nav.dart';
 import '../widget/loading_widget/ink_drop.dart';
 import 'about_job.dart';
 import 'job_detail.dart';
+import 'notification.dart';
 import 'payment_page.dart';
 import 'profile_page.dart';
 import 'package:http/http.dart' as http;
@@ -76,6 +77,24 @@ class _HomePageState extends State<HomePage> {
                 ),
                 backgroundColor: Colors.lightBlue,
                 automaticallyImplyLeading: false,
+                actions: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.notifications,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      // Replace the HomePage with NotificationScreen
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 8), // Adds spacing
+                ],
               )
             : null,
         body: AnimatedSwitcher(
@@ -249,7 +268,8 @@ class HomePageBody extends StatelessWidget {
                                           'No categories available',
                                       posterName:
                                           job.posterName ?? 'Unknown poster',
-                                      posterId: job.posterId?? '', // Provide a default value
+                                      posterId: job.posterId ??
+                                          '', // Provide a default value
                                     ),
                                   ),
                                 );
@@ -302,7 +322,8 @@ class HomePageBody extends StatelessWidget {
                                           'No categories available',
                                       posterName:
                                           job.posterName ?? 'Unknown poster',
-                                      posterId: job.posterId?? '', // Provide a default value
+                                      posterId: job.posterId ??
+                                          '', // Provide a default value
                                     ),
                                   ),
                                 );
