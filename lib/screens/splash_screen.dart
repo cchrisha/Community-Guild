@@ -1,9 +1,6 @@
-import 'package:community_guild/screens/admin/adminHome.dart';
 import 'package:community_guild/screens/get_started.dart';
-import 'package:community_guild/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-   //_checkLoginStatus();
+    //_checkLoginStatus();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
     _animationController = AnimationController(
@@ -61,33 +58,6 @@ class _SplashScreenState extends State<SplashScreen>
       });
     });
   }
-
-  // Future<void> _checkLoginStatus() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  //   String? token = prefs.getString('auth_token');
-  //   int? isAdmin = prefs.getInt('isAdmin');
-
-  //   if (token != null && isAdmin == 1) {
-  //     // If user is logged in and is an admin
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const AdminHomePage()),
-  //     );
-  //   } else if (token != null && isAdmin == 0) {
-  //     // If user is logged in and is a regular user
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const HomePage()),
-  //     );
-  //   } else {
-  //     // If no token found, redirect to Get Started page
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const GetStartedPage()),
-  //     );
-  //   }
-  // }
 
   @override
   void dispose() {

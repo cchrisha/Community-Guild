@@ -28,10 +28,12 @@ class HomeRepository {
       }
 
       final response = await httpClient.get(
-        Uri.parse('https://api-tau-plum.vercel.app/api/jobs/profession'), // Corrected endpoint
+        Uri.parse(
+            'https://api-tau-plum.vercel.app/api/jobs/profession'), // Corrected endpoint
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer $token', // Send token in Authorization header
+          'Authorization':
+              'Bearer $token', // Send token in Authorization header
         },
       );
 
@@ -85,6 +87,23 @@ class HomeRepository {
     } catch (e) {
       print('Error loading recent jobs: $e');
       rethrow; // Re-throw the error for handling elsewhere
+    }
+  }
+
+  Future<List<Job>> getAllJobs() async {
+    try {
+      final response = await http.get(Uri.parse(
+          'https://api-tau-plum.vercel.app/api/jobs/search?query=developer'));
+
+      if (response.statusCode == 200) {
+        // Parse the JSON data
+        List jsonResponse = json.decode(response.body);
+        return jsonResponse.map((job) => Job.fromJson(job)).toList();
+      } else {
+        throw Exception('Failed to load jobs');
+      }
+    } catch (e) {
+      throw Exception('Error fetching jobs: $e');
     }
   }
 }

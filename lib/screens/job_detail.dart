@@ -1,10 +1,11 @@
-import 'package:community_guild/screens/about_job.dart';
 import 'package:community_guild/screens/home.dart';
 import 'package:community_guild/screens/users_details.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../widget/loading_widget/ink_drop.dart';
 
 class JobDetailPage extends StatefulWidget {
   const JobDetailPage({
@@ -298,14 +299,6 @@ class _JobDetailPageState extends State<JobDetailPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              // Text(
-              //   'Contact: ${widget.contact}',
-              //   style: const TextStyle(
-              //     fontSize: 16,
-              //     color: Colors.black87,
-              //     overflow: TextOverflow.ellipsis,
-              //   ),
-              // ),
               const SizedBox(height: 10),
               Text(
                 'Category: ${widget.category}',
@@ -342,7 +335,12 @@ class _JobDetailPageState extends State<JobDetailPage> {
               ),
               if (_isLoading) // Place the loading indicator here
                 Center(
-                  child: const CircularProgressIndicator(),
+                  child: InkDrop(
+                    size: 40, // Set the size of the InkDrop
+                    color: Colors.lightBlue, // Set the color of the InkDrop
+                    ringColor: Colors.lightBlue
+                        .withOpacity(0.2), // Set the ring color of the InkDrop
+                  ),
                 ),
             ],
           ),

@@ -1,30 +1,23 @@
+// lib/widget/section_title.dart
 import 'package:flutter/material.dart';
 
-class ProfileSectionTitle extends StatelessWidget {
+class SectionTitle extends StatelessWidget {
   final String title;
-  final VoidCallback onEdit;
 
-  const ProfileSectionTitle(
-      {super.key, required this.title, required this.onEdit});
+  const SectionTitle({Key? key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
         ),
-        IconButton(
-          icon: const Icon(Icons.edit, size: 20, color: Colors.blueAccent),
-          onPressed: onEdit,
-        ),
-      ],
+      ),
     );
   }
 }

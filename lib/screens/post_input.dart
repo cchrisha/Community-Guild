@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/post/post_bloc.dart';
 import '../bloc/post/post_event.dart';
 import '../bloc/post/post_state.dart';
+import '../widget/loading_widget/ink_drop.dart';
 import '../widget/post_page/job_details_header.dart';
 import '../widget/post_page/job_details_card.dart';
 import '../widget/post_page/job_profession_dropdown.dart';
@@ -11,7 +12,6 @@ import '../widget/post_page/job_title_field.dart';
 import '../widget/post_page/job_location_field.dart';
 import '../widget/post_page/job_category_dropdown.dart';
 import '../widget/post_page/job_reward_field.dart';
-import '../widget/post_page/job_contact_field.dart';
 import '../widget/post_page/job_description_field.dart';
 import '../widget/post_page/crypto_payment_checkbox.dart';
 import '../widget/post_page/post_button.dart';
@@ -89,8 +89,14 @@ class PostInputState extends State<PostInput> {
               showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (context) =>
-                    const Center(child: CircularProgressIndicator()),
+                builder: (context) => Center(
+                  child: InkDrop(
+                    // Use InkDrop as the loading animation
+                    size: 40,
+                    color: Colors.lightBlue,
+                    ringColor: Colors.lightBlue.withOpacity(0.3),
+                  ),
+                ),
               );
             } else if (state is PostSuccess) {
               Navigator.pop(context); // Dismiss loading indicator
@@ -205,7 +211,8 @@ class PostInputState extends State<PostInput> {
                                     ),
                                     backgroundColor: Colors.red,
                                     behavior: SnackBarBehavior.floating,
-                                    margin: const EdgeInsets.symmetric(vertical: 20),
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 20),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(0),
                                     ),
@@ -223,7 +230,8 @@ class PostInputState extends State<PostInput> {
                                     ),
                                     backgroundColor: Colors.red,
                                     behavior: SnackBarBehavior.floating,
-                                    margin: const EdgeInsets.symmetric(vertical: 20),
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 20),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(0),
                                     ),
@@ -232,17 +240,18 @@ class PostInputState extends State<PostInput> {
                               } else {
                                 // Proceed with the job posting
                                 context.read<PostBloc>().add(
-                                  SubmitJob(
-                                    title: _titleController.text,
-                                    location: _locationController.text,
-                                    profession: _selectedProfession!,
-                                    category: _selectedCategory!,
-                                    wageRange:
-                                        '${_minRewardController.text} - ${_maxRewardController.text}',
-                                    description: _descriptionController.text,
-                                    isCrypto: _isCrypto,
-                                  ),
-                                );
+                                      SubmitJob(
+                                        title: _titleController.text,
+                                        location: _locationController.text,
+                                        profession: _selectedProfession!,
+                                        category: _selectedCategory!,
+                                        wageRange:
+                                            '${_minRewardController.text} - ${_maxRewardController.text}',
+                                        description:
+                                            _descriptionController.text,
+                                        isCrypto: _isCrypto,
+                                      ),
+                                    );
                               }
                             },
                           ),
