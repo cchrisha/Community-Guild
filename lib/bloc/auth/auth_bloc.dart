@@ -1,5 +1,7 @@
-import 'package:community_guild/bloc/user/auth_event.dart';
-import 'package:community_guild/bloc/user/auth_state.dart';
+import 'package:community_guild/bloc/auth/auth_event.dart';
+import 'package:community_guild/bloc/auth/auth_state.dart';
+import 'package:community_guild/bloc/auth/auth_event.dart';
+import 'package:community_guild/bloc/auth/auth_state.dart';
 import 'package:community_guild/repository/authentication/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

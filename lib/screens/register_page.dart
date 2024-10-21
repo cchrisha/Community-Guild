@@ -1,6 +1,6 @@
-import 'package:community_guild/bloc/user/auth_bloc.dart';
-import 'package:community_guild/bloc/user/auth_event.dart';
-import 'package:community_guild/bloc/user/auth_state.dart';
+import 'package:community_guild/bloc/auth/auth_bloc.dart';
+import 'package:community_guild/bloc/auth/auth_event.dart';
+import 'package:community_guild/bloc/auth/auth_state.dart';
 import 'package:community_guild/models/userAuth_model.dart';
 import 'package:community_guild/repository/authentication/auth_repository.dart';
 import 'package:community_guild/screens/login_page.dart';

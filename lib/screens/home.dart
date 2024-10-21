@@ -249,6 +249,7 @@ class HomePageBody extends StatelessWidget {
                                           'No categories available',
                                       posterName:
                                           job.posterName ?? 'Unknown poster',
+                                      posterId: job.posterId?? '', // Provide a default value
                                     ),
                                   ),
                                 );
@@ -301,6 +302,7 @@ class HomePageBody extends StatelessWidget {
                                           'No categories available',
                                       posterName:
                                           job.posterName ?? 'Unknown poster',
+                                      posterId: job.posterId?? '', // Provide a default value
                                     ),
                                   ),
                                 );
