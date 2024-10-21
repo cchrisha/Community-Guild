@@ -26,52 +26,64 @@ class _UserDetailsState extends State<UserDetails> {
     _fetchUserDetails();
   }
 
-  Future<void> _fetchUserDetails() async {
-    setState(() {
-      isLoading = true;
-      errorMessage = null;
-    });
+Future<void> _fetchUserDetails() async {
+  setState(() {
+    isLoading = true;
+    errorMessage = null;
+  });
 
-    try {
-      // Fetch user details
-      final response = await http.get(
-        Uri.parse('https://api-tau-plum.vercel.app/api/users/${widget.posterName}')
-      );
+  try {
+    print('Fetching details for user: ${widget.posterName}');
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        if (data['status'] == 'success') {
-          setState(() {
-            userDetails = data['data'];
-          });
+    final response = await http.get(
+      Uri.parse('https://api-tau-plum.vercel.app/api/users/${widget.posterName}')
+    );
 
-          // Fetch profile picture
-          final fetchedProfilePictureUrl = await _profileRepository.fetchProfilePicture();
-          setState(() {
-            profilePictureUrl = fetchedProfilePictureUrl.isNotEmpty
-                ? fetchedProfilePictureUrl
-                : 'https://via.placeholder.com/150'; // Default image if none
-            isLoading = false;
-          });
-        } else {
-          setState(() {
-            errorMessage = data['message'];
-            isLoading = false;
-          });
-        }
+    print('User Details API Response: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      if (data['status'] == 'success') {
+        setState(() {
+          userDetails = data['data'];
+        });
+
+        // Get the user's ObjectId from the response
+        final String userId = userDetails!['_id'];  // Assuming the field is '_id'
+
+        // Fetch the profile picture using the user's ObjectId
+        final fetchedProfilePictureUrl = await _profileRepository.fetchotherProfilePicture(
+          userId: userId // Pass the ObjectId here, not the name
+        );
+
+        print('Profile Picture URL: $fetchedProfilePictureUrl');
+
+        setState(() {
+          profilePictureUrl = fetchedProfilePictureUrl.isNotEmpty
+              ? fetchedProfilePictureUrl
+              : 'https://via.placeholder.com/150'; // Default image if none
+          isLoading = false;
+        });
       } else {
         setState(() {
-          errorMessage = 'Failed to load user details';
+          errorMessage = data['message'];
           isLoading = false;
         });
       }
-    } catch (e) {
+    } else {
       setState(() {
-        errorMessage = 'An error occurred: $e';
+        errorMessage = 'Failed to load user details';
         isLoading = false;
       });
     }
+  } catch (e) {
+    setState(() {
+      errorMessage = 'An error occurred: $e';
+      isLoading = false;
+    });
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
