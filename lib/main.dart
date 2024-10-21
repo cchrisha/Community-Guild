@@ -14,8 +14,9 @@ void main() async{
         channelDescription: 'Notification channel for basic tests',
         defaultColor: Color(0xFF9D50E8),
         ledColor: Colors.white,
-        importance: NotificationImportance.High,
+        importance: NotificationImportance.Max,
         channelShowBadge: true,
+        onlyAlertOnce: true,
         playSound: true,
       ),
     ], channelGroups: [
