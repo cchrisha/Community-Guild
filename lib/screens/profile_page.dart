@@ -77,7 +77,7 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ];
               },
-              icon: const Icon(Icons.menu, color: Colors.white),
+              icon: const Icon(Icons.more_vert, color: Colors.white),
             ),
           ],
         ),
@@ -158,36 +158,36 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
         ),
-        // Positioned(
-        //   bottom: 0,
-        //   right: 0,
-        //   child: Container(
-        //     width: 40,
-        //     height: 40, // Adjust size for camera icon
-        //     decoration: BoxDecoration(
-        //       shape: BoxShape.circle,
-        //       color: Colors.lightBlue, // Icon background color
-        //       border: Border.all(
-        //         color: Colors.white,
-        //         width: 3, // Border width around icon
-        //       ),
-        //     ),
-        //     child: IconButton(
-        //       icon: const Icon(Icons.camera_alt, color: Colors.white),
-        //       onPressed: () async {
-        //         final ImagePicker picker = ImagePicker();
-        //         final XFile? image =
-        //             await picker.pickImage(source: ImageSource.gallery);
-        //         if (image != null) {
-        //           profileBloc.add(UploadProfilePicture(File(image.path)));
-        //         }
-        //       },
-        //       iconSize: 20,
-        //       padding: EdgeInsets.zero,
-        //       splashRadius: 28,
-        //     ),
-        //   ),
-        // ),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          child: Container(
+            width: 40,
+            height: 40, // Adjust size for camera icon
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.lightBlue, // Icon background color
+              border: Border.all(
+                color: Colors.white,
+                width: 3, // Border width around icon
+              ),
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.camera_alt, color: Colors.white),
+              onPressed: () async {
+                final ImagePicker picker = ImagePicker();
+                final XFile? image =
+                    await picker.pickImage(source: ImageSource.gallery);
+                if (image != null) {
+                  profileBloc.add(UploadProfilePicture(File(image.path)));
+                }
+              },
+              iconSize: 20,
+              padding: EdgeInsets.zero,
+              splashRadius: 28,
+            ),
+          ),
+        ),
       ],
     );
   }

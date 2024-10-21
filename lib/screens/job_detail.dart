@@ -283,15 +283,6 @@ class _JobDetailPageState extends State<JobDetailPage> {
                                       color: Colors.black87,
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
-                                  const Text(
-                                    "View Profile",
-                                    style: TextStyle(
-                                      fontSize: 16, // Increased font size
-                                      color: Colors.lightBlue,
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                  ),
                                 ],
                               ),
                             ],

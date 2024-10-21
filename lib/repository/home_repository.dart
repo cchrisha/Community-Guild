@@ -92,8 +92,8 @@ class HomeRepository {
 
   Future<List<Job>> getAllJobs() async {
     try {
-      final response = await http.get(Uri.parse(
-          'https://api-tau-plum.vercel.app/api/jobs/search?query=developer'));
+      final response = await http.get(
+          Uri.parse('https://api-tau-plum.vercel.app/api/jobs/search?query'));
 
       if (response.statusCode == 200) {
         // Parse the JSON data
