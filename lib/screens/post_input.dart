@@ -135,6 +135,9 @@ class PostInputState extends State<PostInput> {
                             children: [
                               JobTitleField(controller: _titleController),
                               const SizedBox(height: 16),
+                              JobDescriptionField(
+                                  controller: _descriptionController),
+                              const SizedBox(height: 16),
                               JobLocationField(controller: _locationController),
                               const SizedBox(height: 16),
                               JobCategoryDropdown(
@@ -157,16 +160,20 @@ class PostInputState extends State<PostInput> {
                                 professions: _professions,
                               ),
                               const SizedBox(height: 16),
-                              Column(
+                              Row(
                                 children: [
-                                  JobRewardField(
-                                    controller: _minRewardController,
-                                    label: 'Minimum Wage',
+                                  Expanded(
+                                    child: JobRewardField(
+                                      controller: _minRewardController,
+                                      label: 'Min Wage',
+                                    ),
                                   ),
-                                  const SizedBox(height: 16),
-                                  JobRewardField(
-                                    controller: _maxRewardController,
-                                    label: 'Maximum Wage',
+                                  const SizedBox(width: 16), // Add some spacing between the fields
+                                  Expanded(
+                                    child: JobRewardField(
+                                      controller: _maxRewardController,
+                                      label: 'Max Wage',
+                                    ),
                                   ),
                                 ],
                               ),
@@ -179,9 +186,6 @@ class PostInputState extends State<PostInput> {
                                   });
                                 },
                               ),
-                              const SizedBox(height: 16),
-                              JobDescriptionField(
-                                  controller: _descriptionController),
                             ],
                           ),
                         ),
