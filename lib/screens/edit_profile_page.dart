@@ -72,7 +72,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 SnackBar(content: Text(state.message)),
               );
               // Pop and return true to indicate success
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const ProfilePage()), // Replace ProfilePage with your target page
               );// Returning true to indicate success
