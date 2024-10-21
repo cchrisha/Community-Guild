@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -605,165 +606,168 @@ class _PaymentPageState extends State<PaymentPage> {
       },
     );
   }
-    Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
-    setState(() {
-      isLoading = true;
-    });
 
-    final tetherContract = DeployedContract(
-      ContractAbi.fromJson(
-        jsonEncode([
-          {
-            "constant": false,
-            "inputs": [
-              {"internalType": "address", "name": "_to", "type": "address"},
-              {"internalType": "uint256", "name": "_value", "type": "uint256"}
-            ],
-            "name": "transfer",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-          }
-        ]),
-        'ETH',
+    Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
+  setState(() {
+    isLoading = true;
+  });
+
+  final tetherContract = DeployedContract(
+    ContractAbi.fromJson(
+      jsonEncode([
+        {
+          "constant": false,
+          "inputs": [
+            {"internalType": "address", "name": "_to", "type": "address"},
+            {"internalType": "uint256", "name": "_value", "type": "uint256"}
+          ],
+          "name": "transfer",
+          "outputs": [],
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ]),
+      'ETH',
+    ),
+    EthereumAddress.fromHex(receiver),
+  );
+
+  try {
+    final senderAddress = appKitModal!.session!.address!;
+    final currentBalance = appKitModal!.balanceNotifier.value;
+
+    if (currentBalance.isEmpty) {
+      throw Exception('Unable to fetch wallet balance.');
+    }
+
+    BigInt balanceInWeiValue;
+    try {
+      double balanceInEther = double.parse(currentBalance.split(' ')[0]);
+      balanceInWeiValue = BigInt.from((balanceInEther * pow(10, 18)).toInt());
+    } catch (e) {
+      throw Exception('Error parsing wallet balance: $e');
+    }
+
+    final balanceInWei = EtherAmount.fromUnitAndValue(EtherUnit.wei, balanceInWeiValue);
+    final totalCost = txValue.getInWei + BigInt.from(100000 * 21000); // Include gas fees
+
+    if (balanceInWei.getInWei < totalCost) {
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.error,
+        title: 'Insufficient Funds',
+        text: 'You have insufficient funds to complete this transaction. Please add more funds.',
+        confirmBtnText: 'Okay',
+      );
+      return; // Stop further execution, do not redirect to MetaMask
+    }
+
+    final result = await appKitModal!.requestWriteContract(
+      topic: appKitModal!.session!.topic,
+      chainId: appKitModal!.selectedChain!.chainId,
+      deployedContract: tetherContract,
+      functionName: 'transfer',
+      transaction: Transaction(
+        from: EthereumAddress.fromHex(senderAddress),
+        to: EthereumAddress.fromHex(receiver),
+        value: txValue,
+        maxGas: 100000,
       ),
-      EthereumAddress.fromHex(receiver),
+      parameters: [
+        EthereumAddress.fromHex(receiver),
+        txValue.getInWei,
+      ],
     );
 
-    try {
-      final senderAddress = appKitModal!.session!.address!;
-      final currentBalance = appKitModal!.balanceNotifier.value;
+    // If transaction is successful, notify the recipient and trigger the notification
+    if (result != null) {
+      await notifyRecipient(receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), senderAddress);
+      await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString());
 
-      if (currentBalance.isEmpty) {
-        throw Exception('Unable to fetch wallet balance.');
-      }
-
-      BigInt balanceInWeiValue;
-      try {
-        // Convert the current balance from string to double, then to Wei
-        double balanceInEther = double.parse(currentBalance.split(' ')[0]);
-        balanceInWeiValue = BigInt.from((balanceInEther * pow(10, 18)).toInt());
-      } catch (e) {
-        throw Exception('Error parsing wallet balance: $e');
-      }
-
-      final balanceInWei = EtherAmount.fromUnitAndValue(EtherUnit.wei, balanceInWeiValue);
-      final totalCost = txValue.getInWei + BigInt.from(100000 * 21000); // Include gas fees
-
-      // Check if user has sufficient funds before redirecting to MetaMask
-      if (balanceInWei.getInWei < totalCost) {
-        // Show CoolAlert dialog for insufficient funds and stop transaction
-        CoolAlert.show(
-          context: context,
-          type: CoolAlertType.error,
-          title: 'Insufficient Funds',
-          text: 'You have insufficient funds to complete this transaction. Please add more funds.',
-          confirmBtnText: 'Okay',
-        );
-        return; // Stop further execution, do not redirect to MetaMask
-      }
-
-      // Proceed with the transaction if sufficient funds are available
-      final result = await appKitModal!.requestWriteContract(
-        topic: appKitModal!.session!.topic,
-        chainId: appKitModal!.selectedChain!.chainId,
-        deployedContract: tetherContract,
-        functionName: 'transfer',
-        transaction: Transaction(
-          from: EthereumAddress.fromHex(senderAddress),
-          to: EthereumAddress.fromHex(receiver),
-          value: txValue,
-          maxGas: 100000,
-        ),
-        parameters: [
-          EthereumAddress.fromHex(receiver),
-          txValue.getInWei,
-        ],
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.success,
+        title: 'Transaction Successful',
+        text: 'Your transaction was completed successfully!',
+        confirmBtnText: 'Great!',
       );
-
-      // If transaction is successful, show success dialog
-      if (result != null) {
-        // Notify the recipient of the successful payment
-        await notifyRecipient(receiver, txValue.getValueInUnit(EtherUnit.ether).toString());
-
-        CoolAlert.show(
-          context: context,
-          type: CoolAlertType.success,
-          title: 'Transaction Successful',
-          text: 'Your transaction was completed successfully!',
-          confirmBtnText: 'Great!',
-        );
-        await appKitModal!.loadAccountData();
-      } else {
-        throw Exception('Transaction failed. Please try again.');
-      }
-    } catch (e) {
-      String errorMessage;
-
-      if (e.toString().contains('User denied transaction signature')) {
-        errorMessage = 'Transaction cancelled by the user.';
-
-        // Show CoolAlert dialog when the user denies the transaction signature
-        CoolAlert.show(
-          context: context,
-          type: CoolAlertType.error,
-          title: 'Transaction Cancelled',
-          text: errorMessage,
-          confirmBtnText: 'Okay',
-        );
-      } else {
-        errorMessage = 'An unexpected error occurred: $e';
-
-        // Show CoolAlert dialog for general errors
-        CoolAlert.show(
-          context: context,
-          type: CoolAlertType.error,
-          title: 'Error',
-          text: errorMessage,
-          confirmBtnText: 'Okay',
-        );
-      }
-    } finally {
-      setState(() {
-        isLoading = false; // Hide loader
-      });
+      await appKitModal!.loadAccountData();
+    } else {
+      throw Exception('Transaction failed. Please try again.');
     }
-  }
+  } catch (e) {
+    String errorMessage;
 
-// Function to notify the recipient
-  Future<void> notifyRecipient(String recipientAddress, String amount) async {
-    final url = Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment');
-    
-    try {
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'recipientAddress': recipientAddress,
-          'amount': amount,
-          'senderAddress': appKitModal!.session!.address, // Assuming this gets the sender's address
-        }),
+    if (e.toString().contains('User denied transaction signature')) {
+      errorMessage = 'Transaction cancelled by the user.';
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.error,
+        title: 'Transaction Cancelled',
+        text: errorMessage,
+        confirmBtnText: 'Okay',
       );
-
-      // Check if the notification was sent successfully
-      if (response.statusCode == 200) {
-        print('Recipient notified successfully.');
-      } else {
-        // If the response status is not 200, consider the notification as failed
-        bool notificationSent = false;
-        if (!notificationSent) {
-          print('Failed to notify recipient: ${response.body}');
-          print('Notification failed for recipient: $recipientAddress');
-        }
-      }
-    } catch (e) {
-      // Handle errors that occur during the HTTP request
-      print('Error notifying recipient: $e');
-      print('Notification failed for recipient: $recipientAddress');
+    } else {
+      errorMessage = 'An unexpected error occurred: $e';
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.error,
+        title: 'Error',
+        text: errorMessage,
+        confirmBtnText: 'Okay',
+      );
     }
+  } finally {
+    setState(() {
+      isLoading = false; // Hide loader
+    });
   }
+}
+
+// Function to trigger the notification using Awesome Notifications
+Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount) async {
+  // Generate a unique ID for the notification
+  int notificationId = DateTime.now().millisecondsSinceEpoch; // Unique ID for this notification
+
+  await AwesomeNotifications().createNotification(
+    content: NotificationContent(
+      channelKey: 'basic_channel', // Use the channel you initialized in main
+      id: notificationId, // Unique ID for this notification
+      title: 'Transaction Successful',
+      body: '$senderAddress sent you $amount ETH.',
+      notificationLayout: NotificationLayout.Default,
+    ),
+  );
+}
+
+// Function to notify the recipient via your API
+Future<void> notifyRecipient(String recipientAddress, String amount, String senderAddress) async {
+  final url = Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment');
+  
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'recipientAddress': recipientAddress,
+        'amount': amount,
+        'senderAddress': senderAddress,
+      }),
+    );
+
+    // Check if the notification was sent successfully
+    if (response.statusCode == 200) {
+      print('Recipient notified successfully: ${response.body}');
+    } else {
+      print('Failed to notify recipient: ${response.body}');
+    }
+  } catch (e) {
+    print('Error notifying recipient: $e');
+  }
+}
+
 
 }

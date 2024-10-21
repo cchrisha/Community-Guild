@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:community_guild/repository/home_repository.dart';
 import 'package:community_guild/screens/post_input.dart';
 import 'package:community_guild/widget/home/job_card.dart';
@@ -44,6 +45,12 @@ class _HomePageState extends State<HomePage> {
     _homeBloc = HomeBloc(
       homeRepository: HomeRepository(httpClient: http.Client()),
     );
+
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
   }
 
   @override

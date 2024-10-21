@@ -61,6 +61,7 @@ dependencies:
   permission_handler: ^11.3.1
   fl_chart: ^0.69.0
   cool_alert: ^2.0.1
+  awesome_notifications: ^0.9.3+1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.1
@@ -70,7 +71,7 @@ dev_dependencies:
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
+  # activated in the `analysis_options.yaml` file located at the root of your>
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^3.0.0

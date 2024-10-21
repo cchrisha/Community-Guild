@@ -31,7 +31,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
     try {
       // Fetch total users
       final userResponse = await http
-          .get(Uri.parse('https://api-tau-plum.vercel.app/api/users'));
+          .get(Uri.parse('https://api-tau-plum.vercel.app/api/userGetTransac'));
       if (userResponse.statusCode == 200) {
         final List<dynamic> users = json.decode(userResponse.body);
         _totalUsers = users.length;
