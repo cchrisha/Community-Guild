@@ -85,8 +85,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
 
     if (response.statusCode == 200) {
       // After successfully applying, notify the poster
-      _notifyJobPoster(widget.jobId, userName ?? '', widget.jobTitle);
-
+      //_notifyJobPoster(widget.jobId, userName ?? '', widget.jobTitle);
       _showSuccessSnackBar();
       Navigator.pushReplacement(
         context,

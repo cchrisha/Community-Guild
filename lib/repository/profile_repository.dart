@@ -119,4 +119,19 @@ class ProfileRepository {
       throw Exception('Error: $e');
     }
   }
+
+  // Future<String> fetchotherProfilePicture({required String userId}) async {
+  //   try {
+  //     final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/api/users/$userId/profilePicture'));
+
+  //     if (response.statusCode == 200) {
+  //       final Map<String, dynamic> data = json.decode(response.body);
+  //       return data['data']['profilePictureUrl'] ?? ''; // Adjust according to your API response
+  //     } else {
+  //       return ''; // Return empty if fetch fails
+  //     }
+  //   } catch (e) {
+  //     return ''; // Handle exceptions
+  //   }
+  // }
 }
