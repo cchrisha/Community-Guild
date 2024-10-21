@@ -774,7 +774,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
   Future<void> notifyRecipient(String senderAddress, String receiverAddress, double amount) async {
     final response = await http.post(
-      Uri.parse('https://your-api-url/api/transactions'), // Update with your actual API endpoint
+      Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment'), // Update with your actual API endpoint
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'senderId': senderAddress, // Ensure these IDs are correct
