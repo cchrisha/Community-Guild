@@ -52,6 +52,10 @@ class _JobDetailPageState extends State<JobDetailPage> {
     final token = prefs.getString('auth_token');
     final userName = prefs.getString('user_name'); // Get the current user's name
 
+    // Log token and userName for debugging
+    print('Token: $token');
+    print('User Name: $userName');
+
     if (token == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -74,6 +78,9 @@ class _JobDetailPageState extends State<JobDetailPage> {
       body: json.encode({}), // Include any necessary body data if needed
     );
 
+    print('Response Status Code: ${response.statusCode}');
+    print('Response Body: ${response.body}'); // Log the full response body
+
     if (response.statusCode == 200) {
       // After successfully applying, notify the poster
       _notifyJobPoster(widget.jobId, userName ?? '', widget.jobTitle);
@@ -87,6 +94,8 @@ class _JobDetailPageState extends State<JobDetailPage> {
       );
     } else {
       final responseData = json.decode(response.body);
+      print('Error Response Data: $responseData'); // Log the error response data
+
       if (responseData['message'] == "You cannot apply to your own job") {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -123,6 +132,10 @@ Future<void> _notifyJobPoster(String jobId, String userName, String jobTitle) as
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
 
+    print('Notify Token: $token');
+    print('Notify User Name: $userName');
+    print('Job Title: $jobTitle'); // Log the job title being sent in the notification
+
     if (token == null) {
       // Handle missing token
       return;
@@ -145,6 +158,9 @@ Future<void> _notifyJobPoster(String jobId, String userName, String jobTitle) as
       headers: headers,
       body: body,
     );
+
+    print('Notification Response Status Code: ${response.statusCode}');
+    print('Notification Response Body: ${response.body}'); // Log the response body of the notification
 
     if (response.statusCode != 200) {
       // Handle notification failure

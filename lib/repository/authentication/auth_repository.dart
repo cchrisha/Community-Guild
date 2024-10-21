@@ -45,38 +45,77 @@ class AuthRepository {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
+  // Future<String> loginUser(String email, String password) async {
+  //   final response = await httpClient.post(
+  //     Uri.parse('https://api-tau-plum.vercel.app/api/userLogin'),
+  //     headers: {'Content-Type': 'application/json'},
+  //     body: json.encode({
+  //       'email': email,
+  //       'password': password,
+  //     }),
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     final responseData = json.decode(response.body);
+  //     final token = responseData['token'];
+
+  //     if (responseData['success'] == true) {
+  //       if (token == null || token.isEmpty) {
+  //         throw Exception('Login failed: Token is null or empty.');
+  //       }
+  //       await saveToken(token); // Function to save token locally
+  //       print('Token saved: $token');
+  //       return token;
+  //     } else {
+  //       // Handle case when API response indicates failure despite 200 status
+  //       throw Exception('Login failed: ${responseData['message']}');
+  //     }
+  //   } else {
+  //     // Decode error response and throw with message
+  //     final errorData = json.decode(response.body);
+  //     final errorMessage = errorData['message'] ?? 'Login failed: Unknown error.';
+  //     throw Exception(errorMessage);
+  //   }
+  // }
+
   Future<String> loginUser(String email, String password) async {
     final response = await httpClient.post(
-      Uri.parse('https://api-tau-plum.vercel.app/api/userLogin'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'email': email,
-        'password': password,
-      }),
+        Uri.parse('https://api-tau-plum.vercel.app/api/userLogin'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+            'email': email,
+            'password': password,
+        }),
     );
 
     if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
-      final token = responseData['token'];
+        final responseData = json.decode(response.body);
+        final token = responseData['token'];
 
-      if (responseData['success'] == true) {
-        if (token == null || token.isEmpty) {
-          throw Exception('Login failed: Token is null or empty.');
+        if (responseData['success'] == true) {
+            if (token == null || token.isEmpty) {
+                throw Exception('Login failed: Token is null or empty.');
+            }
+            await saveToken(token); // Save token locally
+
+            // Save user name in SharedPreferences
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('user_name', responseData['name']); // Save the user's name
+
+            print('Token saved: $token');
+            print('User name saved: ${responseData['name']}'); // Log user name saving
+            return token;
+        } else {
+            // Handle case when API response indicates failure despite 200 status
+            throw Exception('Login failed: ${responseData['message']}');
         }
-        await saveToken(token); // Function to save token locally
-        print('Token saved: $token');
-        return token;
-      } else {
-        // Handle case when API response indicates failure despite 200 status
-        throw Exception('Login failed: ${responseData['message']}');
-      }
     } else {
-      // Decode error response and throw with message
-      final errorData = json.decode(response.body);
-      final errorMessage = errorData['message'] ?? 'Login failed: Unknown error.';
-      throw Exception(errorMessage);
+        // Decode error response and throw with message
+        final errorData = json.decode(response.body);
+        final errorMessage = errorData['message'] ?? 'Login failed: Unknown error.';
+        throw Exception(errorMessage);
     }
-  }
+}
 
   Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
