@@ -21,6 +21,7 @@ class JobDetailPage extends StatefulWidget {
     //required this.contact,
     required this.category,
     required this.posterName,
+    required this.posterId, // Add this
   });
 
   final String jobId;
@@ -34,6 +35,7 @@ class JobDetailPage extends StatefulWidget {
   //final String contact;
   final String category;
   final String posterName;
+  final String posterId;
 
   @override
   State<JobDetailPage> createState() => _JobDetailPageState();
@@ -128,47 +130,46 @@ class _JobDetailPageState extends State<JobDetailPage> {
 
 // Notify the poster of the job
 Future<void> _notifyJobPoster(String jobId, String userName, String jobTitle) async {
-  try {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('auth_token');
+    try {
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('auth_token');
 
-    print('Notify Token: $token');
-    print('Notify User Name: $userName');
-    print('Job Title: $jobTitle'); // Log the job title being sent in the notification
+        print('Notify Token: $token');
+        print('Notify User Name: $userName');
+        print('Job Title: $jobTitle');
 
-    if (token == null) {
-      // Handle missing token
-      return;
+        if (token == null) {
+            return;
+        }
+
+        final notificationUrl = 'https://api-tau-plum.vercel.app/api/notifications';
+        final headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+        };
+
+        // Update notification data to match backend expectations
+        final body = json.encode({
+            'user': widget.posterId,  // Assuming you have the poster's ID available
+            'message': 'User $userName applied for the job $jobTitle',
+            'job': jobId,  // This should include the job ID as well
+        });
+
+        final response = await http.post(
+            Uri.parse(notificationUrl),
+            headers: headers,
+            body: body,
+        );
+
+        print('Notification Response Status Code: ${response.statusCode}');
+        print('Notification Response Body: ${response.body}');
+
+        if (response.statusCode != 200) {
+            throw Exception('Failed to notify job poster.');
+        }
+    } catch (e) {
+        print('Error sending notification: $e');
     }
-
-    final notificationUrl = 'https://api-tau-plum.vercel.app/api/notifications'; // Replace with your actual notification URL
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    };
-
-    // The notification data, assuming your backend accepts this format
-    final body = json.encode({
-      'jobId': jobId,
-      'message': 'User $userName applied for the job $jobTitle',
-    });
-
-    final response = await http.post(
-      Uri.parse(notificationUrl),
-      headers: headers,
-      body: body,
-    );
-
-    print('Notification Response Status Code: ${response.statusCode}');
-    print('Notification Response Body: ${response.body}'); // Log the response body of the notification
-
-    if (response.statusCode != 200) {
-      // Handle notification failure
-      throw Exception('Failed to notify job poster.');
-    }
-  } catch (e) {
-    print('Error sending notification: $e');
-  }
 }
 
   void _showSuccessSnackBar() {
