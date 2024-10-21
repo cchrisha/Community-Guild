@@ -605,6 +605,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   await sendTransaction(recipient, ethAmount);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Transaction successful!')),
+                    
                   );
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -760,44 +761,11 @@ Future<void> triggerNotification(String senderAddress, String receiverAddress, S
       id: notificationId,
       title: 'Successful Payment',
       body: 'You have successfully sent $amount ETH to $receiverAddress.',
-      notificationLayout: NotificationLayout.Default,
-    ),
-  );
-
-  // Notify the recipient through API
-  await notifyRecipient(senderAddress, receiverAddress, amount, userId);
-}
-
-Future<void> notifyRecipient(String senderAddress, String receiverAddress, String amount, String userId) async {
-  final response = await http.post(
-    Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment'),
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({
-      'senderId': senderAddress,
-      'receiverId': receiverAddress,
-      'amount': amount,
-    }),
-  );
-
-  if (response.statusCode == 200) {
-    // Successfully notified the recipient
-    final data = jsonDecode(response.body);
-    final transactionDetails = data['transactionDetails'];
-
-    // Trigger Awesome Notification for the recipient
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        channelKey: 'transaction_channel',
-        id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647) + 1, // Unique ID
-        title: 'Transaction Received',
-        body: 'You have received $amount ETH from $senderAddress.',
         notificationLayout: NotificationLayout.Default,
       ),
     );
-  } else {
-    // Handle error
-    print('Transaction notification failed: ${response.body}');
+
   }
-}
+
 
 }

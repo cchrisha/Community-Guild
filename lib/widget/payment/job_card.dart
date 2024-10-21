@@ -1,5 +1,6 @@
 // transaction_card.dart
 import 'package:flutter/material.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 class PaymentJobCardPage extends StatefulWidget {
   final String amount;
@@ -25,6 +26,25 @@ class PaymentJobCardPage extends StatefulWidget {
 
 class _PaymentJobCardPageState extends State<PaymentJobCardPage> {
   bool _isExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _createNotification(); // Call to create a notification when the widget is initialized
+  }
+
+  // Function to create the notification
+  Future<void> _createNotification() async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        channelKey: 'transaction_channel',
+        id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647) + 1, // Unique ID
+        title: 'Transaction ${widget.isSent ? "Sent" : "Received"}',
+        body: 'You have ${widget.isSent ? "sent" : "received"} ${widget.amount} ETH from ${widget.sender}.',
+        notificationLayout: NotificationLayout.Default,
+      ),
+    );
+  }
 
   // Helper function to shorten the address
   String shortenAddress(String address) {
@@ -53,7 +73,7 @@ class _PaymentJobCardPageState extends State<PaymentJobCardPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${widget.isSent ? 'Sent' : 'Recieved'} ${widget.amount} ETH',
+                    '${widget.isSent ? 'Sent' : 'Received'} ${widget.amount} ETH',
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 18),
                   ),
