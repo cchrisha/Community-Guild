@@ -4,18 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 
-void main() {
- AwesomeNotifications().initialize(
-    'resource://drawable/res_app_icon',
+void main() async{
+ await AwesomeNotifications().initialize(null,
     [
       NotificationChannel(
+        channelGroupKey: 'basic_channel_group',
         channelKey: 'basic_channel',
         channelName: 'Basic Notifications',
         channelDescription: 'Notification channel for basic tests',
         defaultColor: Color(0xFF9D50E8),
         ledColor: Colors.white,
+        importance: NotificationImportance.High,
+        channelShowBadge: true,
+        playSound: true,
       ),
-      // You can add more channels here if needed
+    ], channelGroups: [
+      NotificationChannelGroup(
+        channelGroupKey: 'basic_channel_group'
+      , channelGroupName: 'Basic Group'),
     ],
     debug: true,
   );

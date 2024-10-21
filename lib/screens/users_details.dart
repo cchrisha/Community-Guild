@@ -1,13 +1,13 @@
+import 'package:community_guild/widget/loading_widget/ink_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'package:community_guild/widget/loading_widget/ink_drop.dart';
+import 'package:community_guild/repository/profile_repository.dart'; // Import the repository
 
 class UserDetails extends StatefulWidget {
   final String posterName;
 
-  const UserDetails({super.key, required this.posterName});
+  UserDetails({required this.posterName});
 
   @override
   _UserDetailsState createState() => _UserDetailsState();
@@ -17,6 +17,8 @@ class _UserDetailsState extends State<UserDetails> {
   Map<String, dynamic>? userDetails;
   bool isLoading = true;
   String? errorMessage;
+  String? profilePictureUrl; // Add this for profile picture
+  final ProfileRepository _profileRepository = ProfileRepository(); // Initialize ProfileRepository
 
   @override
   void initState() {
@@ -31,6 +33,7 @@ class _UserDetailsState extends State<UserDetails> {
     });
 
     try {
+      // Fetch user details
       final response = await http.get(
         Uri.parse('https://api-tau-plum.vercel.app/api/users/${widget.posterName}')
       );
@@ -40,6 +43,14 @@ class _UserDetailsState extends State<UserDetails> {
         if (data['status'] == 'success') {
           setState(() {
             userDetails = data['data'];
+          });
+
+          // Fetch profile picture
+          final fetchedProfilePictureUrl = await _profileRepository.fetchProfilePicture();
+          setState(() {
+            profilePictureUrl = fetchedProfilePictureUrl.isNotEmpty
+                ? fetchedProfilePictureUrl
+                : 'https://via.placeholder.com/150'; // Default image if none
             isLoading = false;
           });
         } else {
@@ -84,7 +95,7 @@ class _UserDetailsState extends State<UserDetails> {
           ? const Center(
               child: InkDrop(
                 size: 40,
-                color: Colors.lightBlue, // Show InkDrop instead of CircularProgressIndicator
+                color: Colors.lightBlue,
               ),
             )
           : errorMessage != null
@@ -125,7 +136,7 @@ class _UserDetailsState extends State<UserDetails> {
                   child: CircleAvatar(
                     radius: 60,
                     backgroundImage: NetworkImage(
-                      userDetails!['profilePicture'] ?? 'https://via.placeholder.com/150',
+                      profilePictureUrl ?? 'https://via.placeholder.com/150',
                     ),
                   ),
                 ),

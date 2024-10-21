@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:math';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:community_guild/screens/Notification/notification.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,6 +45,13 @@ class _PaymentPageState extends State<PaymentPage> {
   @override
   void initState() {
     super.initState();
+    AwesomeNotifications().setListeners(onActionReceivedMethod: NotificationController.onDismissActionRecievedMethod,
+      onNotificationCreatedMethod: 
+        NotificationController.onNotificationCreatedMethod,
+        onNotificationDisplayedMethod: 
+          NotificationController.onNotificationDisplayedMethod,
+          onDismissActionReceivedMethod: 
+            NotificationController.onDismissActionRecievedMethod);
     initializeAppKitModal();
     loadWalletAddress();
   }
@@ -370,7 +379,23 @@ class _PaymentPageState extends State<PaymentPage> {
           // const Center(child: CircularProgressIndicator()),
         ],
       ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     // Trigger the notification when the FAB is pressed
+      //     AwesomeNotifications().createNotification(
+      //       content: NotificationContent(
+      //         id: 1, // Unique ID for the notification
+      //         channelKey: 'basic_channel', // Your initialized channel key
+      //         title: 'New Notification!',
+      //         body: 'Haynako Albert!!!!!!!!',
+      //         notificationLayout: NotificationLayout.BigPicture,
+      //       ),
+      //     );
+      //   },
+      //   child: const Icon(Icons.download),
+      // ),
     );
+  
   }
 
   void _showReceiveQRCode(BuildContext context) {
@@ -607,27 +632,14 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-    Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
+  Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
   setState(() {
     isLoading = true;
   });
 
   final tetherContract = DeployedContract(
     ContractAbi.fromJson(
-      jsonEncode([
-        {
-          "constant": false,
-          "inputs": [
-            {"internalType": "address", "name": "_to", "type": "address"},
-            {"internalType": "uint256", "name": "_value", "type": "uint256"}
-          ],
-          "name": "transfer",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        }
-      ]),
+      jsonEncode([ /* ABI code */ ]),
       'ETH',
     ),
     EthereumAddress.fromHex(receiver),
@@ -660,7 +672,7 @@ class _PaymentPageState extends State<PaymentPage> {
         text: 'You have insufficient funds to complete this transaction. Please add more funds.',
         confirmBtnText: 'Okay',
       );
-      return; // Stop further execution, do not redirect to MetaMask
+      return;
     }
 
     final result = await appKitModal!.requestWriteContract(
@@ -680,9 +692,8 @@ class _PaymentPageState extends State<PaymentPage> {
       ],
     );
 
-    // If transaction is successful, notify the recipient and trigger the notification
     if (result != null) {
-      await notifyRecipient(receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), senderAddress);
+      // Trigger notifications for both sender and recipient after successful transaction
       await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString());
 
       CoolAlert.show(
@@ -718,56 +729,39 @@ class _PaymentPageState extends State<PaymentPage> {
         confirmBtnText: 'Okay',
       );
     }
-  } finally {
-    setState(() {
-      isLoading = false; // Hide loader
-    });
+    } finally {
+      setState(() {
+        isLoading = false; // Hide loader
+      });
+    }
   }
-}
+
 
 // Function to trigger the notification using Awesome Notifications
-Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount) async {
-  // Generate a unique ID for the notification
-  int notificationId = DateTime.now().millisecondsSinceEpoch; // Unique ID for this notification
+  Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount) async {
+    int notificationId = DateTime.now().millisecondsSinceEpoch;
 
-  await AwesomeNotifications().createNotification(
-    content: NotificationContent(
-      channelKey: 'basic_channel', // Use the channel you initialized in main
-      id: notificationId, // Unique ID for this notification
-      title: 'Transaction Successful',
-      body: '$senderAddress sent you $amount ETH.',
-      notificationLayout: NotificationLayout.Default,
-    ),
-  );
-}
-
-// Function to notify the recipient via your API
-Future<void> notifyRecipient(String recipientAddress, String amount, String senderAddress) async {
-  final url = Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment');
-  
-  try {
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        'recipientAddress': recipientAddress,
-        'amount': amount,
-        'senderAddress': senderAddress,
-      }),
+    // Notification for the sender
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        channelKey: 'basic_channel',
+        id: notificationId,
+        title: 'Successful Payment',
+        body: 'You have successfully sent $amount ETH to $receiverAddress.',
+        notificationLayout: NotificationLayout.Default,
+      ),
     );
 
-    // Check if the notification was sent successfully
-    if (response.statusCode == 200) {
-      print('Recipient notified successfully: ${response.body}');
-    } else {
-      print('Failed to notify recipient: ${response.body}');
-    }
-  } catch (e) {
-    print('Error notifying recipient: $e');
+    // Notification for the recipient
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        channelKey: 'basic_channel',
+        id: notificationId + 1, // Increment ID for the second notification
+        title: 'Received Payment!',
+        body: '$senderAddress sent you $amount ETH.',
+        notificationLayout: NotificationLayout.Default,
+      ),
+    );
   }
-}
-
 
 }
