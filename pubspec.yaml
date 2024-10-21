@@ -60,6 +60,7 @@ dependencies:
   path_provider: ^2.1.4
   permission_handler: ^11.3.1
   fl_chart: ^0.69.0
+  cool_alert: ^2.0.1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.1

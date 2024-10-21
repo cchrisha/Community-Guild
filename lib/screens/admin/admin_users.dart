@@ -223,7 +223,10 @@ class _AdminUserPageState extends State<AdminUserPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => AdminUserDetailsPage(user: user),
+                                      builder: (context) => AdminUserDetailsPage(
+                                        
+                                        
+                                        user: user),
                             ),
                           );
                         },

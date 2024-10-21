@@ -36,8 +36,8 @@ class _PaymentJobCardPageState extends State<PaymentJobCardPage> {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
-      margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-      elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+      elevation: 2,
       child: GestureDetector(
         onTap: () {
           setState(() {

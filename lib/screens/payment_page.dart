@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -298,6 +299,7 @@ class _PaymentPageState extends State<PaymentPage> {
                               children: [
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
+                                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                                     backgroundColor: Colors
                                         .lightBlue, // Set background color to light blue
                                   ),
@@ -568,6 +570,7 @@ class _PaymentPageState extends State<PaymentPage> {
                     EtherAmount.fromBigInt(EtherUnit.wei, bigIntValue);
                 Navigator.of(context).pop(); // Close the dialog
                 setState(() {
+                  
                   isLoading = true;
                   final Uri metamaskUri = Uri.parse("metamask://");
                   launchUrl(metamaskUri, mode: LaunchMode.externalApplication);
@@ -602,8 +605,7 @@ class _PaymentPageState extends State<PaymentPage> {
       },
     );
   }
-
-  Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
+    Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
     setState(() {
       isLoading = true;
     });
@@ -646,14 +648,23 @@ class _PaymentPageState extends State<PaymentPage> {
         throw Exception('Error parsing wallet balance: $e');
       }
 
-      final balanceInWei =
-          // ignore: deprecated_member_use
-          EtherAmount.fromUnitAndValue(EtherUnit.wei, balanceInWeiValue);
+      final balanceInWei = EtherAmount.fromUnitAndValue(EtherUnit.wei, balanceInWeiValue);
+      final totalCost = txValue.getInWei + BigInt.from(100000 * 21000); // Include gas fees
 
-      final totalCost = txValue.getInWei + BigInt.from(100000 * 21000);
+      // Check if user has sufficient funds before redirecting to MetaMask
       if (balanceInWei.getInWei < totalCost) {
-        throw Exception('Insufficient funds for transaction!');
+        // Show CoolAlert dialog for insufficient funds and stop transaction
+        CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          title: 'Insufficient Funds',
+          text: 'You have insufficient funds to complete this transaction. Please add more funds.',
+          confirmBtnText: 'Okay',
+        );
+        return; // Stop further execution, do not redirect to MetaMask
       }
+
+      // Proceed with the transaction if sufficient funds are available
       final result = await appKitModal!.requestWriteContract(
         topic: appKitModal!.session!.topic,
         chainId: appKitModal!.selectedChain!.chainId,
@@ -670,28 +681,89 @@ class _PaymentPageState extends State<PaymentPage> {
           txValue.getInWei,
         ],
       );
-      //print('Transaction result: $result');
 
+      // If transaction is successful, show success dialog
       if (result != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Transaction successful!')),
+        // Notify the recipient of the successful payment
+        await notifyRecipient(receiver, txValue.getValueInUnit(EtherUnit.ether).toString());
+
+        CoolAlert.show(
+          context: context,
+          type: CoolAlertType.success,
+          title: 'Transaction Successful',
+          text: 'Your transaction was completed successfully!',
+          confirmBtnText: 'Great!',
         );
         await appKitModal!.loadAccountData();
-        //print('Sender Address: $senderAddress');
-        //print('Recipient Address: $receiver');
-        //print('Amount Sent: ${txValue.getValueInUnit(EtherUnit.ether)} ETH');
       } else {
         throw Exception('Transaction failed. Please try again.');
       }
     } catch (e) {
-      //print('Error sending transaction: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      String errorMessage;
+
+      if (e.toString().contains('User denied transaction signature')) {
+        errorMessage = 'Transaction cancelled by the user.';
+
+        // Show CoolAlert dialog when the user denies the transaction signature
+        CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          title: 'Transaction Cancelled',
+          text: errorMessage,
+          confirmBtnText: 'Okay',
+        );
+      } else {
+        errorMessage = 'An unexpected error occurred: $e';
+
+        // Show CoolAlert dialog for general errors
+        CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          title: 'Error',
+          text: errorMessage,
+          confirmBtnText: 'Okay',
+        );
+      }
     } finally {
       setState(() {
         isLoading = false; // Hide loader
       });
     }
   }
+
+// Function to notify the recipient
+  Future<void> notifyRecipient(String recipientAddress, String amount) async {
+    final url = Uri.parse('https://api-tau-plum.vercel.app/api/notifyPayment');
+    
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'recipientAddress': recipientAddress,
+          'amount': amount,
+          'senderAddress': appKitModal!.session!.address, // Assuming this gets the sender's address
+        }),
+      );
+
+      // Check if the notification was sent successfully
+      if (response.statusCode == 200) {
+        print('Recipient notified successfully.');
+      } else {
+        // If the response status is not 200, consider the notification as failed
+        bool notificationSent = false;
+        if (!notificationSent) {
+          print('Failed to notify recipient: ${response.body}');
+          print('Notification failed for recipient: $recipientAddress');
+        }
+      }
+    } catch (e) {
+      // Handle errors that occur during the HTTP request
+      print('Error notifying recipient: $e');
+      print('Notification failed for recipient: $recipientAddress');
+    }
+  }
+
 }
