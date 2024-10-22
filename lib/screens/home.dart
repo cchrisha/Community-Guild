@@ -224,51 +224,50 @@ class _HomePageState extends State<HomePage> {
           duration: const Duration(milliseconds: 300),
           child: _pages[_currentIndex],
         ),
-        bottomNavigationBar
-            : Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12.withOpacity(0.1),
-                      spreadRadius: 5,
-                      blurRadius: 10,
-                    ),
-                  ],
-                ),
-                child: BottomNavigationBar(
-                  type: BottomNavigationBarType.fixed,
-                  currentIndex: _currentIndex,
-                  elevation: 0,
-                  backgroundColor: Colors.transparent,
-                  selectedItemColor: Colors.black,
-                  unselectedItemColor: Colors.grey,
-                  showSelectedLabels: false,
-                  showUnselectedLabels: false,
-                  items: [
-                    _buildCustomNavItem(Icons.home_outlined, 'Home', 0),
-                    _buildCustomNavItem(Icons.task_outlined, 'Task', 1),
-                    _buildCustomNavItem(Icons.post_add_outlined, 'Post', 2),
-                    _buildCustomNavItem(Icons.payment_outlined, 'Payment', 3),
-                    _buildCustomNavItem(Icons.person_2_outlined, 'Profile', 4),
-                  ],
-                  onTap: (index) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-
-                    if (_currentIndex == 0) {
-                      // Trigger job loading when "Home" is tapped
-                      _homeBloc!.add(const LoadJobs('developer'));
-                    }
-                  },
-                ),
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12.withOpacity(0.1),
+                spreadRadius: 5,
+                blurRadius: 10,
               ),
+            ],
+          ),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            currentIndex: _currentIndex,
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            selectedItemColor: Colors.black,
+            unselectedItemColor: Colors.grey,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            items: [
+              _buildCustomNavItem(Icons.home_outlined, 'Home', 0),
+              _buildCustomNavItem(Icons.task_outlined, 'Task', 1),
+              _buildCustomNavItem(Icons.add, 'Post', 2),
+              _buildCustomNavItem(Icons.payment_outlined, 'Payment', 3),
+              _buildCustomNavItem(Icons.person_2_outlined, 'Profile', 4),
+            ],
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+
+              if (_currentIndex == 0) {
+                // Trigger job loading when "Home" is tapped
+                _homeBloc!.add(const LoadJobs('developer'));
+              }
+            },
+          ),
+        ),
       ),
     );
   }
