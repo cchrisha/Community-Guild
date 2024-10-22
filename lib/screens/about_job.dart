@@ -4,6 +4,7 @@ import 'package:community_guild/bloc/about_job/about_job_state.dart';
 import 'package:community_guild/repository/all_job_detail/about_job_repository.dart';
 import 'package:community_guild/repository/authentication/auth_repository.dart';
 import 'package:community_guild/screens/own_post_job_detail.dart';
+import 'package:community_guild/screens/requested_job.dart';
 import 'package:community_guild/widget/about_job/posted_job_card.dart';
 import 'package:community_guild/widget/about_job/rejected_card.dart';
 import 'package:community_guild/widget/about_job/requested_job_card.dart';
@@ -350,7 +351,7 @@ class _JobPageState extends State<JobPage> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  RejectedJobDetail(
+                                                  RequestedJobDetail(
                                                 jobTitle: job.title,
                                                 jobDescription: job.description,
                                                 date:

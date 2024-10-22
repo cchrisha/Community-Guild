@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+// import '../widget/loading_widget/ink_drop.dart';
+
 class RejectedJobDetail extends StatefulWidget {
   const RejectedJobDetail({
     super.key,
@@ -44,17 +46,23 @@ class _RejectedJobDetailState extends State<RejectedJobDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Job Details',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 20,
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
         backgroundColor: Colors.lightBlueAccent,
-        elevation: 0,
+        elevation: 8, // Increased elevation for a more defined AppBar
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -65,7 +73,7 @@ class _RejectedJobDetailState extends State<RejectedJobDetail> {
               Stack(
                 children: [
                   Container(
-                    height: 180,
+                    height: 140,
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         colors: [Colors.lightBlueAccent, Colors.blueAccent],
@@ -77,7 +85,7 @@ class _RejectedJobDetailState extends State<RejectedJobDetail> {
                     ),
                   ),
                   Positioned(
-                    top: 28,
+                    top: 20,
                     left: 16,
                     right: 16,
                     child: Card(
@@ -130,14 +138,9 @@ class _RejectedJobDetailState extends State<RejectedJobDetail> {
                       color: Colors.black87,
                     ),
                   ),
-                  const SizedBox(height: 5), // Add some space between the job title and date
-                  Text(
-                    'Date: ${widget.date}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ),
+                  const SizedBox(height: 10),
+                  const Divider(color: Colors.black26, thickness: 1.2),
+                  const SizedBox(height: 10),
                 ],
               ),
               const SizedBox(height: 10),
@@ -149,79 +152,76 @@ class _RejectedJobDetailState extends State<RejectedJobDetail> {
                   color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: 5),
               Text(
                 widget.jobDescription,
                 style: const TextStyle(fontSize: 16, color: Colors.black87),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 24),
+              const Divider(color: Colors.black26, thickness: 1.2),
+              const SizedBox(height: 16),
               const Text(
                 'Details',
                 style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 20, // Increased font size
+                  fontWeight: FontWeight.w600,
                   color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 8),
+              _buildDetailRow('Wage Range:', widget.wageRange),
+              const SizedBox(height: 8),
+              Text(
+                'Date: ${widget.date}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Wage Range: ${widget.wageRange}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      const Text('Crypto: '),
-                      Checkbox(
-                        value: widget.isCrypto,
-                        onChanged: (bool? value) {},
-                      ),
-                    ],
+                  const Text('Crypto: ', style: TextStyle(fontSize: 16)),
+                  Checkbox(
+                    value: widget.isCrypto,
+                    onChanged: (bool? value) {},
+                    activeColor: Colors.blueAccent,
                   ),
                 ],
               ),
-              const SizedBox(height: 5),
-              Text(
-                'Wanted Profession: ${widget.professions}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Workplace: ${widget.workPlace}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 10),
-              // Text(
-              //   'Contact: ${widget.contact}',
-              //   style: const TextStyle(
-              //     fontSize: 16,
-              //     color: Colors.black87,
-              //   ),
-              // ),
-              const SizedBox(height: 10),
-              Text(
-                'Category: ${widget.category}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-              ),
+              const SizedBox(height: 8),
+              _buildDetailRow('Date:', widget.date),
+              const SizedBox(height: 8),
+              _buildDetailRow('Wanted Profession:', widget.professions),
+              const SizedBox(height: 8),
+              _buildDetailRow('Workplace:', widget.workPlace),
+              const SizedBox(height: 8),
+              _buildDetailRow('Category:', widget.category),
+              const SizedBox(height: 24),
               const SizedBox(height: 20),
             ],
           ),
         ),
       ),
+    );
+  }
+
+// Helper method to build detail rows
+  Widget _buildDetailRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: const TextStyle(fontSize: 16, color: Colors.black87),
+          ),
+        ),
+      ],
     );
   }
 }
