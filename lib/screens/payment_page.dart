@@ -709,7 +709,7 @@ class _PaymentPageState extends State<PaymentPage> {
       String userId = '6708a0368cbadfd1e3267cf5'; // Example user ID
       // Trigger notifications for both sender and recipient after successful transaction
       await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), userId);
-
+      
       await _createNotification(receiver, txValue.getValueInUnit(EtherUnit.ether).toString());
 
       CoolAlert.show(
@@ -719,6 +719,7 @@ class _PaymentPageState extends State<PaymentPage> {
         text: 'Your transaction was completed successfully!',
         confirmBtnText: 'Great!',
       );
+
       await appKitModal!.loadAccountData();
     } else {
       throw Exception('Transaction failed. Please try again.');
@@ -770,7 +771,7 @@ Future<void> triggerNotification(String senderAddress, String receiverAddress, S
   Future<void> _createNotification(String receiver, String amount) async {
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        channelKey: 'transaction_channel',
+        channelKey: 'basic_channel',
         id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647) + 1, // Unique ID
         title: 'Payment Received!',
         body: 'You have received $amount ETH from a sender.',
