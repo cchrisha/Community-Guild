@@ -706,11 +706,12 @@ class _PaymentPageState extends State<PaymentPage> {
 
     if (result != null) {
       // Assuming you have a way to get the current user's ID
-      String userId = '6708a0368cbadfd1e3267cf5'; // Example user ID
+      String userId = '6708a0368cbadfd1e3267cf5'; 
+      String recieverId = '670bf5e6b4d2752e5d1c70c7';
       // Trigger notifications for both sender and recipient after successful transaction
       await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), userId);
       
-      await _createNotification(receiver, txValue.getValueInUnit(EtherUnit.ether).toString());
+      await _createNotification(receiver, txValue.getValueInUnit(EtherUnit.ether).toString(),recieverId);
 
       CoolAlert.show(
         context: context,
@@ -757,27 +758,31 @@ Future<void> triggerNotification(String senderAddress, String receiverAddress, S
   int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
 
   // Notification for the sender
-  await AwesomeNotifications().createNotification(
-    content: NotificationContent(
-      channelKey: 'basic_channel',
-      id: notificationId,
-      title: 'Successful Payment',
-      body: 'You have successfully sent $amount ETH to $receiverAddress.',
-        notificationLayout: NotificationLayout.Default,
-      ),
-    );
-  }
+      await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          channelKey: 'basic_channel',
+          id: notificationId,
+          title: 'Successful Payment',
+          body: 'You have successfully sent $amount ETH to $receiverAddress.',
+          notificationLayout: NotificationLayout.Default,
+        ),
+      );
+    }
 
-  Future<void> _createNotification(String receiver, String amount) async {
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        channelKey: 'basic_channel',
-        id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647) + 1, // Unique ID
-        title: 'Payment Received!',
-        body: 'You have received $amount ETH from a sender.',
-        notificationLayout: NotificationLayout.Default,
-      ),
-    );
-  }
+    Future<void> _createNotification(String receiverAddress, String amount, String recieverId) async {
+      int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647 + 1; // Unique ID for the recipient
+
+      // Notification for the recipient
+      await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          channelKey: 'basic_channel',
+          id: notificationId,
+          title: 'Payment Received!',
+          body: 'You have received $amount ETH from a sender.',
+          notificationLayout: NotificationLayout.Default,
+        ),
+      );
+    }
+
 
 }
