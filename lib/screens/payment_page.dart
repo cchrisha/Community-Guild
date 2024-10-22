@@ -750,41 +750,18 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 }
 
-  Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount, String userId) async {
+Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount, String userId) async {
   int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
 
-  // Fetch the receiver's email based on their wallet address
-  final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/api/emailByWallet/$receiverAddress'));
-
-  if (response.statusCode == 200) {
-    final data = json.decode(response.body);
-    final String receiverEmail = data['email'];
-
-    // Notification for the sender
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        channelKey: 'basic_channel',
-        id: notificationId,
-        title: 'Successful Payment',
-        body: 'You have successfully sent $amount ETH to $receiverEmail.',
-        notificationLayout: NotificationLayout.Default,
-      ),
-    );
-
-   
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        channelKey: 'basic_channel',
-        id: notificationId + 1, // Ensure a unique ID for the receiver
-        title: 'Payment Received',
-        body: 'You have received $amount ETH from $senderAddress.',
-        notificationLayout: NotificationLayout.Default,
-      ),
+  // Notification for the sender
+      await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          channelKey: 'basic_channel',
+          id: notificationId,
+          title: 'Successful Payment',
+          body: 'You have successfully sent $amount ETH to $receiverAddress.',
+          notificationLayout: NotificationLayout.Default,
+        ),
       );
-
-    } else {
-      // Handle error if user not found
-      print('Error fetching receiver email: ${response.body}');
     }
-  }
 }
