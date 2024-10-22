@@ -13,6 +13,8 @@ import '../widget/profile/profile_info_card.dart';
 import 'edit_profile_page.dart';
 import 'setting.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -104,31 +106,84 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileContent(BuildContext context, ProfileLoaded state) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildProfilePictureSection(context, state),
-          const SizedBox(height: 0),
-          ProfileHeader(name: state.name, profession: state.profession),
-          const SizedBox(height: 15),
-          const SectionTitle(title: 'Contact Info:'),
-          ProfileInfoCard(
-            location: state.location,
-            contact: state.contact,
-            email: state.email,
+Widget _buildProfileContent(BuildContext context, ProfileLoaded state) {
+  return SingleChildScrollView(
+    padding: const EdgeInsets.all(12.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _buildProfilePictureSection(context, state),
+        const SizedBox(height: 0),
+        ProfileHeader(name: state.name, profession: state.profession),
+        const SizedBox(height: 15),
+        ElevatedButton(
+          onPressed: () async {
+            await _sendVerificationRequest(context);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.lightBlue, // Button color
           ),
-          const SizedBox(height: 15),
-          const SectionTitle(title: 'Professional Info:'),
-          ProfessionInfoCard(
-            profession: state.profession,
-          ),
-        ],
-      ),
+          child: const Text('Verify', style: TextStyle(color: Colors.white)),
+        ),
+        const SizedBox(height: 15),
+        const SectionTitle(title: 'Contact Info:'),
+        ProfileInfoCard(
+          location: state.location,
+          contact: state.contact,
+          email: state.email,
+        ),
+        const SizedBox(height: 15),
+        const SectionTitle(title: 'Professional Info:'),
+        ProfessionInfoCard(
+          profession: state.profession,
+        ),
+      ],
+    ),
+  );
+}
+
+Future<void> _sendVerificationRequest(BuildContext context) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final authToken = prefs.getString('auth_token'); // Retrieve the auth_token
+
+  if (authToken == null) {
+    // Handle case where the token is missing
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Authentication token not found')),
+    );
+    return;
+  }
+
+  final url = 'https://api-tau-plum.vercel.app/api/notifications/request-verification'; // Replace with your actual API URL
+
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $authToken', // Use the retrieved auth token
+      },
+    );
+
+    if (response.statusCode == 201) {
+      // Show success notification to the user
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Verification request sent successfully')),
+      );
+    } else {
+      // Handle other response codes (e.g., 404 or 500)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${response.statusCode}')),
+      );
+    }
+  } catch (e) {
+    // Handle any errors during the request
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error: $e')),
     );
   }
+}
+
 
   Widget _buildProfilePictureSection(BuildContext context, ProfileLoaded state) {
     final profileBloc = context.read<ProfileBloc>();
