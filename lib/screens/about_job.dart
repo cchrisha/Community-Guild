@@ -103,11 +103,11 @@ class _JobPageState extends State<JobPage> {
                       return AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         constraints: BoxConstraints(
-                          maxHeight: _isCurrentJobsExpanded ? 230 : 0,
+                          maxHeight: _isCurrentJobsExpanded ? 200 : 0,
                         ),
                         child: ClipRect(
                           child: OverflowBox(
-                            maxHeight: _isCurrentJobsExpanded ? 230 : 0,
+                            maxHeight: _isCurrentJobsExpanded ? 200 : 0,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
@@ -205,11 +205,11 @@ class _JobPageState extends State<JobPage> {
                         return AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             constraints: BoxConstraints(
-                              maxHeight: _isCompletedJobsExpanded ? 230 : 0,
+                              maxHeight: _isCompletedJobsExpanded ? 200 : 0,
                             ),
                             child: ClipRect(
                                 child: OverflowBox(
-                              maxHeight: _isCompletedJobsExpanded ? 230 : 0,
+                              maxHeight: _isCompletedJobsExpanded ? 200 : 0,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 shrinkWrap: true,
@@ -307,11 +307,11 @@ class _JobPageState extends State<JobPage> {
                         return AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             constraints: BoxConstraints(
-                              maxHeight: _isRequestedJobsExpanded ? 230 : 0,
+                              maxHeight: _isRequestedJobsExpanded ? 200 : 0,
                             ),
                             child: ClipRect(
                                 child: OverflowBox(
-                              maxHeight: _isRequestedJobsExpanded ? 230 : 0,
+                              maxHeight: _isRequestedJobsExpanded ? 200 : 0,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 shrinkWrap: true,
@@ -409,11 +409,11 @@ class _JobPageState extends State<JobPage> {
                         return AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             constraints: BoxConstraints(
-                              maxHeight: _isRejectedJobsExpanded ? 230 : 0,
+                              maxHeight: _isRejectedJobsExpanded ? 200 : 0,
                             ),
                             child: ClipRect(
                                 child: OverflowBox(
-                              maxHeight: _isRejectedJobsExpanded ? 230 : 0,
+                              maxHeight: _isRejectedJobsExpanded ? 200 : 0,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 shrinkWrap: true,
@@ -538,11 +538,11 @@ class _JobPageState extends State<JobPage> {
                               return AnimatedContainer(
                                   duration: const Duration(milliseconds: 300),
                                   constraints: BoxConstraints(
-                                    maxHeight: _isPostedJobsExpanded ? 230 : 0,
+                                    maxHeight: _isPostedJobsExpanded ? 200 : 0,
                                   ),
                                   child: ClipRect(
                                       child: OverflowBox(
-                                    maxHeight: _isPostedJobsExpanded ? 230 : 0,
+                                    maxHeight: _isPostedJobsExpanded ? 200 : 0,
                                     child: ListView.builder(
                                       scrollDirection: Axis.horizontal,
                                       shrinkWrap: true,
