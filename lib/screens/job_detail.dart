@@ -76,7 +76,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
       if (response.statusCode == 200) {
         _notifyJobPoster(widget.jobId, userName ?? '', widget.jobTitle);
         _showSuccessSnackBar();
-        Navigator.pushReplacement(
+        Navigator.pop(
           context,
           MaterialPageRoute(
             builder: (context) => const HomePage(),

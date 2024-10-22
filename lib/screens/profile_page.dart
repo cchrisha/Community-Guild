@@ -41,7 +41,7 @@ class ProfilePage extends StatelessWidget {
             PopupMenuButton<String>(
               onSelected: (value) async {
                 if (value == 'Edit Info') {
-                  final result = await Navigator.pushReplacement(
+                  final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const EditProfilePage(),

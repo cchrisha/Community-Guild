@@ -1,8 +1,9 @@
-import 'dart:io';
-import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+
+import 'admin_notificaiton.dart';
 
 class AdminDashboard extends StatelessWidget {
   final int totalUsers;
@@ -20,6 +21,18 @@ class AdminDashboard extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Dashboard'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            onPressed: () {
+              // Navigate to the notification screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AdminNotificationsScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

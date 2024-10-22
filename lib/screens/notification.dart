@@ -114,7 +114,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.push(
+            Navigator.pop(
               context,
               MaterialPageRoute(builder: (context) => const HomePage()),
             );

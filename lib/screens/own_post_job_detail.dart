@@ -6,7 +6,9 @@ import 'package:community_guild/repository/authentication/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http; // Required for the repository
-import 'dart:convert'; // Ensure you have this import for json.encode
+import 'dart:convert';
+
+import '../widget/loading_widget/ink_drop.dart'; // Ensure you have this import for json.encode
 
 class OwnJobDetailPage extends StatefulWidget {
   const OwnJobDetailPage({
@@ -125,7 +127,13 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
           child: BlocBuilder<AboutJobBloc, AboutJobState>(
             builder: (context, state) {
               if (state is AboutJobApplicantsLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return  Center(
+                  child: InkDrop(
+                    size: 40,
+                    color: Colors.lightBlue,
+                    ringColor: Colors.lightBlue.withOpacity(0.2),
+                  ),
+                );
               } else if (state is AboutJobApplicantsLoaded) {
                 return _buildApplicantsDialog(state.applicants);
               } else if (state is AboutJobApplicantsError) {
@@ -341,171 +349,122 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
 
 //anditoooooooooooooooooooooooooooo yung name title description emeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text(
-          'Job Details',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            shadows: [
-              Shadow(
-                blurRadius: 4.0,
-                color: Colors.black38,
-                offset: Offset(2, 2),
-              ),
-            ],
-          ),
-        ),
-        backgroundColor: Colors.blueAccent,
-        elevation: 8,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: Colors.grey[100],
+    appBar: AppBar(
+      title: const Text(
+        'Job Details',
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          shadows: [
+            Shadow(
+              blurRadius: 4.0,
+              color: Colors.black38,
+              offset: Offset(2, 2),
+            ),
+          ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Profile Header
-              Stack(
+      backgroundColor: Colors.blueAccent,
+       automaticallyImplyLeading: false,
+      elevation: 8,
+      centerTitle: true,
+    ),
+    body: SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              child: Row(
                 children: [
-                  Container(
-                    height: 140,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.lightBlueAccent, Colors.blueAccent],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius:
-                          BorderRadius.vertical(bottom: Radius.circular(30)),
+                  const CircleAvatar(
+                    radius: 36,
+                    backgroundColor: Colors.lightBlueAccent,
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 36,
                     ),
                   ),
-                  Positioned(
-                    top: 20,
-                    left: 16,
-                    right: 16,
-                    child: GestureDetector(
-                      onTap: () {
-                        // Navigate to Profile Details
-                      },
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        elevation: 8,
-                        shadowColor: Colors.black26,
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              const CircleAvatar(
-                                radius: 36,
-                                backgroundColor: Colors.lightBlueAccent,
-                                child: Icon(
-                                  Icons.person,
-                                  color: Colors.white,
-                                  size: 36,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Text(
-                                  widget.contact,
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black87,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      widget.contact,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 0),
+              const Divider(color: Color(0xFF03A9F4), thickness: 1.2),
+              const SizedBox(height: 20),
+              Center(
+                child: Text(
+                  widget.jobTitle,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+              Center(
+                child: Text(
+                  widget.category,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.black54,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              Center(
+                child: Card(
+                  color: const Color.fromARGB(255, 254, 254, 254),
+                  margin: EdgeInsets.zero, // Remove margin to use full width
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: SizedBox(
+                      height: 200,
+                      width: 400,
+                      child: SingleChildScrollView(
+                        child: Text(
+                          widget.jobDescription,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Color.fromARGB(255, 0, 0, 0),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // Job Title
-              Text(
-                widget.jobTitle,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: 8),
-              const Divider(thickness: 1.2, color: Colors.black26),
-
-              // Description Section
-              const Text(
-                'Description:',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                widget.jobDescription,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // Divider for separation
-              const Divider(thickness: 1.2, color: Colors.black26),
-              const SizedBox(height: 12),
-
-              // Details Section
-              const Text(
-                'Details',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 8),
-
-              // Using _buildDetailRow for the details
-              const SizedBox(height: 8),
-              _buildDetailRow('Wage Range:', widget.wageRange),
-              const SizedBox(height: 8),
+              const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Crypto: ', style: TextStyle(fontSize: 16)),
-                  Checkbox(
-                    value: widget.isCrypto,
-                    onChanged: (bool? value) {},
-                    activeColor: Colors.blueAccent,
-                  ),
+                  _buildDetailIcon(Icons.work, widget.professions),
+                  const VerticalDivider(thickness: 1, color: Color.fromARGB(66, 0, 0, 0), width: 2),
+                  _buildDetailIcon(Icons.location_on, widget.workPlace),
+                  const VerticalDivider(thickness: 1, color: Color.fromARGB(66, 0, 0, 0), width: 2),
+                  _buildDetailIcon(Icons.monetization_on, widget.wageRange),
+                  const VerticalDivider(thickness: 1, color: Color.fromARGB(66, 0, 0, 0), width: 2),
+                  _buildDetailIcon(widget.isCrypto ? Icons.currency_bitcoin : Icons.money_off, ''),
                 ],
               ),
-              _buildDetailRow('Date:', widget.date),
-              _buildDetailRow('Wanted Profession:', widget.professions),
-              _buildDetailRow('Workplace:', widget.workPlace),
-              _buildDetailRow('Category:', widget.category),
-              const SizedBox(height: 20),
+              const SizedBox(height: 50),
 
               // Action Buttons (Applicants and Workers)
               Row(
@@ -548,6 +507,27 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                 ],
               ),
               const SizedBox(height: 20),
+               Center(
+              child: SizedBox(
+                width: 130,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Navigate back to JobPage
+                  },
+                  child: const Text(
+                    'Back',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.lightBlue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                ),
+              ),
+            ),
             ],
           ),
         ),
@@ -576,4 +556,24 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
       ),
     );
   }
+  Widget _buildDetailIcon(IconData icon, String data) {
+    return Column(
+      children: [
+        Icon(icon, size: 30, color: const Color(0xFF03A9F4)), // Icon with fixed size
+        const SizedBox(height: 10), // Space between the icon and text
+        SizedBox(
+          width: 80, // Fixed width for the text under the icon
+          child: Text(
+            data.isNotEmpty ? data : (icon == Icons.money_off ? 'Not Crypto' : 'Crypto'),
+            style: const TextStyle(fontSize: 16, color: Color.fromARGB(137, 0, 0, 0)),
+            maxLines: 3, // Limit the text to 3 lines
+            softWrap: true, // Allow text to wrap within the fixed width
+            overflow: TextOverflow.ellipsis, // Add ellipsis if text exceeds 3 lines
+            textAlign: TextAlign.center, // Center-align the text under the icon
+          ),
+        ),
+      ],
+    );
+  }
+
 }
