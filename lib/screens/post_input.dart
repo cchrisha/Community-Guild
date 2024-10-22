@@ -70,18 +70,14 @@ class PostInputState extends State<PostInput> {
         appBar: AppBar(
           title: const Text(
             'Create New Job Post',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: const Color.fromARGB(255, 3, 169, 244),
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
           ),
+          backgroundColor: const Color.fromARGB(255, 3, 169, 244),
+          automaticallyImplyLeading: false,
         ),
         body: BlocListener<PostBloc, PostState>(
           listener: (context, state) {
@@ -120,14 +116,17 @@ class PostInputState extends State<PostInput> {
           child: BlocBuilder<PostBloc, PostState>(
             builder: (context, state) {
               return Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: 20.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
                 child: SingleChildScrollView(
                   child: Form(
                     key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
                         const JobDetailsHeader(title: 'Job Details'),
                         const SizedBox(height: 20),
                         JobDetailsCard(
@@ -168,7 +167,9 @@ class PostInputState extends State<PostInput> {
                                       label: 'Min Wage',
                                     ),
                                   ),
-                                  const SizedBox(width: 16), // Add some spacing between the fields
+                                  const SizedBox(
+                                      width:
+                                          16), // Add some spacing between the fields
                                   Expanded(
                                     child: JobRewardField(
                                       controller: _maxRewardController,

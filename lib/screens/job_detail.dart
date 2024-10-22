@@ -238,7 +238,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
                     ),
                   ),
                   Positioned(
-                    bottom: 20,
+                    bottom: 17,
                     left: 16,
                     right: 16,
                     child: GestureDetector(
