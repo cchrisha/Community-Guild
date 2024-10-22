@@ -35,6 +35,7 @@ class _HomePageState extends State<HomePage> {
   final String apiUrl = 'https://api-tau-plum.vercel.app/api/notifications';
   Timer? _timer;
   bool _isShowingNotification = false; // Flag to track if a notification is being shown
+  int _unreadNotificationCount = 0;
 
   int _currentIndex = 0;
   HomeBloc? _homeBloc;
@@ -89,6 +90,12 @@ class _HomePageState extends State<HomePage> {
 
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
+
+        // Count unread notifications
+        int unreadCount = data.where((notification) => !notification['isRead']).length;
+        setState(() {
+          _unreadNotificationCount = unreadCount;
+        });
 
         // Sort notifications by date to get the latest one
         data.sort((a, b) => DateTime.parse(b['createdAt']).compareTo(DateTime.parse(a['createdAt'])));
@@ -188,42 +195,70 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: _currentIndex == 0
-            ? AppBar(
-                title: const Row(
-                  children: [
-                    SizedBox(width: 16),
-                    Text(
-                      'Home',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-                backgroundColor: Colors.lightBlue,
-                automaticallyImplyLeading: false,
-                actions: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.notifications,
+          ? AppBar(
+              title: const Row(
+                children: [
+                  SizedBox(width: 16),
+                  Text(
+                    'Home',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
-                    onPressed: () {
-                      // Replace the HomePage with NotificationScreen
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NotificationScreen(),
-                        ),
-                      );
-                    },
                   ),
-                  const SizedBox(width: 8), // Adds spacing
                 ],
-              )
-            : null,
+              ),
+              backgroundColor: Colors.lightBlue,
+              automaticallyImplyLeading: false,
+              actions: [
+                Stack(
+                  children: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.notifications,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const NotificationScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    if (_unreadNotificationCount > 0)
+                      Positioned(
+                        right: 11,
+                        top: 11,
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 14,
+                            minHeight: 14,
+                          ),
+                          child: Text(
+                            '$_unreadNotificationCount',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 8,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(width: 8), // Adds spacing
+              ],
+            )
+          : null,
         body: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           child: _pages[_currentIndex],
