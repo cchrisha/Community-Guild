@@ -707,9 +707,10 @@ class _PaymentPageState extends State<PaymentPage> {
     if (result != null) {
       // Assuming you have a way to get the current user's ID
       String userId = '6708a0368cbadfd1e3267cf5'; // Example user ID
-
       // Trigger notifications for both sender and recipient after successful transaction
       await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), userId);
+
+      await _createNotification(receiver, txValue.getValueInUnit(EtherUnit.ether).toString());
 
       CoolAlert.show(
         context: context,
@@ -764,8 +765,18 @@ Future<void> triggerNotification(String senderAddress, String receiverAddress, S
         notificationLayout: NotificationLayout.Default,
       ),
     );
-
   }
 
+  Future<void> _createNotification(String receiver, String amount) async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        channelKey: 'transaction_channel',
+        id: DateTime.now().millisecondsSinceEpoch.remainder(2147483647) + 1, // Unique ID
+        title: 'Payment Received!',
+        body: 'You have received $amount ETH from a sender.',
+        notificationLayout: NotificationLayout.Default,
+      ),
+    );
+  }
 
 }
