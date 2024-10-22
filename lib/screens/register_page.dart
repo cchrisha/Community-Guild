@@ -250,11 +250,14 @@ class _RegisterPageState extends State<RegisterPage> {
                           }
                         },
                       ),
-                      const SizedBox(height: 5),
                       AuthWidgets.navigationLink(
-                        isLogin: false,
+                        isLogin: true,
                         onPressed: () {
-                          Get.to(() => const LoginPage());
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()),
+                          );
                         },
                         text: 'Already Registered? Login',
                       ),
