@@ -138,19 +138,18 @@ class ProfilePage extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Container(
-          margin: const EdgeInsets.all(4.0), // Add margin around the avatar
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
               color: Colors.lightBlue, // Border color
-              width: 4.0, // Border width
+              width: 4.0, // Keep the blue border
             ),
           ),
           child: CircleAvatar(
-            radius: 60, // Avatar size (outer radius including border)
-            backgroundColor: Colors.grey[200], // Fallback background color
+            radius: 70, // Outer avatar size including border
+            backgroundColor: Colors.transparent, // No background color
             child: CircleAvatar(
-              radius: 56, // Inner avatar size to avoid cutting
+              radius: 70, // Adjusted to create space for the blue border
               backgroundImage: state.profilePictureUrl.isNotEmpty
                   ? NetworkImage(state.profilePictureUrl)
                   : const AssetImage('assets/default_profile.png')

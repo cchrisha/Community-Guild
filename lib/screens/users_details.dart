@@ -135,21 +135,14 @@ Future<void> _fetchUserDetails() async {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: const Color.fromARGB(255, 3, 169, 244),
+                    color: const Color.fromARGB(255, 3, 169, 244,),
                     width: 4,
                   ),
                 ),
-                child: Container(
-                  margin: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                  ),
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundImage: NetworkImage(
-                      profilePictureUrl ?? 'https://via.placeholder.com/150',
-                    ),
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundImage: NetworkImage(
+                    profilePictureUrl ?? 'https://via.placeholder.com/150',
                   ),
                 ),
               ),
