@@ -58,11 +58,11 @@ class _HomePageState extends State<HomePage> {
       homeRepository: HomeRepository(httpClient: http.Client()),
     );
 
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      if (!isAllowed) {
-        AwesomeNotifications().requestPermissionToSendNotifications();
-      }
-    });
+    // AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+    //   if (!isAllowed) {
+    //     AwesomeNotifications().requestPermissionToSendNotifications();
+    //   }
+    // });
   }
 
   Future<void> fetchNotifications() async {
@@ -112,28 +112,32 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> markNotificationAsRead(String notificationId) async {
+    print("Attempting to mark notification as read:");
+    print("Notification ID: $notificationId");
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('auth_token');
+      print("Auth Token: $token");
 
       if (token == null) {
         print('Token is null. User not logged in.');
         return;
       }
 
-      final response = await http.patch(
+      final response = await http.put(
         Uri.parse('$apiUrl/$notificationId/read'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
-        body: json.encode({'isRead': true}),
+        // No body needed for marking as read 
       );
 
       if (response.statusCode == 200) {
         print('Notification marked as read.');
       } else {
-        print('Failed to mark notification as read.');
+        print('Failed to mark notification as read. Status code: ${response.statusCode}');
+        print("Response body: ${response.body}");
       }
     } catch (e) {
       print('Error marking notification as read: $e');
