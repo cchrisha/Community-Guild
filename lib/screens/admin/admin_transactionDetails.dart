@@ -45,6 +45,7 @@ class _AdminTransactionDetailsState extends State<AdminTransactionDetails> {
               'Date': date.toLocal().toString().split(' ')[0], // Only the date part
               'Time': date.toLocal().toString().split(' ')[1], // Only the time part
               'isSent': isSent,
+              'Hash': tx['hash'],
             };
           }).toList();
           _isLoading = false;
@@ -104,6 +105,7 @@ class _AdminTransactionDetailsState extends State<AdminTransactionDetails> {
                                           Text('Amount: ${tx['Amount']} ETH'),
                                           Text('Date: ${tx['Date']}'),
                                           Text('Time: ${tx['Time']}'),
+                                          Text('Hash: ${tx['Hash']}'),
                                           Text(tx['isSent'] ? 'Status: Sent' : 'Status: Received',
                                               style: TextStyle(color: tx['isSent'] ? Colors.red : Colors.green)),
                                         ],

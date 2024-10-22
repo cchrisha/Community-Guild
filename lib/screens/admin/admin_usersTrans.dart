@@ -25,7 +25,7 @@ class _UserTransactionPageState extends State<UserTransactionPage> {
 
   Future<void> _fetchUsersWithTransactions() async {
     try {
-      final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/api/userGetTransac'));
+      final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/api/users'));
 
       if (response.statusCode == 200) {
         final List<dynamic> users = json.decode(response.body);
@@ -38,6 +38,7 @@ class _UserTransactionPageState extends State<UserTransactionPage> {
             'name': user['name'],
             'email': user['email'],
             'walletAddress': user['walletAddress'],
+            'hash': user['hash'],
             'transactions': transactions,
           });
         }
