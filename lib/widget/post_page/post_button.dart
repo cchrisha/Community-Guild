@@ -50,7 +50,7 @@ class _PostButtonState extends State<PostButton> {
               splashColor: Colors.white.withOpacity(0.2), // Ripple effect
               borderRadius: BorderRadius.circular(10),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 140, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 10),
                 alignment: Alignment.center,
                 child: const Text(
                   'Post Job',

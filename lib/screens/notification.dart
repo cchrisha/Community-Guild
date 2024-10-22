@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../widget/loading_widget/ink_drop.dart';
+
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
 
@@ -40,14 +42,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
       // Log the token for debugging
       print('Token: $token');
       if (token == null) {
-      throw Exception('Token is null. User not logged in.');
+        throw Exception('Token is null. User not logged in.');
       }
       final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: {
-        'Authorization': 'Bearer $token', // Add the token in the header
-        'Content-Type': 'application/json',
-      },
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $token', // Add the token in the header
+          'Content-Type': 'application/json',
+        },
       );
       // Log the response status and body
       print('Response Status Code: ${response.statusCode}');
@@ -58,7 +60,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
         print('Parsed Data: $data');
         // Extract the 'message' field from each notification object
         List<String> newNotifications = data.map((notification) {
-          print('Notification Message: ${notification['message']}'); // Log each message
+          print(
+              'Notification Message: ${notification['message']}'); // Log each message
           return notification['message'] as String;
         }).toList();
 
@@ -69,7 +72,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           setState(() {
             _notifications = newNotifications;
           });
-          _showTopNotification(newNotifications.first);
+          //_showTopNotification(newNotifications.first);
         }
       } else {
         throw Exception('Failed to load notifications');
@@ -89,7 +92,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
           elevation: 10.0,
           borderRadius: BorderRadius.circular(10),
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
             decoration: BoxDecoration(
               color: Colors.black.withOpacity(0.8),
               borderRadius: BorderRadius.circular(10),
@@ -115,7 +119,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        title: const Text('Notifications',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.lightBlue,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -129,7 +134,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
       ),
       body: _notifications.isEmpty
           ? Center(
-              child: CircularProgressIndicator(),
+              child: InkDrop(
+                size: 40,
+                color: Colors.lightBlue,
+                ringColor: Colors.lightBlue.withOpacity(0.2),
+              ),
             )
           : ListView.builder(
               padding: const EdgeInsets.all(8.0),

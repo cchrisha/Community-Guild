@@ -68,16 +68,20 @@ class PostInputState extends State<PostInput> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: const Text(
-            'Create New Job Post',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+          title: const Row(
+            children: [
+              SizedBox(width: 16),
+              Text(
+                ' Create Job Post',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
           backgroundColor: const Color.fromARGB(255, 3, 169, 244),
-          automaticallyImplyLeading: false,
         ),
         body: BlocListener<PostBloc, PostState>(
           listener: (context, state) {

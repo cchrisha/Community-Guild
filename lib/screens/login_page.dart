@@ -5,7 +5,6 @@ import 'package:community_guild/widget/loading_widget/ink_drop.dart';
 import 'package:community_guild/widget/login_and_register/login_register_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:community_guild/bloc/auth/auth_bloc.dart';
 import 'package:community_guild/bloc/auth/auth_event.dart';
 import 'package:community_guild/bloc/auth/auth_state.dart';
@@ -47,7 +46,11 @@ class LoginPage extends StatelessWidget {
                     );
                   } else if (snapshot.hasData && snapshot.data == true) {
                     Future.delayed(const Duration(milliseconds: 500), () {
-                      Get.off(() => const HomePage());
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()),
+                      );
                     });
                     return Center(
                       child: InkDrop(
@@ -68,7 +71,11 @@ class LoginPage extends StatelessWidget {
                           ),
                         );
                         Future.delayed(const Duration(seconds: 1), () {
-                          Get.off(() => const HomePage());
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomePage()),
+                          );
                         });
                       } else if (state is AuthFailure) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -136,15 +143,22 @@ class LoginPage extends StatelessWidget {
                           AuthWidgets.navigationLink(
                             isLogin: true,
                             onPressed: () {
-                              Get.to(() => const RegisterPage());
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const RegisterPage()),
+                              );
                             },
                             text: 'Create new account? Signup',
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          const SizedBox(height: 20),
                           AuthWidgets.forgotPasswordButton(onPressed: () {
-                            Get.to(() => const ForgetPasswordPage());
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ForgetPasswordPage()),
+                            );
                           }),
                         ],
                       );

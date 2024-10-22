@@ -75,7 +75,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               color: Colors.white,
             ),
             onPressed: () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const ProfilePage()),
               );
@@ -90,7 +90,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 SnackBar(content: Text(state.message)),
               );
               // Pop and return true to indicate success
-              Navigator.pop(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
