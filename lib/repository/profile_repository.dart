@@ -121,62 +121,38 @@ class ProfileRepository {
   }
 
   Future<String> fetchotherProfilePicture({required String userId}) async {
-  try {
-    // Fetch the token from SharedPreferences
-    final String? token = await getToken();
-    if (token == null) {
-      print('No token found');
-      return '';
+    try {
+      // Fetch the token from SharedPreferences
+      final String? token = await getToken();
+      if (token == null) {
+        print('No token found');
+        return '';
+      }
+
+      print('Fetching profile picture for user ID: $userId with token: $token'); // Debug userId and token
+
+      final response = await http.get(
+        Uri.parse('https://api-tau-plum.vercel.app/api/users/$userId/profilePicture'),
+        headers: {
+          'Authorization': 'Bearer $token', // Include the token in the headers
+        },
+      );
+
+      // Log the response for debugging
+      print('Profile Picture API Response (status: ${response.statusCode}): ${response.body}');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        return data['data']['profilePictureUrl'] ?? ''; // Adjust according to your API response
+      } else {
+        // Log the response body when the request fails
+        print('Failed to fetch profile picture. Status Code: ${response.statusCode}, Response: ${response.body}');
+        return ''; // Return empty if fetch fails
+      }
+    } catch (e) {
+      // Catch and log any exceptions that occur
+      print('Exception occurred while fetching profile picture: $e');
+      return ''; // Handle exceptions
     }
-
-    print('Fetching profile picture for user ID: $userId with token: $token'); // Debug userId and token
-
-    final response = await http.get(
-      Uri.parse('https://api-tau-plum.vercel.app/api/users/$userId/profilePicture'),
-      headers: {
-        'Authorization': 'Bearer $token', // Include the token in the headers
-      },
-    );
-
-    // Log the response for debugging
-    print('Profile Picture API Response (status: ${response.statusCode}): ${response.body}');
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      return data['data']['profilePictureUrl'] ?? ''; // Adjust according to your API response
-    } else {
-      // Log the response body when the request fails
-      print('Failed to fetch profile picture. Status Code: ${response.statusCode}, Response: ${response.body}');
-      return ''; // Return empty if fetch fails
-    }
-  } catch (e) {
-    // Catch and log any exceptions that occur
-    print('Exception occurred while fetching profile picture: $e');
-    return ''; // Handle exceptions
   }
-}
-
-Future<void> sendVerificationRequest() async {
-  final token = await getToken(); // Fetch the token
-
-  if (token == null) {
-    throw Exception('Authentication token not found');
-  }
-
-  final response = await http.post(
-    Uri.parse('https://api-tau-plum.vercel.app/api/notifications/request-verification'), // Your actual API endpoint
-    headers: {
-      'Content-Type': 'application/json',
-      'auth_token': token, // Use auth_token here
-    },
-    body: json.encode({
-      // If there are any parameters to send, include them here
-    }),
-  );
-
-  if (response.statusCode != 201) {
-    throw Exception('Failed to send verification request: ${response.body}');
-  }
-}
-
 }

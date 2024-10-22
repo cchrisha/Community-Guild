@@ -10,8 +10,6 @@ abstract class ProfileEvent extends Equatable {
 
 class LoadProfile extends ProfileEvent {}
 
-class VerifyAccount extends ProfileEvent {}
-
 class UploadProfilePicture extends ProfileEvent {
   final File profileImage;
 
@@ -19,5 +17,3 @@ class UploadProfilePicture extends ProfileEvent {
 }
 
 class FetchProfilePicture extends ProfileEvent {}
-
-class SendVerificationRequest extends ProfileEvent {} 
