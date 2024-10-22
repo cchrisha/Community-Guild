@@ -19,3 +19,5 @@ class UploadProfilePicture extends ProfileEvent {
 }
 
 class FetchProfilePicture extends ProfileEvent {}
+
+class SendVerificationRequest extends ProfileEvent {} 

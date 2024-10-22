@@ -114,6 +114,7 @@ class ProfilePage extends StatelessWidget {
           const SizedBox(height: 0),
           ProfileHeader(name: state.name, profession: state.profession),
           const SizedBox(height: 15),
+          _buildVerificationStatus(state.isVerified), // Display verification status
           const SectionTitle(title: 'Contact Info:'),
           ProfileInfoCard(
             location: state.location,
@@ -125,13 +126,46 @@ class ProfilePage extends StatelessWidget {
           ProfessionInfoCard(
             profession: state.profession,
           ),
+          const SizedBox(height: 15),
+          // Add Verify Button
+          if (!state.isVerified) 
+            ElevatedButton(
+              onPressed: () => _sendVerificationRequest(context),
+              child: const Text('Verify Account'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightBlue, // Background color
+              ),
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildProfilePictureSection(
-      BuildContext context, ProfileLoaded state) {
+  Widget _buildVerificationStatus(bool isVerified) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            isVerified ? Icons.check_circle : Icons.error,
+            color: isVerified ? Colors.green : Colors.red,
+            size: 20,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            isVerified ? 'Account Verified' : 'Account Not Verified',
+            style: TextStyle(
+              color: isVerified ? Colors.green : Colors.red,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfilePictureSection(BuildContext context, ProfileLoaded state) {
     final profileBloc = context.read<ProfileBloc>();
 
     return Stack(
@@ -188,6 +222,20 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  // Method to send verification request
+  void _sendVerificationRequest(BuildContext context) async {
+    final profileBloc = context.read<ProfileBloc>();
+    profileBloc.add(SendVerificationRequest()); // You need to implement this event
+
+    // Optionally, show a snackbar or dialog to inform the user
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Verification request sent to the admin."),
+        duration: Duration(seconds: 3),
+      ),
     );
   }
 }

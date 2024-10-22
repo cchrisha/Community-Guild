@@ -24,19 +24,6 @@ class _RegisterPageState extends State<RegisterPage> {
   String _passwordStrength = '';
   Color _strengthColor = Colors.grey;
   String _passwordError = ''; // Variable to track password match error
-// String _selectedProfession = 'Programmer'; // Default profession
-//   final List<String> _professions = [
-//     'Programmer',
-//     'Gardener',
-//     'Carpenter',
-//     'Plumber',
-//     'Cleaner',
-//     'Cook',
-//     'Driver',
-//     'Electrician',
-//     'Salesperson',
-//     'Crew'
-//   ];
 
   @override
   Widget build(BuildContext context) {

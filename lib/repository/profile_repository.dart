@@ -156,4 +156,27 @@ class ProfileRepository {
   }
 }
 
+Future<void> sendVerificationRequest() async {
+  final token = await getToken(); // Fetch the token
+
+  if (token == null) {
+    throw Exception('Authentication token not found');
+  }
+
+  final response = await http.post(
+    Uri.parse('https://api-tau-plum.vercel.app/api/notifications/request-verification'), // Your actual API endpoint
+    headers: {
+      'Content-Type': 'application/json',
+      'auth_token': token, // Use auth_token here
+    },
+    body: json.encode({
+      // If there are any parameters to send, include them here
+    }),
+  );
+
+  if (response.statusCode != 201) {
+    throw Exception('Failed to send verification request: ${response.body}');
+  }
+}
+
 }
