@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:collection';
+import 'dart:convert';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:community_guild/repository/home_repository.dart';
@@ -11,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:community_guild/bloc/home/home_bloc.dart';
 import 'package:community_guild/bloc/home/home_event.dart';
 import 'package:community_guild/bloc/home/home_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widget/home/bottom_nav.dart';
 import '../widget/loading_widget/ink_drop.dart';
 import 'about_job.dart';
@@ -29,6 +32,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final String apiUrl = 'https://api-tau-plum.vercel.app/api/notifications';
+  Timer? _timer;
+  bool _isShowingNotification = false; // Flag to track if a notification is being shown
+
   int _currentIndex = 0;
   HomeBloc? _homeBloc;
 
@@ -43,6 +50,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    fetchNotifications(); // Fetch notifications on home screen load
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      fetchNotifications();
+    });
     _homeBloc = HomeBloc(
       homeRepository: HomeRepository(httpClient: http.Client()),
     );
@@ -51,6 +62,118 @@ class _HomePageState extends State<HomePage> {
       if (!isAllowed) {
         AwesomeNotifications().requestPermissionToSendNotifications();
       }
+    });
+  }
+
+  Future<void> fetchNotifications() async {
+    try {
+      print('Fetching notifications...');
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+
+      if (token == null) {
+        print('Token is null. User not logged in.');
+        return;
+      }
+
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+
+        // Sort notifications by date to get the latest one
+        data.sort((a, b) => DateTime.parse(b['createdAt']).compareTo(DateTime.parse(a['createdAt'])));
+
+        if (data.isNotEmpty) {
+          var latestNotification = data.first;
+          if (!latestNotification['isRead']) {
+            // Show the latest unread notification in the overlay
+            _showTopNotification(latestNotification['message']);
+
+            // Mark the notification as read after showing it
+            await markNotificationAsRead(latestNotification['_id']);
+          }
+        }
+      } else {
+        throw Exception('Failed to load notifications');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> markNotificationAsRead(String notificationId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+
+      if (token == null) {
+        print('Token is null. User not logged in.');
+        return;
+      }
+
+      final response = await http.patch(
+        Uri.parse('$apiUrl/$notificationId/read'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({'isRead': true}),
+      );
+
+      if (response.statusCode == 200) {
+        print('Notification marked as read.');
+      } else {
+        print('Failed to mark notification as read.');
+      }
+    } catch (e) {
+      print('Error marking notification as read: $e');
+    }
+  }
+
+  void _showTopNotification(String message) {
+    if (_isShowingNotification) return; // Prevent multiple overlays
+
+    _isShowingNotification = true;
+
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 50.0,
+        left: MediaQuery.of(context).size.width * 0.05,
+        right: MediaQuery.of(context).size.width * 0.05,
+        child: Material(
+          elevation: 10.0,
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              message,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ),
+    );
+
+  Overlay.of(context)?.insert(overlayEntry);
+
+    Future.delayed(const Duration(seconds: 3), () {
+      overlayEntry.remove();
+      _isShowingNotification = false;
     });
   }
 
@@ -164,6 +287,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+     _timer?.cancel();
     _homeBloc?.close();
     super.dispose();
   }

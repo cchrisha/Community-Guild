@@ -72,7 +72,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           setState(() {
             _notifications = newNotifications;
           });
-          _showTopNotification(newNotifications.first);
+          //_showTopNotification(newNotifications.first);
         }
       } else {
         throw Exception('Failed to load notifications');
