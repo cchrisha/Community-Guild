@@ -31,7 +31,6 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-
 class _HomePageState extends State<HomePage> {
   final String apiUrl = 'https://api-tau-plum.vercel.app/api/notifications';
   Timer? _timer;
