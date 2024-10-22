@@ -515,9 +515,12 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                     width: 130,
                     child: ElevatedButton(
                       onPressed: () => _showApplicantsDialog(widget.jobId),
-                      child: const Text('Applicants'),
+                      child: const Text(
+                        'Applicants',
+                        style: TextStyle(color: Colors.white),
+                      ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.lightBlueAccent,
+                        backgroundColor: Colors.lightBlue,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -529,9 +532,12 @@ class _OwnJobDetailPageState extends State<OwnJobDetailPage> {
                     width: 130,
                     child: ElevatedButton(
                       onPressed: () => _showWorkersDialog(widget.jobId),
-                      child: const Text('Workers'),
+                      child: const Text(
+                        'Workers',
+                        style: TextStyle(color: Colors.white),
+                      ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.lightBlueAccent,
+                        backgroundColor: Colors.lightBlue,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
