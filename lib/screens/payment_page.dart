@@ -709,9 +709,8 @@ class _PaymentPageState extends State<PaymentPage> {
       String userId = '6708a0368cbadfd1e3267cf5'; 
       String recieverId = '670bf5e6b4d2752e5d1c70c7';
       // Trigger notifications for both sender and recipient after successful transaction
-      await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), userId);
+      await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), userId, recieverId);
       
-      await _createNotification(receiver, txValue.getValueInUnit(EtherUnit.ether).toString(),recieverId);
 
       CoolAlert.show(
         context: context,
@@ -754,10 +753,12 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 }
 
-Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount, String userId) async {
-  int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
-
-  // Notification for the sender
+  Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount, String userId, String recieverId) async {
+    int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
+    
+    // Check if the user is the sender
+    if (userId == senderAddress) {
+      // Notification for the sender
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
           channelKey: 'basic_channel',
@@ -768,21 +769,21 @@ Future<void> triggerNotification(String senderAddress, String receiverAddress, S
         ),
       );
     }
-
-    Future<void> _createNotification(String receiverAddress, String amount, String recieverId) async {
-      int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647 + 1; // Unique ID for the recipient
-
+    
+    // Check if the user is the recipient
+    if (userId == recieverId) {
       // Notification for the recipient
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
           channelKey: 'basic_channel',
-          id: notificationId,
+          id: notificationId + 1, // Unique ID for recipient notification
           title: 'Payment Received!',
           body: 'You have received $amount ETH from a sender.',
           notificationLayout: NotificationLayout.Default,
         ),
       );
     }
+  }
 
 
 }
