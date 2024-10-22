@@ -378,21 +378,6 @@ class _PaymentPageState extends State<PaymentPage> {
           // const Center(child: CircularProgressIndicator()),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     // Trigger the notification when the FAB is pressed
-      //     AwesomeNotifications().createNotification(
-      //       content: NotificationContent(
-      //         id: 1, // Unique ID for the notification
-      //         channelKey: 'basic_channel', // Your initialized channel key
-      //         title: 'New Notification!',
-      //         body: 'Haynako Albert!!!!!!!!',
-      //         notificationLayout: NotificationLayout.BigPicture,
-      //       ),
-      //     );
-      //   },
-      //   child: const Icon(Icons.download),
-      // ),
     );
   
   }
@@ -631,6 +616,7 @@ class _PaymentPageState extends State<PaymentPage> {
       },
     );
   }
+  
   Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
   setState(() {
     isLoading = true;
@@ -705,9 +691,20 @@ class _PaymentPageState extends State<PaymentPage> {
 
     if (result != null) {
       // Assuming you have a way to get the current user's ID
-      String userId = '6708a0368cbadfd1e3267cf5'; 
-     
-      await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString(), userId);
+      //String userId = '6708a0368cbadfd1e3267cf5'; 
+
+      // Fetch the user ID associated with the receiver's wallet address
+      String? userId = await getUserIdByWalletAddress(receiver); // Add this line
+
+      if (userId != null) {
+        // Create the notification message
+        String message = 'Transaction of ${txValue.getValueInUnit(EtherUnit.ether)} ETH from $senderAddress to $receiver was successful.';
+
+        // Send transaction notification
+        await postTransactionNotification(userId, message);
+      }
+
+      await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString());
   
       CoolAlert.show(
         context: context,
@@ -750,7 +747,7 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 }
 
-Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount, String userId) async {
+Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount) async {
   int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
 
   // Notification for the sender
@@ -764,4 +761,39 @@ Future<void> triggerNotification(String senderAddress, String receiverAddress, S
         ),
       );
     }
+}
+
+// Function to retrieve user ID by wallet address
+Future<String?> getUserIdByWalletAddress(String walletAddress) async {
+  final response = await http.get(Uri.parse('https://yourapi.com/users/wallet/$walletAddress'));
+
+  if (response.statusCode == 200) {
+    final data = json.decode(response.body);
+    return data['userId']; // Return the user ID
+  } else {
+    print('Error: ${response.body}');
+    return null; // Handle errors as needed
+  }
+}
+
+// Function to post transaction notification
+Future<void> postTransactionNotification(String userId, String message) async {
+  final response = await http.post(
+    Uri.parse('https://yourapi.com/transaction-notifications'),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      'user': userId,
+      'message': message,
+    }),
+  );
+
+  if (response.statusCode == 201) {
+    // Successfully created notification
+    print('Notification sent successfully.');
+  } else {
+    // Handle error
+    print('Failed to send notification: ${response.body}');
+  }
 }
