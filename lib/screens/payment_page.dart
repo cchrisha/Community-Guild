@@ -765,7 +765,7 @@ Future<void> triggerNotification(String senderAddress, String receiverAddress, S
 
 // Function to retrieve user ID by wallet address
 Future<String?> getUserIdByWalletAddress(String walletAddress) async {
-  final response = await http.get(Uri.parse('https://yourapi.com/users/wallet/$walletAddress'));
+  final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/users/wallet/$walletAddress'));
 
   if (response.statusCode == 200) {
     final data = json.decode(response.body);
@@ -779,7 +779,7 @@ Future<String?> getUserIdByWalletAddress(String walletAddress) async {
 // Function to post transaction notification
 Future<void> postTransactionNotification(String userId, String message) async {
   final response = await http.post(
-    Uri.parse('https://yourapi.com/transaction-notifications'),
+    Uri.parse('https://api-tau-plum.vercel.app/transaction-notifications'),
     headers: {
       'Content-Type': 'application/json',
     },
