@@ -617,10 +617,17 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
   
+  //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
   Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
   setState(() {
     isLoading = true;
   });
+
+  // Log initial transaction information
+  print('Starting transaction...');
+  print('Receiver Address: $receiver');
+  print('Transaction Value: ${txValue.getValueInUnit(EtherUnit.ether)} ETH');
 
   // Tether contract setup (pseudo-code)
   final tetherContract = DeployedContract(
@@ -644,7 +651,10 @@ class _PaymentPageState extends State<PaymentPage> {
 
   try {
     final senderAddress = appKitModal!.session!.address!;
+    print('Sender Address: $senderAddress');
+
     final currentBalance = appKitModal!.balanceNotifier.value;
+    print('Current Wallet Balance: $currentBalance');
 
     if (currentBalance.isEmpty) {
       throw Exception('Unable to fetch wallet balance.');
@@ -654,12 +664,16 @@ class _PaymentPageState extends State<PaymentPage> {
     try {
       double balanceInEther = double.parse(currentBalance.split(' ')[0]);
       balanceInWeiValue = BigInt.from((balanceInEther * pow(10, 18)).toInt());
+      print('Balance in Wei: $balanceInWeiValue');
     } catch (e) {
       throw Exception('Error parsing wallet balance: $e');
     }
 
     final balanceInWei = EtherAmount.fromUnitAndValue(EtherUnit.wei, balanceInWeiValue);
     final totalCost = txValue.getInWei + BigInt.from(100000 * 21000); // Include gas fees
+
+
+    print('Total Cost (including gas): $totalCost');
 
     if (balanceInWei.getInWei < totalCost) {
       CoolAlert.show(
@@ -692,16 +706,21 @@ class _PaymentPageState extends State<PaymentPage> {
     if (result != null) {
       // Assuming you have a way to get the current user's ID
       //String userId = '6708a0368cbadfd1e3267cf5'; 
+      print('Transaction successful! Transaction result: $result');
 
       // Fetch the user ID associated with the receiver's wallet address
+      print('Fetching user ID for receiver: $receiver');
       String? userId = await getUserIdByWalletAddress(receiver); // Add this line
 
       if (userId != null) {
+        print('Receiver user ID: $userId');
         // Create the notification message
         String message = 'Transaction of ${txValue.getValueInUnit(EtherUnit.ether)} ETH from $senderAddress to $receiver was successful.';
 
         // Send transaction notification
         await postTransactionNotification(userId, message);
+      } else {
+        print('No user ID found for receiver address.');
       }
 
       await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString());
@@ -716,9 +735,11 @@ class _PaymentPageState extends State<PaymentPage> {
 
       await appKitModal!.loadAccountData();
     } else {
+      print('Transaction failed.');
       throw Exception('Transaction failed. Please try again.');
     }
   } catch (e) {
+    print('Error occurred: $e');
     String errorMessage;
 
     if (e.toString().contains('User denied transaction signature')) {
@@ -732,6 +753,7 @@ class _PaymentPageState extends State<PaymentPage> {
       );
     } else {
       errorMessage = 'An unexpected error occurred: $e';
+      print('Error: $errorMessage');
       CoolAlert.show(
         context: context,
         type: CoolAlertType.error,
@@ -742,7 +764,8 @@ class _PaymentPageState extends State<PaymentPage> {
     }
   } finally {
     setState(() {
-      isLoading = false; // Hide loader
+      isLoading = false;
+      print('Transaction loading state set to false.'); // Hide loader
     });
   }
 }
@@ -763,21 +786,28 @@ Future<void> triggerNotification(String senderAddress, String receiverAddress, S
     }
 }
 
-// Function to retrieve user ID by wallet address
+// Function to retrieve user ID by wallet addres
 Future<String?> getUserIdByWalletAddress(String walletAddress) async {
+  print('Getting user ID by wallet address: $walletAddress');
   final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/users/wallet/$walletAddress'));
 
   if (response.statusCode == 200) {
     final data = json.decode(response.body);
+    print('User ID retrieved: ${data['userId']}');
     return data['userId']; // Return the user ID
+  } else if (response.statusCode == 409) {
+    // 409 Conflict indicates that the wallet address is already in use
+    print('Error: Wallet address already in use by another account.');
+    return null;
   } else {
     print('Error: ${response.body}');
-    return null; // Handle errors as needed
+    return null;
   }
 }
 
 // Function to post transaction notification
 Future<void> postTransactionNotification(String userId, String message) async {
+  print('Sending transaction notification to user ID: $userId with message: $message'); 
   final response = await http.post(
     Uri.parse('https://api-tau-plum.vercel.app/transaction-notifications'),
     headers: {

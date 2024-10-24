@@ -39,7 +39,7 @@ class HomeRepository {
 
       if (response.statusCode == 200) {
         final List<dynamic> jobsJson = jsonDecode(response.body);
-        print('Recommended jobs response: $jobsJson');
+        //print('Recommended jobs response: $jobsJson');
 
         // Handle potential null values in the response
         return jobsJson.map((job) {
@@ -71,7 +71,7 @@ class HomeRepository {
 
       if (response.statusCode == 200) {
         final List<dynamic> jobsJson = jsonDecode(response.body);
-        print('Most recent jobs response: $jobsJson');
+        //print('Most recent jobs response: $jobsJson');
 
         return jobsJson.map((job) {
           if (job != null) {
