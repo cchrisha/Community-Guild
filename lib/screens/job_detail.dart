@@ -74,7 +74,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
       );
 
       if (response.statusCode == 200) {
-        _notifyJobPoster(widget.jobId, userName ?? '', widget.jobTitle);
+        //_notifyJobPoster(widget.jobId, userName ?? '', widget.jobTitle);
         _showSuccessSnackBar();
         Navigator.pop(
           context,
@@ -105,40 +105,40 @@ class _JobDetailPageState extends State<JobDetailPage> {
     }
   }
 
-  Future<void> _notifyJobPoster(String jobId, String userName, String jobTitle) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('auth_token');
+  // Future<void> _notifyJobPoster(String jobId, String userName, String jobTitle) async {
+  //   try {
+  //     final prefs = await SharedPreferences.getInstance();
+  //     final token = prefs.getString('auth_token');
 
-      if (token == null) {
-        return;
-      }
+  //     if (token == null) {
+  //       return;
+  //     }
 
-      final notificationUrl = 'https://api-tau-plum.vercel.app/api/notifications';
-      final headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      };
+  //     final notificationUrl = 'https://api-tau-plum.vercel.app/api/notifications';
+  //     final headers = {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': 'Bearer $token',
+  //     };
 
-      final body = json.encode({
-        'user': widget.posterId,
-        'message': 'User $userName applied for the job $jobTitle',
-        'job': jobId,
-      });
+  //     final body = json.encode({
+  //       'user': widget.posterId,
+  //       'message': 'User $userName applied for the job $jobTitle',
+  //       'job': jobId,
+  //     });
 
-      final response = await http.post(
-        Uri.parse(notificationUrl),
-        headers: headers,
-        body: body,
-      );
+  //     final response = await http.post(
+  //       Uri.parse(notificationUrl),
+  //       headers: headers,
+  //       body: body,
+  //     );
 
-      if (response.statusCode != 200) {
-        throw Exception('Failed to notify job poster.');
-      }
-    } catch (e) {
-      print('Error sending notification: $e');
-    }
-  }
+  //     if (response.statusCode != 200) {
+  //       throw Exception('Failed to notify job poster.');
+  //     }
+  //   } catch (e) {
+  //     print('Error sending notification: $e');
+  //   }
+  // }
 
   void _showSuccessSnackBar() {
     ScaffoldMessenger.of(context).showSnackBar(
