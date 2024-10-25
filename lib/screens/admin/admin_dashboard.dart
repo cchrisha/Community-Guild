@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -31,13 +30,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
   @override
   void initState() {
     super.initState();
-    fetchNotifications(); // Fetch notifications on home screen load
+    fetchNotifications(); // Fetch notifications on dashboard load
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       fetchNotifications();
-    }); // Fetch notifications on dashboard load
+    });
   }
 
-Future<void> fetchNotifications() async {
+  Future<void> fetchNotifications() async {
     try {
       print('Fetching notifications...');
       final prefs = await SharedPreferences.getInstance();
@@ -57,7 +56,6 @@ Future<void> fetchNotifications() async {
       );
 
       print('Response Status Code: ${response.statusCode}');
-      //print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
@@ -90,37 +88,36 @@ Future<void> fetchNotifications() async {
   }
 
   Future<void> markNotificationAsRead(String notificationId) async {
-  print("Attempting to mark notification as read:");
-  print("Notification ID: $notificationId");
-  try {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('auth_token');
-    print("Auth Token: $token");
+    print("Attempting to mark notification as read:");
+    print("Notification ID: $notificationId");
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+      print("Auth Token: $token");
 
-    if (token == null) {
-      print('Token is null. User not logged in.');
-      return;
+      if (token == null) {
+        print('Token is null. User not logged in.');
+        return;
+      }
+
+      final response = await http.put(
+        Uri.parse('https://api-tau-plum.vercel.app/api/verification/notifications/$notificationId/read'), // Use actual notificationId here
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print('Notification marked as read.');
+      } else {
+        print('Failed to mark notification as read. Status code: ${response.statusCode}');
+        print("Response body: ${response.body}");
+      }
+    } catch (e) {
+      print('Error marking notification as read: $e');
     }
-
-    final response = await http.put(
-      Uri.parse('https://api-tau-plum.vercel.app/api/verification/notifications/$notificationId/read'), // Use actual notificationId here
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      // No body needed for marking as read 
-    );
-
-    if (response.statusCode == 200) {
-      print('Notification marked as read.');
-    } else {
-      print('Failed to mark notification as read. Status code: ${response.statusCode}');
-      print("Response body: ${response.body}");
-    }
-  } catch (e) {
-    print('Error marking notification as read: $e');
   }
-}
 
   void _showTopNotification(String message) {
     if (_isShowingNotification) return; // Prevent multiple overlays
@@ -151,12 +148,18 @@ Future<void> fetchNotifications() async {
       ),
     );
 
-  Overlay.of(context).insert(overlayEntry);
+    Overlay.of(context).insert(overlayEntry);
 
     Future.delayed(const Duration(seconds: 3), () {
       overlayEntry.remove();
       _isShowingNotification = false;
     });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Cancel the timer when disposing the widget
+    super.dispose();
   }
 
   @override
@@ -167,15 +170,44 @@ Future<void> fetchNotifications() async {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications),
+            icon: const Icon(
+              Icons.notifications,
+              color: Colors.blue,
+            ),
             onPressed: () {
-              // Navigate to the notification screen
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const AdminNotificationsScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const AdminNotificationsScreen(),
+                ),
               );
             },
           ),
+          if (_unreadNotificationCount > 0)
+            Positioned(
+              right: 11,
+              top: 11,
+              child: Container(
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                constraints: const BoxConstraints(
+                  minWidth: 14,
+                  minHeight: 14,
+                ),
+                child: Text(
+                  '$_unreadNotificationCount',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
         ],
       ),
       body: Padding(
