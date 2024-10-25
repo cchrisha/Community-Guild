@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';  
 
 class RequestedJobDetail extends StatefulWidget {
   const RequestedJobDetail({
     super.key,
+    required this.jobId,
     required this.jobTitle,
     required this.jobDescription,
     required this.date,
@@ -15,6 +20,7 @@ class RequestedJobDetail extends StatefulWidget {
     required this.category,
   });
 
+  final String jobId; // Job ID for the request
   final String jobTitle;
   final String jobDescription;
   final String date;
@@ -39,6 +45,63 @@ class _RequestedJobDetailState extends State<RequestedJobDetail> {
       return date; // Return original date string if parsing fails
     }
   }
+
+  // Function to handle the cancellation of the job request
+  Future<void> _cancelJobRequest() async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('auth_token');
+
+  if (token == null) {
+    print('Token is null. User not logged in.');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Please log in to cancel the job request."),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return;
+  }
+
+  final url = Uri.parse('https://api-tau-plum.vercel.app/api/jobs/${widget.jobId}/request'); // Replace with your API URL
+
+  try {
+    final response = await http.delete(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token', // Include the token here
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Job request canceled successfully"),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      Navigator.pop(context); // Go back to the previous screen
+    } else {
+      final responseData = json.decode(response.body);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(responseData['message'] ?? 'Failed to cancel job request'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  } catch (e) {
+    print("Error: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("An error occurred. Please try again."),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+}
 
    @override
 Widget build(BuildContext context) {
@@ -183,10 +246,7 @@ Widget build(BuildContext context) {
     ),
     const SizedBox(width: 20), // Spacing between buttons
     ElevatedButton(
-      onPressed: () {
-        // Add your cancel job logic here
-        print("Cancel Job button pressed");
-      },
+      onPressed: _cancelJobRequest,
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.redAccent, // Button color
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -195,7 +255,7 @@ Widget build(BuildContext context) {
         ),
       ),
       child: const Text(
-        'Cancel Job',
+        'Cancel Application',
         style: TextStyle(fontSize: 16, color: Colors.white),
       ),
     ),

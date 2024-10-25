@@ -352,6 +352,7 @@ class _JobPageState extends State<JobPage> {
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   RequestedJobDetail(
+                                                jobId: job.id,
                                                 jobTitle: job.title,
                                                 jobDescription: job.description,
                                                 date:
