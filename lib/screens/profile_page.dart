@@ -106,39 +106,39 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-Widget _buildProfileContent(BuildContext context, ProfileLoaded state) {
-  return SingleChildScrollView(
-    padding: const EdgeInsets.all(12.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _buildProfilePictureSection(context, state),
-        const SizedBox(height: 0),
-        ProfileHeader(name: state.name, profession: state.profession),
-        const SizedBox(height: 15),
-        ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.lightBlue, // Button color
+  Widget _buildProfileContent(BuildContext context, ProfileLoaded state) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildProfilePictureSection(context, state),
+          const SizedBox(height: 0),
+          ProfileHeader(name: state.name, profession: state.profession),
+          const SizedBox(height: 15),
+          ElevatedButton(
+            onPressed: () => _requestVerification(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.lightBlue, // Button color
+            ),
+            child: const Text('Verify', style: TextStyle(color: Colors.white)),
           ),
-          child: const Text('Verify', style: TextStyle(color: Colors.white)),
-        ),
-        const SizedBox(height: 15),
-        const SectionTitle(title: 'Contact Info:'),
-        ProfileInfoCard(
-          location: state.location,
-          contact: state.contact,
-          email: state.email,
-        ),
-        const SizedBox(height: 15),
-        const SectionTitle(title: 'Professional Info:'),
-        ProfessionInfoCard(
-          profession: state.profession,
-        ),
-      ],
-    ),
-  );
-}
+          const SizedBox(height: 15),
+          const SectionTitle(title: 'Contact Info:'),
+          ProfileInfoCard(
+            location: state.location,
+            contact: state.contact,
+            email: state.email,
+          ),
+          const SizedBox(height: 15),
+          const SectionTitle(title: 'Professional Info:'),
+          ProfessionInfoCard(
+            profession: state.profession,
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildProfilePictureSection(BuildContext context, ProfileLoaded state) {
     final profileBloc = context.read<ProfileBloc>();
@@ -198,5 +198,43 @@ Widget _buildProfileContent(BuildContext context, ProfileLoaded state) {
         ),
       ],
     );
+  }
+
+  Future<void> _requestVerification(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token'); // Get the token
+
+    if (token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You must be logged in to request verification')),
+      );
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://api-tau-plum.vercel.app/api/verification/request'),
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer $token', // Use the token for authentication
+          HttpHeaders.contentTypeHeader: 'application/json',
+        },
+        body: '{"message": "Verification request pending"}',
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Verification request submitted to admin')),
+        );
+      } else {
+        final responseBody = response.body;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $responseBody')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
   }
 }
