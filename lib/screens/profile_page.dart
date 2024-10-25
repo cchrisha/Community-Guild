@@ -117,9 +117,7 @@ Widget _buildProfileContent(BuildContext context, ProfileLoaded state) {
         ProfileHeader(name: state.name, profession: state.profession),
         const SizedBox(height: 15),
         ElevatedButton(
-          onPressed: () async {
-            await _sendVerificationRequest(context);
-          },
+          onPressed: () {},
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.lightBlue, // Button color
           ),
@@ -141,49 +139,6 @@ Widget _buildProfileContent(BuildContext context, ProfileLoaded state) {
     ),
   );
 }
-
-Future<void> _sendVerificationRequest(BuildContext context) async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final authToken = prefs.getString('auth_token'); // Retrieve the auth_token
-
-  if (authToken == null) {
-    // Handle case where the token is missing
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Authentication token not found')),
-    );
-    return;
-  }
-
-  final url = 'https://api-tau-plum.vercel.app/api/notifications/request-verification'; // Replace with your actual API URL
-
-  try {
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $authToken', // Use the retrieved auth token
-      },
-    );
-
-    if (response.statusCode == 201) {
-      // Show success notification to the user
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Verification request sent successfully')),
-      );
-    } else {
-      // Handle other response codes (e.g., 404 or 500)
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${response.statusCode}')),
-      );
-    }
-  } catch (e) {
-    // Handle any errors during the request
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error: $e')),
-    );
-  }
-}
-
 
   Widget _buildProfilePictureSection(BuildContext context, ProfileLoaded state) {
     final profileBloc = context.read<ProfileBloc>();
