@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminUserDetailsPage extends StatefulWidget {
   final Map<String, dynamic> user;
@@ -22,20 +23,19 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
   void initState() {
     super.initState();
     isVerified = widget.user['isVerify'] == 1;
-    _fetchJobs(); // Fetch the jobs when the page loads
+    _fetchJobs();
   }
 
   Future<void> _fetchJobs() async {
     try {
       final response = await http.get(
-        Uri.parse('https://api-tau-plum.vercel.app/api/user/${widget.user['_id']}/jobs/all'), // API to fetch all jobs by user ID
+        Uri.parse('https://api-tau-plum.vercel.app/api/user/${widget.user['_id']}/jobs/all'),
         headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
-          // Categorizing jobs by their statuses
           currentJobs = data['current'] ?? [];
           completedJobs = data['completed'] ?? [];
           requestedJobs = data['requested'] ?? [];
@@ -49,31 +49,44 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
     }
   }
 
-  Future<void> _updateVerifyStatus(String userId, bool isVerified) async {
-    final url = 'https://api-tau-plum.vercel.app/api/users/verify/$userId';
+  // Update verification status
+  Future<void> _updateVerifyStatus(String userId, bool newStatus) async {
+    final url = 'https://api-tau-plum.vercel.app/api/user/$userId/verify';
 
     try {
+      // Get the token from SharedPreferences or wherever you stored it
+      final prefs = await SharedPreferences.getInstance();
+      final String? token = prefs.getString('auth_token'); // Adjust the key as necessary
+
       final response = await http.patch(
         Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({'isVerify': isVerified ? 1 : 0}),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token', // Include the token in the header
+        },
+        body: json.encode({'isVerify': newStatus ? 1 : 0}),
       );
+
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         setState(() {
-          this.isVerified = isVerified;
+          isVerified = newStatus;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Verify status updated successfully')),
+          SnackBar(content: Text('Verification status updated to ${newStatus ? "verified" : "unverified"}')),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to update verify status')),
+          SnackBar(content: Text('Failed to update verification status')),
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
-      print(e); // Debugging output
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+      print(e);
     }
   }
 
@@ -89,7 +102,7 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // User Information Card
+            // Profile Information Card with verification toggle
             Card(
               elevation: 4,
               margin: const EdgeInsets.symmetric(vertical: 10),
@@ -119,6 +132,9 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
                         const Text('Verified Status:', style: TextStyle(fontSize: 16)),
                         Switch(
                           value: isVerified,
+                          activeColor: Colors.green, // Green for verified
+                          inactiveThumbColor: Colors.grey, // Gray for unverified
+                          inactiveTrackColor: Colors.grey[300], // Optional: color of the track when inactive
                           onChanged: (bool newValue) {
                             _updateVerifyStatus(widget.user['_id'], newValue);
                           },
@@ -130,17 +146,9 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
               ),
             ),
             const SizedBox(height: 20),
-
-            // Jobs Section
             _buildJobsSection('Current Jobs', currentJobs),
-            const SizedBox(height: 20),
-
             _buildJobsSection('Completed Jobs', completedJobs),
-            const SizedBox(height: 20),
-
             _buildJobsSection('Requested Jobs', requestedJobs),
-            const SizedBox(height: 20),
-
             _buildJobsSection('Rejected Jobs', rejectedJobs),
           ],
         ),
@@ -148,18 +156,14 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
     );
   }
 
-  // Method to build a job section with horizontal scrollable cards
   Widget _buildJobsSection(String sectionTitle, List<dynamic> jobs) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          sectionTitle,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
+        Text(sectionTitle, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 10),
         SizedBox(
-          height: 240, // Increased height for the job cards to prevent overflow
+          height: 240,
           child: jobs.isNotEmpty
               ? ListView.builder(
                   scrollDirection: Axis.horizontal,
@@ -169,44 +173,19 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
                     return Card(
                       margin: const EdgeInsets.symmetric(horizontal: 8),
                       child: Container(
-                        width: 300, // Increased width for each job card
-                        padding: const EdgeInsets.all(20), // Increased padding
+                        width: 300,
+                        padding: const EdgeInsets.all(20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              job['title'] ?? '',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18, // Increased font size for title
-                              ),
+                              job['jobTitle'],
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              'Wage Range: ${job['wageRange'] ?? ''}',
-                              style: TextStyle(color: Colors.grey[700]),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              'Location: ${job['location'] ?? ''}',
-                              style: TextStyle(color: Colors.grey[700]),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              'Crypto: ${job['isCrypto'] ? 'Yes' : 'No'}',
-                              style: TextStyle(color: Colors.grey[700]),
-                            ),
-                            const SizedBox(height: 15),
-                            Text(
-                              'Description: ${job['description'] ?? ''}',
-                              maxLines: 4, // Increased max lines for description
-                              overflow: TextOverflow.ellipsis, // Handle overflow
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              'Professions: ${job['professions']?.join(', ') ?? ''}',
-                              style: TextStyle(color: Colors.grey[700]),
+                              job['description'],
+                              style: const TextStyle(fontSize: 14, color: Colors.grey),
                             ),
                           ],
                         ),
@@ -214,8 +193,9 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
                     );
                   },
                 )
-              : Center(child: Text('No jobs available')),
+              : Center(child: Text('No jobs available in this section')),
         ),
+        const SizedBox(height: 20),
       ],
     );
   }
