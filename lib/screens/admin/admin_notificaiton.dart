@@ -1,3 +1,4 @@
+import 'package:community_guild/screens/admin/admin_userDetails.dart';
 import 'package:community_guild/screens/home.dart';
 import 'package:community_guild/widget/loading_widget/ink_drop.dart';
 import 'package:flutter/material.dart';
@@ -137,12 +138,20 @@ class _AdminNotificationsScreenState extends State<AdminNotificationsScreen> {
                 var notification = _notifications[index];
                 String notificationMessage = notification['message'];
                 bool isRead = notification['isRead'] ?? false;
+                var user = notification['user']; // Assuming the notification has user data
 
                 return GestureDetector(
                   onTap: () {
                     if (!isRead) {
                       markNotificationAsRead(notification['_id']);
                     }
+                    // Navigate to user details page with user data
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AdminUserDetailsPage(user: user),
+                      ),
+                    );
                   },
                   child: Card(
                     elevation: 3,
