@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:community_guild/repository/profile_repository.dart';
 import 'package:community_guild/widget/profile/profile_header.dart';
@@ -199,42 +200,44 @@ class ProfilePage extends StatelessWidget {
       ],
     );
   }
-
+  
   Future<void> _requestVerification(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('auth_token'); // Get the token
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token'); // Get the token
 
-    if (token == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You must be logged in to request verification')),
-      );
-      return;
-    }
-
-    try {
-      final response = await http.post(
-        Uri.parse('https://api-tau-plum.vercel.app/api/verification/request'),
-        headers: {
-          HttpHeaders.authorizationHeader: 'Bearer $token', // Use the token for authentication
-          HttpHeaders.contentTypeHeader: 'application/json',
-        },
-        body: '{"message": "Verification request pending"}',
-      );
-
-      if (response.statusCode == 200) {
+      if (token == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Verification request submitted to admin')),
+          const SnackBar(content: Text('You must be logged in to request verification')),
         );
-      } else {
-        final responseBody = response.body;
+        return;
+      }
+
+      try {
+        final response = await http.post(
+          Uri.parse('https://api-tau-plum.vercel.app/api/verification/request'),
+          headers: {
+            HttpHeaders.authorizationHeader: 'Bearer $token', // Use the token for authentication
+            HttpHeaders.contentTypeHeader: 'application/json',
+          },
+          body: jsonEncode({
+            'message': "Verification request pending", // Include a meaningful message
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Verification request submitted to admin')),
+          );
+        } else {
+          final responseBody = jsonDecode(response.body);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${responseBody['message']}')),
+          );
+        }
+      } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $responseBody')),
+          SnackBar(content: Text('Error: $e')),
         );
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
   }
 }
