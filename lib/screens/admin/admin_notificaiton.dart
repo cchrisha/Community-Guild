@@ -1,4 +1,3 @@
-import 'package:community_guild/screens/admin/admin_userDetails.dart';
 import 'package:community_guild/screens/home.dart';
 import 'package:community_guild/widget/loading_widget/ink_drop.dart';
 import 'package:flutter/material.dart';
@@ -29,8 +28,7 @@ class _AdminNotificationsScreenState extends State<AdminNotificationsScreen> {
     });
   }
 
-  @override
-  void dispose() {
+   void dispose() {
     _timer?.cancel();
     super.dispose();
   }
