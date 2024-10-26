@@ -18,12 +18,14 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
   List<dynamic> requestedJobs = [];
   List<dynamic> rejectedJobs = [];
 
-  @override
-  void initState() {
-    super.initState();
-    isVerified = widget.user['isVerify'] == 1;
-    _fetchJobs(); // Fetch the jobs when the page loads
-  }
+@override
+void initState() {
+  super.initState();
+  isVerified = (widget.user['isVerify'] == 1); // Check if isVerify is 1 for true
+  // You can also use a null-aware operator here:
+  // isVerified = (widget.user['isVerify'] ?? 0) == 1; // Defaults to 0 if null
+  _fetchJobs(); // Fetch the jobs when the page loads
+}
 
   Future<void> _fetchJobs() async {
     try {
@@ -98,20 +100,20 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Profile Information',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
-                    Text('Name: ${widget.user['name']}', style: TextStyle(fontSize: 16)),
+                    Text('Name: ${widget.user['name'] ?? 'N/A'}', style: const TextStyle(fontSize: 16)),
                     const SizedBox(height: 10),
-                    Text('Email: ${widget.user['email']}', style: TextStyle(fontSize: 16)),
+                    Text('Email: ${widget.user['email'] ?? 'N/A'}', style: const TextStyle(fontSize: 16)),
                     const SizedBox(height: 10),
-                    Text('Profession: ${widget.user['profession']}', style: TextStyle(fontSize: 16)),
+                    Text('Profession: ${widget.user['profession'] ?? 'N/A'}', style: const TextStyle(fontSize: 16)),
                     const SizedBox(height: 10),
-                    Text('Contact: ${widget.user['contact']}', style: TextStyle(fontSize: 16)),
+                    Text('Contact: ${widget.user['contact'] ?? 'N/A'}', style: const TextStyle(fontSize: 16)),
                     const SizedBox(height: 10),
-                    Text('Location: ${widget.user['location']}', style: TextStyle(fontSize: 16)),
+                    Text('Location: ${widget.user['location'] ?? 'N/A'}', style: const TextStyle(fontSize: 16)),
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
