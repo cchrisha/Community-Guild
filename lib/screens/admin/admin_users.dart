@@ -121,14 +121,7 @@ class _AdminUserPageState extends State<AdminUserPage> {
       appBar: AppBar(
         title: const Text('Users Management'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.explore),
-            onPressed: () {
-              // Export logic here
-            },
-          ),
-        ],
+
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

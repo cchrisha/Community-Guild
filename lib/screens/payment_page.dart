@@ -691,29 +691,29 @@ class _PaymentPageState extends State<PaymentPage> {
 
   if (result != null) {
     try {
-    await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString());
+      await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString());
 
-    // Prepare the notification data
-    final notificationData = {
-      'user': receiver,  // Adjust this to the appropriate user identifier
-      'message': 'You have received a payment of ${txValue.getValueInUnit(EtherUnit.ether).toString()} ETH from $senderAddress.',
-    };
+      // Prepare the notification data
+      final notificationData = {
+        'user': receiver,  // Adjust this to the appropriate user identifier0
+        'message': 'You have received a payment of ${txValue.getValueInUnit(EtherUnit.ether).toString()} ETH from $senderAddress.',
+      };
 
-    // Send the notification to the API
-    final response = await http.post(
-      Uri.parse('https://api-tau-plum.vercel.app/transaction-notifications'), // Replace with your actual API URL
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: json.encode(notificationData),
-    );
+      // Send the notification to the API
+      final response = await http.post(
+        Uri.parse('https://api-tau-plum.vercel.app/transaction-notifications'), // Replace with your actual API URL
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(notificationData),
+      );
 
-    if (response.statusCode == 201) {
-      // Successfully triggered notification
-      print('Notification sent: ${response.body}');
-    } else {
-      print('Failed to send notification: ${response.body}');
-    }
+      if (response.statusCode == 201) {
+        // Successfully triggered notification
+        print('Notification sent: ${response.body}');
+      } else {
+        print('Failed to send notification: ${response.body}');
+      }
 
     // Show success alert
     await Future.delayed(Duration(milliseconds: 100)); // Optional delay to ensure UI is ready

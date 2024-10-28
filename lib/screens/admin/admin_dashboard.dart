@@ -23,17 +23,76 @@ class AdminDashboard extends StatefulWidget {
 
 class _AdminDashboardState extends State<AdminDashboard> {
   final String apiUrl = 'https://api-tau-plum.vercel.app/api/verification/notifications';
+  final String allUsersUrl = 'https://api-tau-plum.vercel.app/api/users'; // API to fetch all users
   Timer? _timer;
   bool _isShowingNotification = false; // Flag to track if a notification is being shown
   int _unreadNotificationCount = 0;
+  int _totalUsers = 0; // Variable to hold total users
+  int totalTransactions = 0;
 
   @override
   void initState() {
     super.initState();
+     fetchAllUsers();
     fetchNotifications(); // Fetch notifications on dashboard load
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       fetchNotifications();
+      fetchTotalTransactions();
     });
+  }
+
+  Future<void> fetchTotalTransactions() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+
+      if (token == null) {
+        print('Token is null. User not logged in.');
+        return;
+      }
+
+      final response = await http.get(
+        Uri.parse('https://api-tau-plum.vercel.app/api/userGetAllTransac'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+        // Count total transactions
+        setState(() {
+          totalTransactions = data.length; // Total number of transactions
+        });
+      } else {
+        throw Exception('Failed to load transactions');
+      }
+    } catch (e) {
+      print('Error fetching total transactions: $e');
+    }
+  }
+
+   Future<void> fetchAllUsers() async {
+    try {
+      final response = await http.get(
+        Uri.parse(allUsersUrl),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+        setState(() {
+          _totalUsers = data.length; // Set total users based on the length of the user list
+        });
+      } else {
+        throw Exception('Failed to load users');
+      }
+    } catch (e) {
+      print('Error fetching all users: $e');
+    }
   }
 
   Future<void> fetchNotifications() async {
@@ -221,9 +280,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
-              _buildMetricCard('Total Users', '${widget.totalUsers}', Icons.people),
+               _buildMetricCard('Total Users', '$_totalUsers', Icons.people), 
               const SizedBox(height: 16),
-              _buildMetricCard('Completed Transactions', '${widget.completedTransactions}', Icons.check_circle),
+              _buildMetricCard('Total Transactions', '$totalTransactions', Icons.assignment), 
               const SizedBox(height: 16), // Add the notification section
             ],
           ),

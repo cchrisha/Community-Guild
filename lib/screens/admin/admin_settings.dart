@@ -95,30 +95,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ListTile(
-              title: const Text('Change Password'),
-              leading: const Icon(Icons.lock,
-                  color: Colors.lightBlue), // Added color to the icon
-              onTap: () {
-                // Add navigation or functionality for changing password
-              },
-            ),
-            ListTile(
-              title: const Text('Manage Users'),
-              leading: const Icon(Icons.group,
-                  color: Colors.lightBlue), // Added color to the icon
-              onTap: () {
-                // Add navigation or functionality for managing users
-              },
-            ),
-            ListTile(
-              title: const Text('App Settings'),
-              leading: const Icon(Icons.settings,
-                  color: Colors.lightBlue), // Added color to the icon
-              onTap: () {
-                // Add navigation or functionality for app settings
-              },
-            ),
             const Divider(),
             ListTile(
               title: const Text('Logout'),
