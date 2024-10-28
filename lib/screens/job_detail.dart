@@ -265,16 +265,51 @@ class _JobDetailPageState extends State<JobDetailPage> {
                 ),
               ),
               const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
                 children: [
-                  _buildDetailIcon(Icons.work, widget.professions),
-                  const VerticalDivider(thickness: 1, color: Color.fromARGB(66, 0, 0, 0), width: 2),
-                  _buildDetailIcon(Icons.location_on, widget.workPlace),
-                  const VerticalDivider(thickness: 1, color: Color.fromARGB(66, 0, 0, 0), width: 2),
-                  _buildDetailIcon(Icons.monetization_on, widget.wageRange),
-                  const VerticalDivider(thickness: 1, color: Color.fromARGB(66, 0, 0, 0), width: 2),
-                  _buildDetailIcon(widget.isCrypto ? Icons.currency_bitcoin : Icons.money_off, ''),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.work, size: 30, color: Color(0xFF03A9F4)),
+                      SizedBox(width: 90),
+                      Icon(Icons.location_on, size: 30, color: Color(0xFF03A9F4)),
+                      SizedBox(width: 90),
+                      Icon(Icons.monetization_on, size: 30, color: Color(0xFF03A9F4),),
+                    ],
+                  ),
+                  const SizedBox(height: 10), // Space between icon row and data row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            widget.professions,
+                            style: const TextStyle(fontSize: 16, color: Colors.black),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            widget.workPlace,
+                            style: const TextStyle(fontSize: 16, color: Colors.black),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            "${widget.wageRange} (${widget.isCrypto ? 'Crypto' : 'Not Crypto'})",
+                            style: const TextStyle(fontSize: 16, color: Colors.black),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
               const SizedBox(height: 50),
@@ -332,10 +367,10 @@ class _JobDetailPageState extends State<JobDetailPage> {
         Icon(icon, size: 30, color: const Color(0xFF03A9F4)), // Icon with fixed size
         const SizedBox(height: 10), // Space between the icon and text
         SizedBox(
-          width: 80, // Fixed width for the text under the icon
+          width: 110, // Fixed width for the text under the icon
           child: Text(
             data.isNotEmpty ? data : (icon == Icons.money_off ? 'Not Crypto' : 'Crypto'),
-            style: const TextStyle(fontSize: 16, color: Color.fromARGB(137, 0, 0, 0)),
+            style: const TextStyle(fontSize: 16, color: Color.fromARGB(136, 0, 0, 0)),
             maxLines: 3, // Limit the text to 3 lines
             softWrap: true, // Allow text to wrap within the fixed width
             overflow: TextOverflow.ellipsis, // Add ellipsis if text exceeds 3 lines

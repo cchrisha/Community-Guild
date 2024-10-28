@@ -162,58 +162,52 @@ class _PendingJobDetailState extends State<PendingJobDetail> {
                 ),
               ),
               const SizedBox(height: 5),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            Column(
                 children: [
-                  Text(
-                    'Wage Range: ${widget.wageRange}', // Dynamic wage range
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  Row(
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Crypto: '),
-                      Checkbox(
-                        value: widget.isCrypto, // Dynamic crypto status
-                        onChanged: (bool? value) {},
+                      Icon(Icons.work, size: 30, color: Color(0xFF03A9F4)),
+                      SizedBox(width: 90),
+                      Icon(Icons.location_on, size: 30, color: Color(0xFF03A9F4)),
+                      SizedBox(width: 90),
+                      Icon(Icons.monetization_on, size: 30, color: Color(0xFF03A9F4),),
+                    ],
+                  ),
+                  const SizedBox(height: 10), // Space between icon row and data row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            widget.professions,
+                            style: const TextStyle(fontSize: 16, color: Colors.black),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            widget.workPlace,
+                            style: const TextStyle(fontSize: 16, color: Colors.black),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            "${widget.wageRange} (${widget.isCrypto ? 'Crypto' : 'Not Crypto'})",
+                            style: const TextStyle(fontSize: 16, color: Colors.black),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ],
-              ),
-              const SizedBox(height: 5),
-              Text(
-                'Wanted Profession: ${widget.professions}', // Dynamic professions
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Workplace: ${widget.workPlace}', // Dynamic workplace
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Contact: ${widget.contact}', // Dynamic contact
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Category: ${widget.category}', // Dynamic category
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                ),
               ),
               const SizedBox(height: 20),
               // ElevatedButton(

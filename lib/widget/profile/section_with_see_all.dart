@@ -13,7 +13,7 @@
 //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //       children: [
 //         Text(
-//           title,
+//           title,/
 //           style: const TextStyle(
 //             fontSize: 22,
 //             fontWeight: FontWeight.bold,

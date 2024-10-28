@@ -15,6 +15,7 @@ import '../widget/post_page/job_reward_field.dart';
 import '../widget/post_page/job_description_field.dart';
 import '../widget/post_page/crypto_payment_checkbox.dart';
 import '../widget/post_page/post_button.dart';
+import 'home.dart';
 
 class PostInput extends StatefulWidget {
   const PostInput({super.key});
@@ -84,39 +85,43 @@ class PostInputState extends State<PostInput> {
           backgroundColor: const Color.fromARGB(255, 3, 169, 244),
         ),
         body: BlocListener<PostBloc, PostState>(
-          listener: (context, state) {
-            if (state is PostLoading) {
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) => Center(
-                  child: InkDrop(
-                    // Use InkDrop as the loading animation
-                    size: 40,
-                    color: Colors.lightBlue,
-                    ringColor: Colors.lightBlue.withOpacity(0.3),
-                  ),
+        listener: (context, state) {
+          if (state is PostLoading) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => Center(
+                child: InkDrop(
+                  // Use InkDrop as the loading animation
+                  size: 40,
+                  color: Colors.lightBlue,
+                  ringColor: Colors.lightBlue.withOpacity(0.3),
                 ),
-              );
-            } else if (state is PostSuccess) {
-              Navigator.pop(context); // Dismiss loading indicator
+              ),
+            );
+          } else if (state is PostSuccess) {
+            Navigator.pop(context); // Dismiss loading indicator
 
-              // Close the screen after showing success
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Job posted successfully!')),
-              );
+            // Show success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Job posted successfully!')),
+            );
 
-              // Close the PostInput screen and return to the previous screen
-              Future.delayed(const Duration(seconds: 1), () {
-                Navigator.pop(context); // Close the PostInput screen
-              });
-            } else if (state is PostFailure) {
-              Navigator.pop(context); // Dismiss loading indicator
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Error: ${state.message}')),
-              );
-            }
-          },
+            // Navigate to HomePage and clear stack
+            Future.delayed(const Duration(seconds: 1), () {
+              Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+        (route) => false,
+      );
+            });
+          } else if (state is PostFailure) {
+            Navigator.pop(context); // Dismiss loading indicator
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error: ${state.message}')),
+            );
+          }
+        },
           child: BlocBuilder<PostBloc, PostState>(
             builder: (context, state) {
               return Padding(
