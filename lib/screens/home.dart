@@ -102,26 +102,40 @@ class _HomePageState extends State<HomePage> {
           List<dynamic> transactionNotifications = json.decode(transactionResponse.body);
           print('Parsed Transaction Notifications: $transactionNotifications');
 
-          setState(() {
-            _notifications = [...notificationsData, ...transactionNotifications];
-          });
+
+          final verificationResponse = await http.get(
+          Uri.parse('https://api-tau-plum.vercel.app/api/user/notifications'),
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        if (verificationResponse.statusCode == 200) {
+          List<dynamic> verificationNotifications = json.decode(verificationResponse.body);
+
+setState(() {
+    _notifications = [...notificationsData, ...transactionNotifications, ...verificationNotifications];
+});
+
 
           int unreadCount = _notifications.where((notification) => !notification['isRead']).length;
           setState(() {
             _unreadNotificationCount = unreadCount;
           });
+        }
 
           _notifications.sort((a, b) => DateTime.parse(b['createdAt']).compareTo(DateTime.parse(a['createdAt'])));
 
           if (_notifications.isNotEmpty) {
-            var latestNotification = _notifications.first;
-            if (!latestNotification['isRead'] && latestNotification['_id'] != _lastShownNotificationId) {
-              _showTopNotification(latestNotification['message']);
-              _lastShownNotificationId = latestNotification['_id']; // Update the last shown notification ID
+    var latestNotification = _notifications.first;
+    if (!latestNotification['isRead'] && latestNotification['_id'] != _lastShownNotificationId) {
+        _showTopNotification(latestNotification['message']);
+        _lastShownNotificationId = latestNotification['_id']; // Update the last shown notification ID
 
-              // Mark the notification as read after showing it
-              await markNotificationAsRead(latestNotification['_id']);
-            }
+        // Mark the notification as read after showing it
+        await markNotificationAsRead(latestNotification['_id']);
+    }
+
           }
         } else {
           throw Exception('Failed to load transaction notifications');
@@ -165,47 +179,69 @@ class _HomePageState extends State<HomePage> {
       } else {
         print('Failed to mark notification as read. Status code: ${response.statusCode}');
       }
+
+      final verificationResponse = await http.patch(
+      Uri.parse('https://api-tau-plum.vercel.app/api/user/notifications/$notificationId/read'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+    
+      if (verificationResponse.statusCode == 200) {
+      setState(() {
+        _notifications = _notifications.map((notification) {
+          if (notification['_id'] == notificationId) {
+            notification['isRead'] = true;
+          }
+          return notification;
+        }).toList();
+      });
+    } else {
+      print('Failed to mark notification as read. Status code: ${verificationResponse.statusCode}');
+    }
     } catch (e) {
       print('Error marking notification as read: $e');
     }
   }
 
   void _showTopNotification(String message) {
+    print('Showing notification: $message');
     if (_isShowingNotification) return;
 
     _isShowingNotification = true;
 
     OverlayEntry overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        top: 50.0,
-        left: MediaQuery.of(context).size.width * 0.05,
-        right: MediaQuery.of(context).size.width * 0.05,
-        child: Material(
-          elevation: 10.0,
-          borderRadius: BorderRadius.circular(10),
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.8),
-              borderRadius: BorderRadius.circular(10),
+        builder: (context) => Positioned(
+            top: 50.0,
+            left: MediaQuery.of(context).size.width * 0.05,
+            right: MediaQuery.of(context).size.width * 0.05,
+            child: Material(
+                elevation: 10.0,
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                    decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.8),
+                        borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                        message,
+                        style: const TextStyle(color: Colors.white, fontSize: 16),
+                        textAlign: TextAlign.center,
+                    ),
+                ),
             ),
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-          ),
         ),
-      ),
     );
 
     Overlay.of(context)?.insert(overlayEntry);
 
     Future.delayed(const Duration(seconds: 3), () {
-      overlayEntry.remove();
-      _isShowingNotification = false;
+        overlayEntry.remove();
+        _isShowingNotification = false;
     });
-  }
+}
 
   @override
   Widget build(BuildContext context) {
