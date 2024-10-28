@@ -116,14 +116,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
         return;
       }
 
-    // Use PATCH method for marking notification as read
-    final response = await http.put(
-      Uri.parse('$apiUrl/$notificationId/read'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    );
       final jobreqresponse = await http.put(
         Uri.parse('$apiUrl/$notificationId/read'),
         headers: {
@@ -152,6 +144,27 @@ class _NotificationScreenState extends State<NotificationScreen> {
           'Content-Type': 'application/json',
         },
       );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          _notifications = _notifications.map((notification) {
+            if (notification['_id'] == notificationId) {
+              notification['isRead'] = true;
+            }
+            return notification;
+          }).toList();
+        });
+      } else {
+        print('Failed to mark notification as read. Status code: ${response.statusCode}');
+      }
+
+      final verificationResponse = await http.patch(
+      Uri.parse('https://api-tau-plum.vercel.app/api/user/notifications/$notificationId/read'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
 
     if (verificationResponse.statusCode == 200) {
       setState(() {
