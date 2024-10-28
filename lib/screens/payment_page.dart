@@ -54,7 +54,7 @@ class _PaymentPageState extends State<PaymentPage> {
             NotificationController.onDismissActionRecievedMethod);
     initializeAppKitModal();
     loadWalletAddress();
-    fetchNotifications(walletAddress);
+    //fetchNotifications(walletAddress);
   }
 
   Future<void> loadWalletAddress() async {
@@ -104,33 +104,6 @@ class _PaymentPageState extends State<PaymentPage> {
     return prefs.getString('auth_token');
   }
 
-  Future<void> updateWalletAddressInAPI(String walletAddress) async {
-    final token = await getToken(); // Retrieve the token
-    const url =
-        'https://api-tau-plum.vercel.app/api/users'; // No userId needed here since you're using verifyToken
-
-    try {
-      final response = await http.put(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token', // Include the token in the headers
-        },
-        body: jsonEncode({'walletAddress': walletAddress}),
-      );
-
-      if (response.statusCode == 200) {
-        // Handle successful response
-        print('Wallet address updated successfully');
-      } else {
-        // Handle error response
-        print('Failed to update wallet address: ${response.body}');
-      }
-    } catch (e) {
-      print('Error updating wallet address: $e');
-    }
-  }
-
   void updateWalletAddress() async {
     if (appKitModal?.session != null) {
       setState(() {
@@ -144,7 +117,7 @@ class _PaymentPageState extends State<PaymentPage> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('walletAddress', walletAddress);
       // Update the wallet address in the API
-      await updateWalletAddressInAPI(walletAddress); // No userId needed here
+      await updateWalletAddressInAPI(walletAddress); 
     } else {
       setState(() {
         walletAddress = 'No Address';
@@ -157,6 +130,33 @@ class _PaymentPageState extends State<PaymentPage> {
       await prefs.remove('walletAddress');
     }
   }
+
+    Future<void> updateWalletAddressInAPI(String walletAddress) async {
+      final token = await getToken(); // Retrieve the token
+      const url =
+          'https://api-tau-plum.vercel.app/api/users'; // No userId needed here since you're using verifyToken
+
+      try {
+        final response = await http.put(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token', // Include the token in the headers
+          },
+          body: jsonEncode({'walletAddress': walletAddress}),
+        );
+
+        if (response.statusCode == 200) {
+          // Handle successful response
+          print('Wallet address updated successfully');
+        } else {
+          // Handle error response
+          print('Failed to update wallet address: ${response.body}');
+        }
+      } catch (e) {
+        print('Error updating wallet address: $e');
+      }
+    }
 
   Future<void> fetchTransactions(String address) async {
     setState(() {
@@ -379,21 +379,6 @@ class _PaymentPageState extends State<PaymentPage> {
           // const Center(child: CircularProgressIndicator()),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     // Trigger the notification when the FAB is pressed
-      //     AwesomeNotifications().createNotification(
-      //       content: NotificationContent(
-      //         id: 1, // Unique ID for the notification
-      //         channelKey: 'basic_channel', // Your initialized channel key
-      //         title: 'New Notification!',
-      //         body: 'Haynako Albert!!!!!!!!',
-      //         notificationLayout: NotificationLayout.BigPicture,
-      //       ),
-      //     );
-      //   },
-      //   child: const Icon(Icons.download),
-      // ),
     );
   
   }
@@ -704,40 +689,79 @@ class _PaymentPageState extends State<PaymentPage> {
       ],
     );
 
-    if (result != null) {
-   
-        String receiverMessage = 'Transaction Received: You have received $txValue from your sender.';
+  if (result != null) {
+    try {
+    await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString());
 
-        // Fetch token from SharedPreferences
-        final prefs = await SharedPreferences.getInstance();
-        final token = prefs.getString('auth_token');
+    // Prepare the notification data
+    final notificationData = {
+      'user': receiver,  // Adjust this to the appropriate user identifier
+      'message': 'You have received a payment of ${txValue.getValueInUnit(EtherUnit.ether).toString()} ETH from $senderAddress.',
+    };
 
-        if (token == null) {
-          print('Token is null. User not logged in.');
-          return;
-        }
+    // Send the notification to the API
+    final response = await http.post(
+      Uri.parse('https://api-tau-plum.vercel.app/transaction-notifications'), // Replace with your actual API URL
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(notificationData),
+    );
 
-        // Show overlay notification for the sender
-        _showTopNotification('Transaction Successful: Your transaction was completed successfully! TANGINA MO MARK');
+    if (response.statusCode == 201) {
+      // Successfully triggered notification
+      print('Notification sent: ${response.body}');
+    } else {
+      print('Failed to send notification: ${response.body}');
+    }
 
-        // Send notification to the receiver
-        await http.post(
-          Uri.parse('https://api-tau-plum.vercel.app/api/transaction-notifications'), // Replace with your actual API URL
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type': 'application/json',
-          },
-          body: json.encode({
-            'walletAddress': receiver, // The receiver's wallet address
-            'message': receiverMessage,
-          }),
-        );
+    // Show success alert
+    await Future.delayed(Duration(milliseconds: 100)); // Optional delay to ensure UI is ready
+    CoolAlert.show(
+      context: context,
+      type: CoolAlertType.success,
+      title: 'Payment Successful',
+      text: 'You have successfully sent to $receiver.',
+      confirmBtnText: 'Okay',
+      onConfirmBtnTap: () {
+        // Optionally navigate or perform any action on confirmation
+      },
+    );
 
-        await appKitModal!.loadAccountData(); // Load updated account data
+    // Load updated account data
+    await appKitModal!.loadAccountData(); 
 
-      } else {
-        throw Exception('Transaction failed. Please try again.');
+  } catch (e) {
+    String errorMessage;
+
+    if (e.toString().contains('User denied transaction signature')) {
+      errorMessage = 'Transaction cancelled by the user.';
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.error,
+        title: 'Transaction Cancelled',
+        text: errorMessage,
+        confirmBtnText: 'Okay',
+      );
+    } else {
+      errorMessage = 'An unexpected error occurred: $e';
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.error,
+        title: 'Error',
+        text: errorMessage,
+        confirmBtnText: 'Okay',
+      );
+    }
+      } finally {
+        setState(() {
+          isLoading = false; // Hide loader
+        });
       }
+    } else {
+      throw Exception('Transaction failed. Please try again.');
+    }
+ 
     } catch (e) {
       String errorMessage;
 
@@ -766,149 +790,39 @@ class _PaymentPageState extends State<PaymentPage> {
       });
     }
   }
-
-  // Method to fetch notifications for a specific wallet address
-  Future<void> fetchNotifications(String walletAddress) async {
-    try {
-      print('Fetching notifications for wallet address: $walletAddress...');
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('auth_token');
-
-      if (token == null) {
-        print('Token is null. User not logged in.');
-        return;
-      }
-
-      // Update the API URL to fetch notifications for a specific wallet address
-      final response = await http.get(
-        Uri.parse('https://api-tau-plum.vercel.app/transaction-notifications/$walletAddress'), // Use your API base URL
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      print('Response Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
-
-      if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(response.body);
-        data.sort((a, b) => DateTime.parse(b['createdAt']).compareTo(DateTime.parse(a['createdAt'])));
-
-        if (data.isNotEmpty) {
-          for (var notification in data) {
-            if (!notification['isRead']) {
-              // Show notifications for transaction received
-              if (notification['message'].contains('Transaction Received')) {
-                _showTopNotification(notification['message']); // Show the received notification
-              }
-
-              // Mark the notification as read after showing it (implement as needed)
-              // await markNotificationAsRead(notification['_id']); 
-            }
-          }
-        }
-      } else {
-        throw Exception('Failed to load notifications');
-      }
-    } catch (e) {
-      print('Error fetching notifications: $e');
-    }
-  }
-
   // Method to display notifications
-  void _showTopNotification(String message) {
-    if (_isShowingNotification) return; // Prevent multiple overlays
 
-    _isShowingNotification = true;
+  Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount) async {
+    int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
 
-    OverlayEntry overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        top: 50.0,
-        left: MediaQuery.of(context).size.width * 0.05,
-        right: MediaQuery.of(context).size.width * 0.05,
-        child: Material(
-          elevation: 10.0,
-          borderRadius: BorderRadius.circular(10),
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.8),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
+    // Notification for the sender
+        await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            channelKey: 'basic_channel',
+            id: notificationId,
+            title: 'Successful Payment',
+            body: 'You have successfully sent! $amount ETH to $receiverAddress.',
+            notificationLayout: NotificationLayout.Default,
           ),
-        ),
-      ),
-    );
-
-    Overlay.of(context)?.insert(overlayEntry);
-
-    Future.delayed(const Duration(seconds: 3), () {
-      overlayEntry.remove();
-      _isShowingNotification = false;
-    });
+        );
+      }
   }
-
-
-Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount) async {
-  int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range
-
-  // Notification for the sender
-      await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          channelKey: 'basic_channel',
-          id: notificationId,
-          title: 'Successful Payment',
-          body: 'You have successfully sent $amount ETH to $receiverAddress.',
-          notificationLayout: NotificationLayout.Default,
-        ),
-      );
-    }
-}
 
 // Function to retrieve user ID by wallet addres
-Future<String?> getUserIdByWalletAddress(String walletAddress) async {
-  print('Getting user ID by wallet address: $walletAddress');
-  final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/users/wallet/$walletAddress'));
+  Future<String?> getUserIdByWalletAddress(String walletAddress) async {
+    print('Getting user ID by wallet address: $walletAddress');
+    final response = await http.get(Uri.parse('https://api-tau-plum.vercel.app/users/wallet/$walletAddress'));
 
-  if (response.statusCode == 200) {
-    final data = json.decode(response.body);
-    print('User ID retrieved: ${data['userId']}');
-    return data['userId']; // Return the user ID
-  } else if (response.statusCode == 409) {
-    // 409 Conflict indicates that the wallet address is already in use
-    print('Error: Wallet address already in use by another account.');
-    return null;
-  } else {
-    print('Error: ${response.body}');
-    return null;
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      print('User ID retrieved: ${data['userId']}');
+      return data['userId']; // Return the user ID
+    } else if (response.statusCode == 409) {
+      // 409 Conflict indicates that the wallet address is already in use
+      print('Error: Wallet address already in use by another account.');
+      return null;
+    } else {
+      print('Error: ${response.body}');
+      return null;
+    }
   }
-}
-
-// Function to post transaction notification
-Future<void> postTransactionNotification(String userId, String message) async {
-  print('Sending transaction notification to user ID: $userId with message: $message'); 
-  final response = await http.post(
-    Uri.parse('https://api-tau-plum.vercel.app/transaction-notifications'),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: jsonEncode({
-      'user': userId,
-      'message': message,
-    }),
-  );
-
-  if (response.statusCode == 201) {
-    // Successfully created notification
-    print('Notification sent successfully.');
-  } else {
-    // Handle error
-    print('Failed to send notification: ${response.body}');
-  }
-}

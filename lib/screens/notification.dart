@@ -107,8 +107,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
 
     // Use PATCH method for marking notification as read
-    final response = await http.patch(
-      Uri.parse('https://api-tau-plum.vercel.app/transaction-notifications/$notificationId/read'),
+    final response = await http.put(
+      Uri.parse('$apiUrl/$notificationId/read'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
