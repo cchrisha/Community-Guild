@@ -42,10 +42,14 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
           rejectedJobs = data['rejected'] ?? [];
         });
       } else {
-        print('Failed to load jobs');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to load jobs')),
+        );
       }
     } catch (e) {
-      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     }
   }
 
@@ -54,21 +58,23 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
     final url = 'https://api-tau-plum.vercel.app/api/user/$userId/verify';
 
     try {
-      // Get the token from SharedPreferences or wherever you stored it
       final prefs = await SharedPreferences.getInstance();
-      final String? token = prefs.getString('auth_token'); // Adjust the key as necessary
+      final String? token = prefs.getString('auth_token');
+      if (token == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No authentication token found')),
+        );
+        return;
+      }
 
       final response = await http.patch(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token', // Include the token in the header
+          'Authorization': 'Bearer $token',
         },
         body: json.encode({'isVerify': newStatus ? 1 : 0}),
       );
-
-      print('Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         setState(() {
@@ -79,14 +85,13 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update verification status')),
+          const SnackBar(content: Text('Failed to update verification status')),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
-      print(e);
     }
   }
 
@@ -132,9 +137,9 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
                         const Text('Verified Status:', style: TextStyle(fontSize: 16)),
                         Switch(
                           value: isVerified,
-                          activeColor: Colors.green, // Green for verified
-                          inactiveThumbColor: Colors.grey, // Gray for unverified
-                          inactiveTrackColor: Colors.grey[300], // Optional: color of the track when inactive
+                          activeColor: Colors.green,
+                          inactiveThumbColor: Colors.grey,
+                          inactiveTrackColor: Colors.grey[300],
                           onChanged: (bool newValue) {
                             _updateVerifyStatus(widget.user['_id'], newValue);
                           },
