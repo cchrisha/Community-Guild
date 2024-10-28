@@ -36,8 +36,9 @@ class _HomePageState extends State<HomePage> {
   Timer? _timer;
   bool _isShowingNotification = false; // Flag to track if a notification is being shown
   int _unreadNotificationCount = 0;
-
+  List<dynamic> _notifications = [];
   int _currentIndex = 0;
+  String? _lastShownNotificationId; // Track the last shown notification ID
   HomeBloc? _homeBloc;
 
   final List<Widget> _pages = [
@@ -58,12 +59,6 @@ class _HomePageState extends State<HomePage> {
     _homeBloc = HomeBloc(
       homeRepository: HomeRepository(httpClient: http.Client()),
     );
-
-    // AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-    //   if (!isAllowed) {
-    //     AwesomeNotifications().requestPermissionToSendNotifications();
-    //   }
-    // });
   }
 
   Future<void> fetchNotifications() async {
@@ -77,6 +72,12 @@ class _HomePageState extends State<HomePage> {
         return;
       }
 
+      final userId = prefs.getString('user_id');
+      if (userId == null) {
+        print('User ID is null. Cannot fetch transaction notifications.');
+        return;
+      }
+
       final response = await http.get(
         Uri.parse(apiUrl),
         headers: {
@@ -86,29 +87,44 @@ class _HomePageState extends State<HomePage> {
       );
 
       print('Response Status Code: ${response.statusCode}');
-      //print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(response.body);
+        List<dynamic> notificationsData = json.decode(response.body);
 
-        // Count unread notifications
-        int unreadCount = data.where((notification) => !notification['isRead']).length;
-        setState(() {
-          _unreadNotificationCount = unreadCount;
-        });
+        final transactionResponse = await http.get(
+          Uri.parse('https://api-tau-plum.vercel.app/transaction-notifications/$userId'),
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        );
 
-        // Sort notifications by date to get the latest one
-        data.sort((a, b) => DateTime.parse(b['createdAt']).compareTo(DateTime.parse(a['createdAt'])));
+        if (transactionResponse.statusCode == 200) {
+          List<dynamic> transactionNotifications = json.decode(transactionResponse.body);
+          print('Parsed Transaction Notifications: $transactionNotifications');
 
-        if (data.isNotEmpty) {
-          var latestNotification = data.first;
-          if (!latestNotification['isRead']) {
-            // Show the latest unread notification in the overlay
-            _showTopNotification(latestNotification['message']);
+          setState(() {
+            _notifications = [...notificationsData, ...transactionNotifications];
+          });
 
-            // Mark the notification as read after showing it
-            await markNotificationAsRead(latestNotification['_id']);
+          int unreadCount = _notifications.where((notification) => !notification['isRead']).length;
+          setState(() {
+            _unreadNotificationCount = unreadCount;
+          });
+
+          _notifications.sort((a, b) => DateTime.parse(b['createdAt']).compareTo(DateTime.parse(a['createdAt'])));
+
+          if (_notifications.isNotEmpty) {
+            var latestNotification = _notifications.first;
+            if (!latestNotification['isRead'] && latestNotification['_id'] != _lastShownNotificationId) {
+              _showTopNotification(latestNotification['message']);
+              _lastShownNotificationId = latestNotification['_id']; // Update the last shown notification ID
+
+              // Mark the notification as read after showing it
+              await markNotificationAsRead(latestNotification['_id']);
+            }
           }
+        } else {
+          throw Exception('Failed to load transaction notifications');
         }
       } else {
         throw Exception('Failed to load notifications');
@@ -119,13 +135,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> markNotificationAsRead(String notificationId) async {
-    print("Attempting to mark notification as read:");
-    print("Notification ID: $notificationId");
+    print("Attempting to mark notification as read: $notificationId");
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('auth_token');
-      print("Auth Token: $token");
-
       if (token == null) {
         print('Token is null. User not logged in.');
         return;
@@ -137,14 +150,20 @@ class _HomePageState extends State<HomePage> {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
-        // No body needed for marking as read 
       );
 
       if (response.statusCode == 200) {
         print('Notification marked as read.');
+        setState(() {
+          _notifications = _notifications.map((notification) {
+            if (notification['_id'] == notificationId) {
+              notification['isRead'] = true;
+            }
+            return notification;
+          }).toList();
+        });
       } else {
         print('Failed to mark notification as read. Status code: ${response.statusCode}');
-        print("Response body: ${response.body}");
       }
     } catch (e) {
       print('Error marking notification as read: $e');
@@ -152,7 +171,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _showTopNotification(String message) {
-    if (_isShowingNotification) return; // Prevent multiple overlays
+    if (_isShowingNotification) return;
 
     _isShowingNotification = true;
 
@@ -180,7 +199,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-  Overlay.of(context)?.insert(overlayEntry);
+    Overlay.of(context)?.insert(overlayEntry);
 
     Future.delayed(const Duration(seconds: 3), () {
       overlayEntry.remove();

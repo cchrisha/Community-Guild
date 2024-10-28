@@ -62,6 +62,7 @@ dependencies:
   fl_chart: ^0.69.0
   cool_alert: ^2.0.1
   awesome_notifications: ^0.9.3+1
+  onesignal_flutter: ^5.2.6
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.1

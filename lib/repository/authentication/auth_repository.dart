@@ -91,6 +91,7 @@ class AuthRepository {
     if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         final token = responseData['token'];
+        final userId = responseData['_id']; // Extracting user ID from the response
 
         if (responseData['success'] == true) {
             if (token == null || token.isEmpty) {
@@ -98,11 +99,13 @@ class AuthRepository {
             }
             await saveToken(token); // Save token locally
 
-            // Save user name in SharedPreferences
+            // Save user ID and name in SharedPreferences
             final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('user_id', userId); // Save user ID
             await prefs.setString('user_name', responseData['name']); // Save the user's name
 
             print('Token saved: $token');
+            print('User ID saved: $userId'); // Log user ID saving
             print('User name saved: ${responseData['name']}'); // Log user name saving
             return token;
         } else {

@@ -29,6 +29,7 @@ class _PaymentPageState extends State<PaymentPage> {
   String _balance = '0';
   bool isLoading = false;
   List<TransactionDetails> transactions = [];
+  bool _isShowingNotification = false; 
 
   final customNetwork = ReownAppKitModalNetworkInfo(
     name: 'Sepolia',
@@ -53,6 +54,7 @@ class _PaymentPageState extends State<PaymentPage> {
             NotificationController.onDismissActionRecievedMethod);
     initializeAppKitModal();
     loadWalletAddress();
+    fetchNotifications(walletAddress);
   }
 
   Future<void> loadWalletAddress() async {
@@ -141,7 +143,6 @@ class _PaymentPageState extends State<PaymentPage> {
       // Save the wallet address to SharedPreferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('walletAddress', walletAddress);
-
       // Update the wallet address in the API
       await updateWalletAddressInAPI(walletAddress); // No userId needed here
     } else {
@@ -378,6 +379,21 @@ class _PaymentPageState extends State<PaymentPage> {
           // const Center(child: CircularProgressIndicator()),
         ],
       ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     // Trigger the notification when the FAB is pressed
+      //     AwesomeNotifications().createNotification(
+      //       content: NotificationContent(
+      //         id: 1, // Unique ID for the notification
+      //         channelKey: 'basic_channel', // Your initialized channel key
+      //         title: 'New Notification!',
+      //         body: 'Haynako Albert!!!!!!!!',
+      //         notificationLayout: NotificationLayout.BigPicture,
+      //       ),
+      //     );
+      //   },
+      //   child: const Icon(Icons.download),
+      // ),
     );
   
   }
@@ -616,18 +632,10 @@ class _PaymentPageState extends State<PaymentPage> {
       },
     );
   }
-  
-  //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
   Future<void> sendTransaction(String receiver, EtherAmount txValue) async {
   setState(() {
     isLoading = true;
   });
-
-  // Log initial transaction information
-  print('Starting transaction...');
-  print('Receiver Address: $receiver');
-  print('Transaction Value: ${txValue.getValueInUnit(EtherUnit.ether)} ETH');
 
   // Tether contract setup (pseudo-code)
   final tetherContract = DeployedContract(
@@ -651,10 +659,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
   try {
     final senderAddress = appKitModal!.session!.address!;
-    print('Sender Address: $senderAddress');
-
     final currentBalance = appKitModal!.balanceNotifier.value;
-    print('Current Wallet Balance: $currentBalance');
 
     if (currentBalance.isEmpty) {
       throw Exception('Unable to fetch wallet balance.');
@@ -664,16 +669,12 @@ class _PaymentPageState extends State<PaymentPage> {
     try {
       double balanceInEther = double.parse(currentBalance.split(' ')[0]);
       balanceInWeiValue = BigInt.from((balanceInEther * pow(10, 18)).toInt());
-      print('Balance in Wei: $balanceInWeiValue');
     } catch (e) {
       throw Exception('Error parsing wallet balance: $e');
     }
 
     final balanceInWei = EtherAmount.fromUnitAndValue(EtherUnit.wei, balanceInWeiValue);
     final totalCost = txValue.getInWei + BigInt.from(100000 * 21000); // Include gas fees
-
-
-    print('Total Cost (including gas): $totalCost');
 
     if (balanceInWei.getInWei < totalCost) {
       CoolAlert.show(
@@ -704,71 +705,155 @@ class _PaymentPageState extends State<PaymentPage> {
     );
 
     if (result != null) {
-      // Assuming you have a way to get the current user's ID
-      //String userId = '6708a0368cbadfd1e3267cf5'; 
-      print('Transaction successful! Transaction result: $result');
+   
+        String receiverMessage = 'Transaction Received: You have received $txValue from your sender.';
 
-      // Fetch the user ID associated with the receiver's wallet address
-      print('Fetching user ID for receiver: $receiver');
-      String? userId = await getUserIdByWalletAddress(receiver); // Add this line
+        // Fetch token from SharedPreferences
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('auth_token');
 
-      if (userId != null) {
-        print('Receiver user ID: $userId');
-        // Create the notification message
-        String message = 'Transaction of ${txValue.getValueInUnit(EtherUnit.ether)} ETH from $senderAddress to $receiver was successful.';
+        if (token == null) {
+          print('Token is null. User not logged in.');
+          return;
+        }
 
-        // Send transaction notification
-        await postTransactionNotification(userId, message);
+        // Show overlay notification for the sender
+        _showTopNotification('Transaction Successful: Your transaction was completed successfully! TANGINA MO MARK');
+
+        // Send notification to the receiver
+        await http.post(
+          Uri.parse('https://api-tau-plum.vercel.app/api/transaction-notifications'), // Replace with your actual API URL
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+          body: json.encode({
+            'walletAddress': receiver, // The receiver's wallet address
+            'message': receiverMessage,
+          }),
+        );
+
+        await appKitModal!.loadAccountData(); // Load updated account data
+
       } else {
-        print('No user ID found for receiver address.');
+        throw Exception('Transaction failed. Please try again.');
+      }
+    } catch (e) {
+      String errorMessage;
+
+      if (e.toString().contains('User denied transaction signature')) {
+        errorMessage = 'Transaction cancelled by the user.';
+        CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          title: 'Transaction Cancelled',
+          text: errorMessage,
+          confirmBtnText: 'Okay',
+        );
+      } else {
+        errorMessage = 'An unexpected error occurred: $e';
+        CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          title: 'Error',
+          text: errorMessage,
+          confirmBtnText: 'Okay',
+        );
+      }
+    } finally {
+      setState(() {
+        isLoading = false; // Hide loader
+      });
+    }
+  }
+
+  // Method to fetch notifications for a specific wallet address
+  Future<void> fetchNotifications(String walletAddress) async {
+    try {
+      print('Fetching notifications for wallet address: $walletAddress...');
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+
+      if (token == null) {
+        print('Token is null. User not logged in.');
+        return;
       }
 
-      await triggerNotification(senderAddress, receiver, txValue.getValueInUnit(EtherUnit.ether).toString());
-  
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.success,
-        title: 'Transaction Successful',
-        text: 'Your transaction was completed successfully!',
-        confirmBtnText: 'Great!',
+      // Update the API URL to fetch notifications for a specific wallet address
+      final response = await http.get(
+        Uri.parse('https://api-tau-plum.vercel.app/transaction-notifications/$walletAddress'), // Use your API base URL
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
       );
 
-      await appKitModal!.loadAccountData();
-    } else {
-      print('Transaction failed.');
-      throw Exception('Transaction failed. Please try again.');
-    }
-  } catch (e) {
-    print('Error occurred: $e');
-    String errorMessage;
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
 
-    if (e.toString().contains('User denied transaction signature')) {
-      errorMessage = 'Transaction cancelled by the user.';
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.error,
-        title: 'Transaction Cancelled',
-        text: errorMessage,
-        confirmBtnText: 'Okay',
-      );
-    } else {
-      errorMessage = 'An unexpected error occurred: $e';
-      print('Error: $errorMessage');
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.error,
-        title: 'Error',
-        text: errorMessage,
-        confirmBtnText: 'Okay',
-      );
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+        data.sort((a, b) => DateTime.parse(b['createdAt']).compareTo(DateTime.parse(a['createdAt'])));
+
+        if (data.isNotEmpty) {
+          for (var notification in data) {
+            if (!notification['isRead']) {
+              // Show notifications for transaction received
+              if (notification['message'].contains('Transaction Received')) {
+                _showTopNotification(notification['message']); // Show the received notification
+              }
+
+              // Mark the notification as read after showing it (implement as needed)
+              // await markNotificationAsRead(notification['_id']); 
+            }
+          }
+        }
+      } else {
+        throw Exception('Failed to load notifications');
+      }
+    } catch (e) {
+      print('Error fetching notifications: $e');
     }
-  } finally {
-    setState(() {
-      isLoading = false;
-      print('Transaction loading state set to false.'); // Hide loader
+  }
+
+  // Method to display notifications
+  void _showTopNotification(String message) {
+    if (_isShowingNotification) return; // Prevent multiple overlays
+
+    _isShowingNotification = true;
+
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 50.0,
+        left: MediaQuery.of(context).size.width * 0.05,
+        right: MediaQuery.of(context).size.width * 0.05,
+        child: Material(
+          elevation: 10.0,
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              message,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context)?.insert(overlayEntry);
+
+    Future.delayed(const Duration(seconds: 3), () {
+      overlayEntry.remove();
+      _isShowingNotification = false;
     });
   }
-}
+
 
 Future<void> triggerNotification(String senderAddress, String receiverAddress, String amount) async {
   int notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647; // Modulus to fit 32-bit signed int range

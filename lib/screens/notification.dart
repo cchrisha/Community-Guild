@@ -22,6 +22,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   void initState() {
     super.initState();
+    // Fetch notifications periodically every 5 seconds
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       fetchNotifications();
     });
@@ -34,66 +35,97 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   Future<void> fetchNotifications() async {
-    try {
-      print('Fetching notifications...');
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('auth_token');
-      print('Token: $token');
-      if (token == null) {
-        throw Exception('Token is null. User not logged in.');
-      }
-      final response = await http.get(
-        Uri.parse(apiUrl),
+  try {
+    print('Fetching notifications...');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+    final userId = prefs.getString('user_id');
+
+    print('Token: $token');
+    print('User ID: $userId');
+
+    if (token == null || userId == null) {
+      throw Exception('Token or User ID is null. User not logged in.');
+    }
+
+    // Fetch main notifications
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    print('Main Notifications Response Status: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      List<dynamic> notificationsData = json.decode(response.body);
+      print('Parsed Main Notifications Data: $notificationsData');
+
+      // Fetch transaction notifications
+      final transactionResponse = await http.get(
+        Uri.parse('https://api-tau-plum.vercel.app/transaction-notifications/$userId'),
         headers: {
           'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
         },
       );
-      print('Response Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
-      if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(response.body);
-        print('Parsed Data: $data');
+
+      print('Transaction Notifications Response Status: ${transactionResponse.statusCode}');
+      if (transactionResponse.statusCode == 200) {
+        List<dynamic> transactionNotifications = json.decode(transactionResponse.body);
+        print('Parsed Transaction Notifications: $transactionNotifications');
+
+        // Merge both notification lists
+        List<dynamic> combinedNotifications = [...transactionNotifications, ...notificationsData];
+        
+        // Sort notifications by date to get the latest one
+        combinedNotifications.sort((a, b) => DateTime.parse(b['createdAt']).compareTo(DateTime.parse(a['createdAt'])));
+
         setState(() {
-          _notifications = data; // Store the entire notification object
+          _notifications = combinedNotifications;
+          print('_notifications after combining: $_notifications');
         });
       } else {
-        throw Exception('Failed to load notifications');
+        print('Failed to load transaction notifications. Status code: ${transactionResponse.statusCode}');
       }
+    } else {
+      print('Failed to load main notifications. Status code: ${response.statusCode}');
+    }
     } catch (e) {
-      print('Error: $e');
+      print('Error in fetchNotifications: $e');
     }
   }
 
   Future<void> markNotificationAsRead(String notificationId) async {
-    print("Attempting to mark notification as read: $notificationId");
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('auth_token');
-      if (token == null) {
-        print('Token is null. User not logged in.');
-        return;
-      }
+  print("Attempting to mark notification as read: $notificationId");
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+    if (token == null) {
+      print('Token is null. User not logged in.');
+      return;
+    }
 
-      final response = await http.put(
-        Uri.parse('$apiUrl/$notificationId/read'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+    // Use PATCH method for marking notification as read
+    final response = await http.patch(
+      Uri.parse('https://api-tau-plum.vercel.app/transaction-notifications/$notificationId/read'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
 
-      if (response.statusCode == 200) {
-        print('Notification marked as read.');
-        setState(() {
-          // Update the notification list locally
-          _notifications = _notifications.map((notification) {
-            if (notification['_id'] == notificationId) {
-              notification['isRead'] = true; // Mark it as read
-            }
-            return notification;
-          }).toList();
-        });
+    if (response.statusCode == 200) {
+      print('Notification marked as read.');
+      setState(() {
+        // Update the notification list locally
+        _notifications = _notifications.map((notification) {
+          if (notification['_id'] == notificationId) {
+            notification['isRead'] = true; // Mark it as read
+          }
+          return notification;
+        }).toList();
+      });
       } else {
         print('Failed to mark notification as read. Status code: ${response.statusCode}');
       }
@@ -101,6 +133,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       print('Error marking notification as read: $e');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
