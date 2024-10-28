@@ -108,38 +108,50 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildProfileContent(BuildContext context, ProfileLoaded state) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildProfilePictureSection(context, state),
-          const SizedBox(height: 0),
-          ProfileHeader(name: state.name, profession: state.profession),
-          const SizedBox(height: 15),
-          ElevatedButton(
-            onPressed: () => _requestVerification(context),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.lightBlue, // Button color
-            ),
-            child: const Text('Verify', style: TextStyle(color: Colors.white)),
-          ),
-          const SizedBox(height: 15),
-          const SectionTitle(title: 'Contact Info:'),
-          ProfileInfoCard(
-            location: state.location,
-            contact: state.contact,
-            email: state.email,
-          ),
-          const SizedBox(height: 15),
-          const SectionTitle(title: 'Professional Info:'),
-          ProfessionInfoCard(
-            profession: state.profession,
-          ),
-        ],
-      ),
-    );
-  }
+  return SingleChildScrollView(
+    padding: const EdgeInsets.all(12.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _buildProfilePictureSection(context, state),
+        const SizedBox(height: 0),
+        ProfileHeader(name: state.name, profession: state.profession),
+        const SizedBox(height: 15),
+
+        // Conditionally show the Verify button or text based on isVerify value
+        state.isVerify == 1
+            ? const Text(
+                'Account Verified',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            : ElevatedButton(
+                onPressed: () => _requestVerification(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightBlue, // Button color
+                ),
+                child: const Text('Verify', style: TextStyle(color: Colors.white)),
+              ),
+
+        const SizedBox(height: 15),
+        const SectionTitle(title: 'Contact Info:'),
+        ProfileInfoCard(
+          location: state.location,
+          contact: state.contact,
+          email: state.email,
+        ),
+        const SizedBox(height: 15),
+        const SectionTitle(title: 'Professional Info:'),
+        ProfessionInfoCard(
+          profession: state.profession,
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildProfilePictureSection(BuildContext context, ProfileLoaded state) {
     final profileBloc = context.read<ProfileBloc>();
