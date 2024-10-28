@@ -18,9 +18,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       final data = await profileRepository.fetchProfile();
       final profilePictureUrl = await profileRepository.fetchProfilePicture(); // Fetch profile picture
-      
-      // Determine verification status based on isVerify value
-      final isVerified = data['isVerify'] == 1; // 1 means verified, 0 means not verified
 
       emit(ProfileLoaded(
         name: data['name'] ?? 'N/A',
@@ -29,7 +26,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         email: data['email'] ?? 'N/A',
         profession: data['profession'] ?? 'N/A',
         profilePictureUrl: profilePictureUrl,
-        isVerified: isVerified, // Include verification status
+        isVerify: data['isVerify'] ?? 0, // Include verification status
       ));
     } catch (e) {
       emit(ProfileError('Failed to load profile: $e'));
