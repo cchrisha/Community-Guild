@@ -158,7 +158,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         print('Failed to mark notification as read. Status code: ${response.statusCode}');
       }
 
-      final verificationResponse = await http.patch(
+      final verificationResponse = await http.put(
       Uri.parse('https://api-tau-plum.vercel.app/api/user/notifications/$notificationId/read'),
       headers: {
         'Authorization': 'Bearer $token',
