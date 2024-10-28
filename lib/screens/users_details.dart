@@ -104,10 +104,11 @@ Future<void> _fetchUserDetails() async {
         ),
       ),
       body: isLoading
-          ? const Center(
+          ?  Center(
               child: InkDrop(
                 size: 40,
                 color: Colors.lightBlue,
+                ringColor: Colors.lightBlue.withOpacity(0.2),
               ),
             )
           : errorMessage != null

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -258,46 +257,49 @@ Widget build(BuildContext context) {
 
 // Adding the Cancel Job button here
               Row(
-  mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Centers the buttons
-  children: [
-    SizedBox(
-      width: 130,
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.pop(context); // Navigate back to JobPage
-        },
-        child: const Text(
-          'Back',
-          style: TextStyle(color: Colors.white),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.lightBlue,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 14),
-        ),
-      ),
-    ),
-    const SizedBox(width: 20), // Spacing between buttons
-    ElevatedButton(
-      onPressed: _cancelJobRequest,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.redAccent, // Button color
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      child: const Text(
-        'Cancel Application',
-        style: TextStyle(fontSize: 16, color: Colors.white),
-      ),
-    ),
-  ],
-),
-const SizedBox(height: 20), // Spacing below the row
+                mainAxisAlignment: MainAxisAlignment.center, // Centers the buttons
+                children: [
+                  SizedBox(
+                    width: 130,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context); // Navigate back to JobPage
+                      },
+                      child: const Text(
+                        'Back',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightBlue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 30), // Spacing between buttons
+                  SizedBox(
+                    width: 130,
+                    child: ElevatedButton(
+                      onPressed: _cancelJobRequest,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent, // Button color
+                        padding: const EdgeInsets.symmetric(vertical: 15), // Consistent padding
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      child: const Text(
+                        'Cancel Application',
+                        style: TextStyle( color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
 
+              const SizedBox(height: 20), // Spacing below the row
               ],
             ),
           ),
