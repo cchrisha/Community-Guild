@@ -67,7 +67,7 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
         return;
       }
 
-      final response = await http.patch(
+      final response = await http.put(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
