@@ -193,7 +193,7 @@ Widget build(BuildContext context) {
               const SizedBox(height: 50),
                Center(
               child: SizedBox(
-                width: 130,
+                width: 290,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context); // Navigate back to JobPage
@@ -205,9 +205,9 @@ Widget build(BuildContext context) {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.lightBlue,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(5),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
                 ),
               ),

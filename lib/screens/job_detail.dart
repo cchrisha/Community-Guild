@@ -149,216 +149,221 @@ class _JobDetailPageState extends State<JobDetailPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text(
-          'Job Details',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: const Color(0xFF03A9F4),
-        elevation: 8,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+ @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: Colors.grey[100],
+    appBar: AppBar(
+      title: const Text(
+        'Job Details',
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UserDetails(posterName: widget.posterName),
+      backgroundColor: const Color(0xFF03A9F4),
+      elevation: 8,
+      centerTitle: true,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+    ),
+    body: Stack(
+      children: [
+        SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UserDetails(posterName: widget.posterName),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 36,
+                        backgroundColor: Colors.transparent,
+                        child: Icon(Icons.person, color: Color(0xFF03A9F4), size: 36),
+                      ),
+                      const SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.posterName,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromRGBO(0, 0, 0, 0.867),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            widget.date,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 0),
+                const Divider(color: Color(0xFF03A9F4), thickness: 1.2),
+                const SizedBox(height: 20),
+                Center(
+                  child: Text(
+                    widget.jobTitle,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
-                  );
-                },
-                child: Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 36,
-                      backgroundColor: Colors.transparent, // Removed the blue background
-                      child: Icon(Icons.person, color: Color(0xFF03A9F4), size: 36),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    widget.category,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.black54,
                     ),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.posterName,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromRGBO(0, 0, 0, 0.867),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                Center(
+                  child: Card(
+                    color: const Color.fromARGB(255, 254, 254, 254),
+                    margin: EdgeInsets.zero,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: SizedBox(
+                        height: 200,
+                        width: 400,
+                        child: SingleChildScrollView(
+                          child: Text(
+                            widget.jobDescription,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Color.fromARGB(255, 0, 0, 0),
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          widget.date,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.black54,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Column(
+                  children: [
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.work, size: 30, color: Color(0xFF03A9F4)),
+                        SizedBox(width: 90),
+                        Icon(Icons.location_on, size: 30, color: Color(0xFF03A9F4)),
+                        SizedBox(width: 90),
+                        Icon(Icons.monetization_on, size: 30, color: Color(0xFF03A9F4)),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              widget.professions,
+                              style: const TextStyle(fontSize: 16, color: Colors.black),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              widget.workPlace,
+                              style: const TextStyle(fontSize: 16, color: Colors.black),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              "${widget.wageRange} (${widget.isCrypto ? 'Crypto' : 'Not Crypto'})",
+                              style: const TextStyle(fontSize: 16, color: Colors.black),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 0),
-              const Divider(color: Color(0xFF03A9F4), thickness: 1.2),
-              const SizedBox(height: 20),
-              Center(
-                child: Text(
-                  widget.jobTitle,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-              Center(
-                child: Text(
-                  widget.category,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.black54,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              Center(
-                child: Card(
-                  color: const Color.fromARGB(255, 254, 254, 254),
-                  margin: EdgeInsets.zero, // Remove margin to use full width
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: SizedBox(
-                      height: 200,
-                      width: 400,
-                      child: SingleChildScrollView(
-                        child: Text(
-                          widget.jobDescription,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Color.fromARGB(255, 0, 0, 0),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              Column(
-                children: [
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.work, size: 30, color: Color(0xFF03A9F4)),
-                      SizedBox(width: 90),
-                      Icon(Icons.location_on, size: 30, color: Color(0xFF03A9F4)),
-                      SizedBox(width: 90),
-                      Icon(Icons.monetization_on, size: 30, color: Color(0xFF03A9F4),),
-                    ],
-                  ),
-                  const SizedBox(height: 10), // Space between icon row and data row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            widget.professions,
-                            style: const TextStyle(fontSize: 16, color: Colors.black),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            widget.workPlace,
-                            style: const TextStyle(fontSize: 16, color: Colors.black),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            "${widget.wageRange} (${widget.isCrypto ? 'Crypto' : 'Not Crypto'})",
-                            style: const TextStyle(fontSize: 16, color: Colors.black),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 50),
-              Center(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      _applyForJob(widget.jobId);
-                    },
-                    icon: const Icon(
-                      Icons.work_outline,
-                      size: 24,
-                      color: Colors.white,
-                    ),
-                    label: const Text(
-                      'Apply Now',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                const SizedBox(height: 50),
+                Center(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        _applyForJob(widget.jobId);
+                      },
+                      icon: const Icon(
+                        Icons.work_outline,
+                        size: 24,
                         color: Colors.white,
                       ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF03A9F4),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                      label: const Text(
+                        'Apply Now',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 28),
-                      elevation: 6,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF03A9F4),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 28),
+                        elevation: 6,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              if (_isLoading)
-                Center(
-                  child: InkDrop(
-                    size: 40,
-                    color: Colors.lightBlue,
-                    ringColor: Colors.lightBlue.withOpacity(0.2),
-                  ),
-                ),
-            ],
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+        if (_isLoading)
+           Center(
+            child: InkDrop(
+              size: 40,
+              color: Colors.lightBlue,
+              ringColor: Colors.lightBlue.withOpacity(0.2),
+            ),
+          ),
+      ],
+    ),
+  );
+}
+
 
   // Helper method to build detail icon rows
   Widget _buildDetailIcon(IconData icon, String data) {
