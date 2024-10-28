@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../widget/loading_widget/ink_drop.dart';
 import '../choose.dart';
 
 class AdminSettingsPage extends StatefulWidget {
@@ -128,7 +129,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
               },
             ),
             if (_isLoading) // Show loading indicator when logging out
-              const Center(child: CircularProgressIndicator()),
+                                                                                                                                                                                                                                                              Center(
+            child: InkDrop(
+              size: 40,
+              color: Colors.lightBlue,
+              ringColor: Colors.lightBlue.withOpacity(0.2),
+            ),
+          ),
           ],
         ),
       ),

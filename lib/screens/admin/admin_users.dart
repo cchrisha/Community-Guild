@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../../widget/loading_widget/ink_drop.dart';
+
 class AdminUserPage extends StatefulWidget {
   const AdminUserPage({super.key});
 
@@ -170,7 +172,13 @@ class _AdminUserPageState extends State<AdminUserPage> {
             const SizedBox(height: 16),
             Expanded(
               child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
+                  ?  Center(
+                    child: InkDrop(
+                      size: 40,
+                      color: Colors.lightBlue,
+                      ringColor: Colors.lightBlue.withOpacity(0.2),
+                    ),
+                  )
                   : _errorMessage != null
                       ? Center(child: Text(_errorMessage!))
                       : ListView.builder(

@@ -27,7 +27,7 @@ class ProfileLoaded extends ProfileState {
     required this.email,
     required this.profession,
     required this.profilePictureUrl,
-    required this.isVerify, // Add profile picture
+    required this.isVerify,
   });
 
   @override
