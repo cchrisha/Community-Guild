@@ -107,6 +107,7 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // User Information Card
             // Profile Information Card with verification toggle
             Card(
               elevation: 4,
@@ -137,9 +138,9 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
                         const Text('Verified Status:', style: TextStyle(fontSize: 16)),
                         Switch(
                           value: isVerified,
-                          activeColor: Colors.green,
-                          inactiveThumbColor: Colors.grey,
-                          inactiveTrackColor: Colors.grey[300],
+                          activeColor: Colors.green, // Green for verified
+                          inactiveThumbColor: Colors.grey, // Gray for unverified
+                          inactiveTrackColor: Colors.grey[300], // Optional: color of the track when inactive
                           onChanged: (bool newValue) {
                             _updateVerifyStatus(widget.user['_id'], newValue);
                           },
@@ -151,9 +152,17 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
               ),
             ),
             const SizedBox(height: 20),
+
+            // Jobs Section
             _buildJobsSection('Current Jobs', currentJobs),
+            const SizedBox(height: 20),
+
             _buildJobsSection('Completed Jobs', completedJobs),
+            const SizedBox(height: 20),
+
             _buildJobsSection('Requested Jobs', requestedJobs),
+            const SizedBox(height: 20),
+
             _buildJobsSection('Rejected Jobs', rejectedJobs),
           ],
         ),
@@ -161,11 +170,14 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
     );
   }
 
-  Widget _buildJobsSection(String sectionTitle, List<dynamic> jobs) {
+    Widget _buildJobsSection(String sectionTitle, List<dynamic> jobs) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(sectionTitle, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(
+          sectionTitle,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 10),
         SizedBox(
           height: 240,
@@ -178,19 +190,44 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
                     return Card(
                       margin: const EdgeInsets.symmetric(horizontal: 8),
                       child: Container(
-                        width: 300,
-                        padding: const EdgeInsets.all(20),
+                        width: 300, // Increased width for each job card
+                        padding: const EdgeInsets.all(20), // Increased padding
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              job['jobTitle'],
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              job['title'] ?? '',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18, // Increased font size for title
+                              ),
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              job['description'],
-                              style: const TextStyle(fontSize: 14, color: Colors.grey),
+                              'Wage Range: ${job['wageRange'] ?? ''}',
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Location: ${job['location'] ?? ''}',
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Crypto: ${job['isCrypto'] ? 'Yes' : 'No'}',
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
+                            const SizedBox(height: 15),
+                            Text(
+                              'Description: ${job['description'] ?? ''}',
+                              maxLines: 4, // Increased max lines for description
+                              overflow: TextOverflow.ellipsis, // Handle overflow
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Professions: ${job['professions']?.join(', ') ?? ''}',
+                              style: TextStyle(color: Colors.grey[700]),
                             ),
                           ],
                         ),
@@ -198,7 +235,7 @@ class _AdminUserDetailsPageState extends State<AdminUserDetailsPage> {
                     );
                   },
                 )
-              : Center(child: Text('No jobs available in this section')),
+              : Center(child: Text('No jobs available')),
         ),
         const SizedBox(height: 20),
       ],
